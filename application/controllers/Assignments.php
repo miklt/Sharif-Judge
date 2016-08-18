@@ -301,13 +301,14 @@ class Assignments extends CI_Controller
 				$data['problems'] = array(
 					array(
 						'id' => 1,
-						'name' => 'Problem ',
+						'name' => 'Exercício ',
 						'score' => 100,
 						'c_time_limit' => 500,
 						'python_time_limit' => 1500,
 						'java_time_limit' => 2000,
 						'memory_limit' => 50000,
-						'allowed_languages' => 'C,C++,Python 2,Python 3,Java',
+						//'allowed_languages' => 'C,C++,Python 2,Python 3,Java',
+            'allowed_languages' => 'C++',
 						'diff_cmd' => 'diff',
 						'diff_arg' => '-bB',
 						'is_upload_only' => 0
@@ -490,7 +491,7 @@ class Assignments extends CI_Controller
 
 			// Extract new test cases and descriptions in temp directory
 			$this->load->library('unzip');
-			$this->unzip->allow(array('txt', 'cpp', 'html', 'md', 'pdf'));
+			$this->unzip->allow(array('txt', 'h', 'hpp', 'cpp', 'html', 'md', 'pdf'));
 			$extract_result = $this->unzip->extract($u_data['full_path'], $tmp_dir);
 
 			// Remove the zip file
@@ -501,7 +502,7 @@ class Assignments extends CI_Controller
 				// Remove previous test cases and descriptions
 				shell_exec("cd $assignment_dir;"
 					." rm -rf */in; rm -rf */out; rm -f */tester.cpp; rm -f */tester.executable;"
-					." rm -f */desc.html; rm -f */desc.md; rm -f */*.pdf;");
+					." rm -f */desc.html; rm -f */desc.md; rm -f */*.pdf; rm -rf */inject; ");
 				if (glob("$tmp_dir/*.pdf"))
 					shell_exec("cd $assignment_dir; rm -f *.pdf");
 				// Copy new test cases from temp dir

@@ -68,9 +68,10 @@ class Submit extends CI_Controller
 
 	public function _match($type, $extension)
 	{
+		$compressedformats = array('zip', 'rar', '7z');
 		switch ($type) {
-			case 'c': return ($extension==='c'?TRUE:FALSE);
-			case 'cpp': return ($extension==='cpp'?TRUE:FALSE);
+			case 'c': return (($extension==='c' or in_array($extension, $compressedformats))?TRUE:FALSE);
+			case 'cpp': return (($extension==='cpp' or in_array($extension, $compressedformats))?TRUE:FALSE);
 			case 'py2': return ($extension==='py'?TRUE:FALSE);
 			case 'py3': return ($extension==='py'?TRUE:FALSE);
 			case 'java': return ($extension==='java'?TRUE:FALSE);

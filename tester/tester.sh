@@ -48,7 +48,7 @@ START=$(($(date +%s%N)/1000000));
 ####################### Options #######################
 #
 # Compile options for C/C++
-C_OPTIONS="-fno-asm -Dasm=error -lm -O2"
+C_OPTIONS="-fno-asm -Dasm=error -lm -O2 -std=c++11 -Wfatal-errors"
 #
 # Warning Options for C/C++
 # -w: Inhibit all warning messages
@@ -293,7 +293,80 @@ if [ "$EXT" = "c" ] || [ "$EXT" = "cpp" ]; then
 		COMPILER="g++"
 	fi
 	EXEFILE="s_$(echo $FILENAME | sed 's/[^a-zA-Z0-9]//g')" # Name of executable file
-	cp $PROBLEMPATH/$UN/$FILENAME.$EXT code.c
+	
+	# Uncompress zip,rar,7z files using 7z (requires p7zip-full package)
+	ISCOMPRESSED=false
+	for compressedext in zip rar 7z; do
+		if [ -f "$PROBLEMPATH/$UN/$FILENAME.$compressedext" ]; then
+			7z x "$PROBLEMPATH/$UN/$FILENAME.$compressedext" >/dev/null
+			
+			# Concatenate all *.cpp and *.h files into a single file
+			# This allow file visualization on the web interface
+			for cppfile in `ls 2>/dev/null`; do
+			
+				# ignore files used by sharif judge system
+				if [ "$cppfile" == "timeout" ] \
+				|| [ "$cppfile" == "runcode.sh" ]; then
+					continue
+				fi
+				
+				echo "==============================================================================="
+				echo "===== $cppfile"
+				echo "==============================================================================="
+				echo ""
+        
+        if [ "$(file -ib $cppfile)" == "text/x-c; charset=iso-8859-1" ]; then
+          # Converte o programa para UTF-8 se houver caracteres especiais
+          iconv -f ISO-8859-1 -t UTF-8 $cppfile
+        else
+          cat $cppfile
+        fi
+        
+				echo ""
+				echo ""
+			done >"$PROBLEMPATH/$UN/$FILENAME.$EXT" 2>/dev/null
+			
+			ISCOMPRESSED=true
+			break;
+		fi
+	done
+  
+	if [ -d "$PROBLEMPATH/inject" ]; then
+  
+		# inject files into folder (overwrite files with same name)
+		cp "$PROBLEMPATH/inject/"* .
+		
+		if $ISCOMPRESSED; then
+			{
+				echo "==============================================================================="
+				echo "===== Arquivos injetados pelo sistema de correção:"
+				for injected in `ls "$PROBLEMPATH/inject/"`; do
+					echo "===== * $injected"
+				done
+				#echo "====="
+				#echo "===== Obs.: Arquivos submetidos com o mesmo nome que são SUBSTITUÍDOS"
+				#echo "=====       antes da compilação.  Em caso de erros de compilação verifique a"
+				#echo "=====       especificação do exercício e os nomes requeridos para arquivos,"
+				#echo "=====       funções e métodos.  Caso o erro persista, informe o professor"
+				#echo "=====       ou o monitor da disciplina."
+				echo "==============================================================================="
+				echo ""
+				echo ""
+				cat "$PROBLEMPATH/$UN/$FILENAME.$EXT"
+			} >"$PROBLEMPATH/$UN/$FILENAME.$EXT.tmp"
+			
+			mv "$PROBLEMPATH/$UN/$FILENAME.$EXT"{.tmp,}
+		fi
+	fi
+	
+	# name "code.c" is forbidden as filename
+	if ! $ISCOMPRESSED; then
+		cp $PROBLEMPATH/$UN/$FILENAME.$EXT code.c
+	else
+		# zip file should contain a "main.c" or "main.cpp" file
+		mv "main.$EXT" code.c
+	fi
+	
 	shj_log "Compiling as $EXT"
 	if $SANDBOX_ON; then
 		shj_log "Enabling EasySandbox"
@@ -320,7 +393,7 @@ if [ "$EXT" = "c" ] || [ "$EXT" = "cpp" ]; then
 		fi
 	else
 		mv code.c code.$EXT
-		$COMPILER code.$EXT $C_OPTIONS $C_WARNING_OPTION -o $EXEFILE >/dev/null 2>cerr
+		$COMPILER *.$EXT $C_OPTIONS $C_WARNING_OPTION -o $EXEFILE >/dev/null 2>cerr
 		EXITCODE=$?
 	fi
 	COMPILE_END_TIME=$(($(date +%s%N)/1000000));
@@ -353,8 +426,8 @@ if [ "$EXT" = "c" ] || [ "$EXT" = "cpp" ]; then
 				elif [ "`echo $line|cut -d: -f1`" = "shield.cpp" ]; then
 					echo ${line#shield.cpp:} >>cerr2
 				else
-					echo ${line} >>cerr2
-				fi
+          echo ${line} >>cerr2
+        fi
 			done <cerr
 			(cat cerr2 | head -10 | sed 's/themainmainfunction/main/g' ) > cerr;
 			(cat cerr | sed 's/&/\&amp;/g' | sed 's/</\&lt;/g' | sed 's/>/\&gt;/g' | sed 's/"/\&quot;/g') >> $PROBLEMPATH/$UN/result.html
@@ -405,7 +478,14 @@ PASSEDTESTS=0
 
 for((i=1;i<=TST;i++)); do
 	shj_log "\n=== TEST $i ==="
-	echo "<span class=\"shj_b\">Test $i</span>" >>$PROBLEMPATH/$UN/result.html
+	
+	if [ -f "$PROBLEMPATH/desc/desc$i.txt" ]; then
+		problemdesc=" - `cat "$PROBLEMPATH/desc/desc$i.txt"`"
+	else
+		problemdesc=""
+	fi
+	
+	echo "<span class=\"shj_b\">Test $i$problemdesc</span>" >>$PROBLEMPATH/$UN/result.html
 	
 	touch err
 	
@@ -561,6 +641,17 @@ for((i=1;i<=TST;i++)); do
 	fi
 done
 
+# Converte resultado para UTF-8 se houver caracteres especiais
+if [ "$(file -ib $PROBLEMPATH/$UN/result.html)" == "text/plain; charset=iso-8859-1" ]; then
+  iconv -f ISO-8859-1 -t UTF-8 $PROBLEMPATH/$UN/result.html > $PROBLEMPATH/$UN/result-conv.html
+  mv $PROBLEMPATH/$UN/result-conv.html $PROBLEMPATH/$UN/result.html
+fi
+
+# Converte o programa para UTF-8 se houver caracteres especiais
+if [ "$(file -ib $PROBLEMPATH/$UN/$FILENAME.$EXT)" == "text/x-c; charset=iso-8859-1" ]; then
+  iconv -f ISO-8859-1 -t UTF-8 $PROBLEMPATH/$UN/$FILENAME.$EXT > $PROBLEMPATH/$UN/${FILENAME}-conv.$EXT
+  mv $PROBLEMPATH/$UN/${FILENAME}-conv.$EXT $PROBLEMPATH/$UN/$FILENAME.$EXT
+fi
 
 # After I added the feature for showing java exception name and exception place,
 # I found that the way I am doing it is a security risk. So I added the file "tester/java_exceptions_list"

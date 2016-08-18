@@ -277,23 +277,23 @@ div.top_object.top_left .top_menu{
 	left: 0;
 }
 
-.top_menu > li:nth-child(1) {
+.top_menu > li:nth-child(5n+1) {
 	border-left:6px solid #27ae60;
 }
 
-.top_menu > li:nth-child(2) {
+.top_menu > li:nth-child(5n+2) {
 	border-left:6px solid #e67e22;
 }
 
-.top_menu > li:nth-child(3) {
+.top_menu > li:nth-child(5n+3) {
 	border-left:6px solid #f1c40f;
 }
 
-.top_menu > li:nth-child(4) {
+.top_menu > li:nth-child(5n+4) {
 	border-left:6px solid #3498db;
 }
 
-.top_menu > li:nth-child(5) {
+.top_menu > li:nth-child(5n+5) {
 	border-left:6px solid #9b59b6;
 }
 
