@@ -50,6 +50,9 @@ div.judge_logo {
 
 div.judge_logo img {
 	border: none;
+	height: 100px;
+	align-content: center;
+	margin-bottom: 10px;
 }
 
 div.login_form {
