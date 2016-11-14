@@ -48,7 +48,7 @@ START=$(($(date +%s%N)/1000000));
 ####################### Options #######################
 #
 # Compile options for C/C++
-C_OPTIONS="-fno-asm -Dasm=error -lm -O2 -std=c++11 -Wfatal-errors"
+C_OPTIONS="-fno-asm -Dasm=error -lm -O2 -std=c++11 -Wfatal-errors -Werror=return-type"
 #
 # Warning Options for C/C++
 # -w: Inhibit all warning messages
