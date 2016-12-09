@@ -724,7 +724,7 @@ select.sharif_time {
 	background-color:#ffffff;
 }
 
-.assignment_block {
+.assignment_block{
 	height: 40px;
 	cursor: pointer;
 }
@@ -733,6 +733,7 @@ select.sharif_time {
 	line-height:40px;
 	vertical-align: top;
 	display: inline-block;
+	color: #4682b4;
 }
 
 /***************************************/
