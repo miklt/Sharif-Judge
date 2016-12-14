@@ -1,5 +1,6 @@
 # Tutorial for Installing PCSJudge in a Linux Distro
 
+
 ### Part 1 - Setting up your environment
 - Install a Linux distro (e.g. Ubuntu 14.04)
 	(It would be easier if this distro is already predefined to work with PHP5)
@@ -12,6 +13,7 @@ $ php -v
 127.0.0.1
 ```
 
+
 ### Part 2 - Downloading SharifJudge
 - Download SharifJudge from PCS' Github repository
 - Move the folder to this directory (or your predefined server folder)
@@ -20,6 +22,7 @@ var/www/html
 ```
 - Unzip it
 - Edit index.php and change it to development mode
+
 
 ### Part 3 - Setting up a database
 - Access mysql's shell by typing (where **** is your password defined at the mysql's installation process)
@@ -34,6 +37,7 @@ $ create database Judge;
 ```sh
 $ exit
 ```
+
 ### Part 4 - Setting up SharifJudge
 - in your Judge folder, edit setting the parameters needed as the instructions show
 ```sh
