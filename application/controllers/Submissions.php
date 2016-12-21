@@ -82,7 +82,7 @@ class Submissions extends CI_Controller
 		if ($this->user->level === 0)
 			$header=array('Final','Problem','Submit Time','Score','Delay (HH:MM)','Coefficient','Final Score','Language','Status');
 		else{
-			$header=array('Final','Submit ID','Username','Name','Problem','Submit Time','Score','Delay (HH:MM)','Coefficient','Final Score','Language','Status');
+			$header=array('Final','Submit ID','Username','Name','Problem','Submit Time','Score','Delay (HH:MM)','Coefficient','Final Score','Language','Status', '#Submissions');
 			if ($view === 'final'){
 				array_unshift($header, "#2");
 				array_unshift($header, "#1");
@@ -109,18 +109,43 @@ class Submissions extends CI_Controller
 		);
 
 		// Prepare data (in $rows array)
-		if ($view === 'final')
+		/*if ($view === 'final')
 			$items = $this->submit_model->get_final_submissions($this->user->selected_assignment['id'], $this->user->level, $this->user->username, NULL, $this->filter_user, $this->filter_problem);
-		else
-			$items = $this->submit_model->get_all_submissions($this->user->selected_assignment['id'], $this->user->level, $this->user->username, NULL, $this->filter_user, $this->filter_problem);
-
+		else*/
+		$itemsOld = $this->submit_model->get_all_submissions($this->user->selected_assignment['id'], $this->user->level, $this->user->username, NULL, $this->filter_user, $this->filter_problem);
+		$items = array_reverse($itemsOld);
 		$names = $this->user_model->get_names();
 
 		$finish = strtotime($this->user->selected_assignment['finish_time']);
 		$i=0; $j=0; $un='';
 		$rows = array();
+
+		/*needed variables for comparison*/
+		$comparison = array( 0 => array('none', 0, 0),);
+		$user = false;
+		$question = false;
+		$commulative = 0;
 		foreach ($items as $item){
 			$i++;
+			/*comparison*/
+            $flag = 1;
+		    for($itera = 0; $itera < sizeof($comparison) && $flag === 1 ; $itera++) {
+		        $user = array_search($item['username'], $comparison[$itera]);
+		        if($user !== false){
+		            $question = array_search($this->problems[$item['problem']], $comparison[$itera]);
+		            if($question !== false){
+		                $comparison[$itera][2]++;
+		                $flag = 0;
+						$commulative = $comparison[$itera][2];
+	        		}
+		        }
+			}
+        	if($flag === 1){
+				$newUser = array($item['username'], $this->problems[$item['problem']], 1);
+				$comparison[] = $newUser;
+				$commulative = 1;
+			}
+			/*end comparison*/
 			if ($item['username'] != $un)
 				$j++;
 			$un = $item['username'];
@@ -166,13 +191,19 @@ class Submissions extends CI_Controller
 					$final_score,
 					filetype_to_language($item['file_type']),
 					$item['status'],
+					$commulative,
 				);
 				if ($view === 'final'){
 					array_unshift($row,$j);
 					array_unshift($row,$i);
 				}
 			}
-			array_push($rows, $row);
+			if($view === 'final'){
+				if($row[2])
+					array_push($rows, $row);
+			}
+			else
+				array_push($rows, $row);
 		}
 
 		// Add rows to document
