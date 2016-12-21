@@ -129,7 +129,7 @@ class Submissions extends CI_Controller
 			$i++;
 			/*comparison*/
             		$flag = 1;
-		    	for($itera = 0; $itera < sizeof($comparison) && $flag === 1 ; $itera++) {
+		    	for($itera = 0; $itera < sizeof($comparison) && $flag === 1 ; $itera++){
 		        	$user = array_search($item['username'], $comparison[$itera]);
 		        	if($user !== false){
 		            		$question = array_search($this->problems[$item['problem']], $comparison[$itera]);
