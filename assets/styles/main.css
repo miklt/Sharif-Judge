@@ -50,7 +50,7 @@ img {
 }
 
 body {
-	background-color: #F6F6F4;
+	background-color: #ffffff;
 	padding: 0;
 	color: #2d2d2d;
 	margin: 0 0 20px 0;
@@ -228,7 +228,7 @@ div.top_object.shj_white, div.top_object.shj_white>a {
 
 div.countdown {
 	padding: 0 8px;
-	background-color:#27ae60;
+	background-color:#77A9DA;
 }
 
 div.time_block {
@@ -268,23 +268,10 @@ span.time_label {
 }
 
 .top_menu a {
-	color:#ffffff;
+	color:#4682b4;
 	line-height: 40px;
 	padding:0 10px;
 	display: block;
-	background-color:#ffffff;
-}
-
-.top_menu a2 {
-	color:#4682b4;
-	line-height: 40px;
-	padding: 0 10px;
-	display: block;
-	background-color:#ffffff;
-}
-
-.top_menu a2:hover {
-	background-color:transparent;
 }
 
 div.top_object.top_left .top_menu{
@@ -450,7 +437,7 @@ div#side_bar {
 	width: 160px;
 	bottom: 0;
 	z-index: 1;
-	background-color:#F2F2EA;
+	background-color:#F2F2F2;
 	box-shadow: #a9a9a9 0 0 4px;
 	-moz-box-shadow: #a9a9a9 0 0 4px;
 	-webkit-box-shadow: #a9a9a9 0 0 4px;
@@ -542,14 +529,14 @@ div#main_container {
 	position: absolute;
 	top: 55px;
 	left: 160px;
-	background-color: #f6f6f4;
+	background-color: #ffffff;
 }
 
 div#page_title {
 	padding: 10px 20px;
 	font-size: 20px;
 	position: relative;
-	background-color: #faf9f5;
+	background-color: #fafafa;
 	border-bottom: 1px solid #DDDAD0;
 }
 
@@ -566,7 +553,7 @@ div#page_title:after, div#page_title:before {
 
 div#page_title:after {
 	border-color: rgba(136, 183, 213, 0);
-	border-top-color: #faf9f5;
+	border-top-color: #fafafa;
 	border-width: 10px;
 	margin-left: -10px;
 }
@@ -705,7 +692,7 @@ select.sharif_time {
 
 #select_assignment_menu i {
 	vertical-align: top;
-	color:#FFF;
+	color:#4682b4;
 	line-height:40px;
 	font-size:20px;
 	margin:0 8px 0 0;
@@ -713,7 +700,7 @@ select.sharif_time {
 
 #select_assignment_menu > li:last-child {
 	text-align: center;
-	background-color: #ffffff;
+	background-color: #dedede;
 	line-height: normal;
 }
 
@@ -721,7 +708,7 @@ select.sharif_time {
 	line-height: normal;
 	padding: 5px;
 	color: #4682b4;
-	background-color:#ffffff;
+	background-color:#dedede;
 }
 
 .assignment_block{
@@ -1349,4 +1336,16 @@ div.md_cheatsheet pre{
 
 div.md_cheatsheet p{
 	margin: 0;
+}
+
+/* Cores do PCS */
+a.profile-btn {
+	color: #fff;
+}
+a.logout-btn {
+	color: #fff;
+}
+
+.user-menu {
+	color: #4682b4;
 }

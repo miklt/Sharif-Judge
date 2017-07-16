@@ -49,9 +49,9 @@
 	<div class="top_object shj_menu top_left" id="admin_tools_top">
 		Tools
 		<ul class="top_menu">
-			<li><a2 href="{{ site_url('rejudge') }}">Rejudge</a2></li>
-			<li><a2 href="{{ site_url('queue') }}">Submission Queue</a2></li>
-			<li><a2 href="{{ site_url('moss/'~user.selected_assignment['id']) }}">Cheat Detection</a2></li>
+			<li><a href="{{ site_url('rejudge') }}">Rejudge</a></li>
+			<li><a href="{{ site_url('queue') }}">Submission Queue</a></li>
+			<li><a href="{{ site_url('moss/'~user.selected_assignment['id']) }}">Cheat Detection</a></li>
 		</ul>
 	</div>
 	{% endif %}
