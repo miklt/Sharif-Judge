@@ -14,7 +14,10 @@ $ php -v
 ```sh
 127.0.0.1
 ```
-
+- Install p7zip-full package
+```sh
+apt-get install p7zip-full
+```
 
 
 

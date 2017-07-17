@@ -700,7 +700,7 @@ select.sharif_time {
 
 #select_assignment_menu > li:last-child {
 	text-align: center;
-	background-color: #dedede;
+	background-color: #dce9f9;
 	line-height: normal;
 }
 
@@ -708,7 +708,7 @@ select.sharif_time {
 	line-height: normal;
 	padding: 5px;
 	color: #4682b4;
-	background-color:#dedede;
+	background-color:#dce9f9;
 }
 
 .assignment_block{
