@@ -4,9 +4,8 @@
 
 
 ### Part 1 - Setting up your environment
-- Install a Linux distro (e.g. Ubuntu 14.04)
-	(It would be easier if this distro is already predefined to work with PHP5)
-- Install the LAMP package - Apache2, PHP5 and MySql. Make sure that your current version is PHP5 typing:
+- Install a Linux distro
+- Install the LAMP package - Apache2, PHP5 (PHP7 does not work with PHPExcel) and MySql. Make sure that your current version is PHP5 typing:
 ```sh
 $ php -v
 ```
