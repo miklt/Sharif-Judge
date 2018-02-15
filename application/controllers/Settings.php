@@ -88,7 +88,7 @@ class Settings extends CI_Controller
 			// if timezone is invalid, set it to 'Asia/Tehran' :
 			if ( ! in_array($timezone, DateTimeZone::listIdentifiers()) )
 				$timezone='Asia/Tehran';
-
+			$this->settings_model->add_key();
 			$this->settings_model->set_settings(
 				array(
 					'timezone' => $timezone,
@@ -104,7 +104,9 @@ class Settings extends CI_Controller
 					'enable_py3_shield' => $this->input->post('enable_py3_shield')===NULL?0:1,
 					'enable_java_policy' => $this->input->post('enable_java_policy')===NULL?0:1,
 					'enable_log' => $this->input->post('enable_log')===NULL?0:1,
+					'final_grade' => $this->input->post('final_grade')===NULL?0:1,
 					'enable_registration' => $this->input->post('enable_registration')===NULL?0:1,
+					'enable_scoreboard' => $this->input->post('enable_scoreboard')===NULL?0:1,
 					'registration_code' => $this->input->post('registration_code'),
 					'mail_from' => $this->input->post('mail_from'),
 					'mail_from_name' => $this->input->post('mail_from_name'),
@@ -115,7 +117,7 @@ class Settings extends CI_Controller
 					'week_start' => $this->input->post('week_start'),
 				)
 			);
-			
+
 		}
 		else
 			$this->form_status = 'error';

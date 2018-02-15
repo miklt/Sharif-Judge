@@ -272,7 +272,7 @@ $config['cache_path'] = '';
 | http://codeigniter.com/user_guide/libraries/sessions.html
 |
 */
-$config['encryption_key'] = 'PLEASE_CHANGE_ME_TO_A_RANDOM_KEY';
+$config['encryption_key'] = 'BSo4qYlk1E9r8F7UOsRKwc3gifmbX0e5';
 
 /*
 |--------------------------------------------------------------------------
@@ -446,6 +446,10 @@ $config['rewrite_short_tags'] = FALSE;
 | Array:		array('10.0.1.200', '192.168.5.0/24')
 */
 $config['proxy_ips'] = '';
+
+
+$config['enable_scoreboard'] = 0;
+
 
 
 /* End of file config.php */

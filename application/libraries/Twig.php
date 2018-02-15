@@ -7,7 +7,7 @@
  *
  * @category Layout
  * @package  Twig
- * @author   Bennet Matschullat <bennet@3mweb.de>
+ * @author   Bennet M	atschullat <bennet@3mweb.de>
  * @author   Erik Torsner <erik@torgesta.com>
  * @license  Don't be a dick http://www.dbad-license.org/
  * @link     https://github.com/bmatschullat/Twig-Codeigniter
@@ -89,17 +89,28 @@ class Twig
 		return ($render) ? $template->render($data) : $template;
 	}
 
-	/**
-	 * Execute the template and send to CI output
-	 *
-	 * @param string $template Name of template
-	 * @param array $data Parameters for template
-	 *
-	 * @return void
-	 *
-	 */
+
+	/** returns an array with data that should be displayed in every page **/
+	 public function displayData()
+	 {
+		 $data = array();
+		 $data['enable_scoreboard'] = $this->_ci->settings_model->get_setting('enable_scoreboard');
+		 return $data;
+	 }
+
+
+	 /**
+ 	 * Execute the template and send to CI output
+ 	 *
+ 	 * @param string $template Name of template
+ 	 * @param array $data Parameters for template
+ 	 *
+ 	 * @return void
+ 	 *
+ 	 */
 	public function display($template, $data = array())
 	{
+		$data = array_merge($data, $this->displayData());
 		$template = $this->twig->loadTemplate($template);
 		$this->_ci->output->append_output($template->render($data));
 	}

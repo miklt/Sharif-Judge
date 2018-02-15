@@ -4,6 +4,12 @@
  * @file Submissions.php
  * @author Mohammad Javad Naderi <mjnaderi@gmail.com>
  */
+
+// Check for weight == 0
+
+
+
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Submissions extends CI_Controller
@@ -36,6 +42,9 @@ class Submissions extends CI_Controller
 			$this->filter_problem = is_numeric($input['problem'])?$input['problem']:NULL;
 		if (array_key_exists('page', $input) && $input['page'])
 			$this->page_number = is_numeric($input['page'])?$input['page']:1;
+
+		$this->load->model('settings_model');
+		$this->show_final_grade = $this->settings_model->get_setting('final_grade');
 
 	}
 
@@ -307,7 +316,8 @@ class Submissions extends CI_Controller
 		$submissions = $this->submit_model->get_final_submissions($this->user->selected_assignment['id'], $this->user->level, $this->user->username, $this->page_number, $this->filter_user, $this->filter_problem);
 
 		$names = $this->user_model->get_names();
-
+		$sum = 0;
+		$weight = 0;
 		foreach ($submissions as &$item)
 		{
 			$item['name'] = $names[$item['username']];
@@ -319,9 +329,14 @@ class Submissions extends CI_Controller
 				$item['final_score'] = 0;
 			else
 				$item['final_score'] = ceil($item['pre_score']*$item['coefficient']/100);
+			$sum = $sum + $item['final_score']*$item['weight'];
+			$weight = $weight + $item['weight'];
 		}
-
-
+		if ($weight != 0)
+			$final_grade = ($sum/$weight);
+		else
+			$final_grade = 0;
+			
 		$data = array(
 			'view' => 'final',
 			'all_assignments' => $this->assignment_model->all_assignments(),
@@ -333,6 +348,8 @@ class Submissions extends CI_Controller
 			'pagination' => $this->shj_pagination->create_links(),
 			'page_number' => $this->page_number,
 			'per_page' => $config['per_page'],
+			'show_final_grade'=> $this->show_final_grade,
+			'final_grade' => $final_grade,
 		);
 
 		$this->twig->display('pages/submissions.twig', $data);
@@ -393,7 +410,7 @@ class Submissions extends CI_Controller
 			'excel_link' => site_url('submissions/all_excel'.($this->filter_user?'/user/'.$this->filter_user:'').($this->filter_problem?'/problem/'.$this->filter_problem:'')),
 			'filter_user' => $this->filter_user,
 			'filter_problem' => $this->filter_problem,
-			'pagination' => $this->shj_pagination->create_links(),
+			'pagination' => $this->shj_pagination->create_links()
 		);
 
 		$this->twig->display('pages/submissions.twig', $data);

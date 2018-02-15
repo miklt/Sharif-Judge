@@ -66,6 +66,7 @@
 				<th width="6%" rowspan="2">Username</th>
 				<th width="14%" rowspan="2">Name</th>
 				<th width="4%" rowspan="2">Problem</th>
+				<th width="5%" rowspan="2">Weight</th>
 				<th width="14%" rowspan="2">Submit Time</th>
 				<th colspan="3">Score</th>
 				<th width="1%" rowspan="2">Language</th>
@@ -75,6 +76,11 @@
 				{% if user.level >= 2 %}
 				<th width="1%" rowspan="2">Actions</th>
 				{% endif %}
+				{% if show_final_grade == 1 %}
+				<th width="3%" rowspan="2">Final Grade</th>
+				{% endif %}
+
+
 			</tr>
 			<tr>
 				<th width="5%" class="score">Score</th>
@@ -123,6 +129,7 @@
 			<td dir="auto">{{ submission.name }}</td>
 		{% endif %}
 			<td><a href="{{ site_url('submissions/'~view~(filter_user?'/user/'~filter_user)~'/problem/'~submission.problem) }}" title="{{ problems[submission.problem].name }}">{{ submission.problem }}</a></td>
+			<td>{{ submission.weight }}</td>
 			<td>{{ submission.time }}</td>
 			<td>{{ submission.pre_score }}</td>
 			<td>
@@ -178,6 +185,17 @@
 					<div class="shj_rejudge pointer"><i class="fa fa-refresh fa-lg color10"></i></div>
 				</td>
 			{% endif %}
+
+			{% if user.level >= 2%}
+				<td>
+					{{ final_grade }}
+				</td>
+			{% elseif show_final_grade == 1%}
+				<td>
+					{{ final_grade }}
+				</td>
+			{% endif %}
+
 		</tr>
 	{% endfor %}
 </table>

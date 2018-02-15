@@ -117,7 +117,7 @@ class Submit extends CI_Controller
 			'coefficient' => $this->coefficient,
 			'upload_state' => '',
 			'problems_js' => '',
-			'error' => '',
+			'error' => ''
 		);
 		foreach ($this->problems as $problem)
 		{
@@ -219,6 +219,7 @@ class Submit extends CI_Controller
 				'coefficient' => $this->coefficient,
 				'pre_score' => 0,
 				'time' => shj_now_str(),
+				'weight' => $this->assignment_model->problem_info($this->user->selected_assignment['id'], $this->problem['id'])['weight']
 			);
 			if ($this->problem['is_upload_only'] == 0)
 			{
