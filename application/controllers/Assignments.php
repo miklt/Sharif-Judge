@@ -400,7 +400,7 @@ class Assignments extends CI_Controller
 		if ($sum != 100) {
 			$this->messages[] = array(
 				'type' => 'error',
-				'text' => 'Error: Sum of weights must be 10. '
+				'text' => 'Error: Sum of weights must be 100. '
 			);
 			return FALSE;
 

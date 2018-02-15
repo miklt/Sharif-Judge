@@ -316,8 +316,15 @@ class Submissions extends CI_Controller
 		$submissions = $this->submit_model->get_final_submissions($this->user->selected_assignment['id'], $this->user->level, $this->user->username, $this->page_number, $this->filter_user, $this->filter_problem);
 
 		$names = $this->user_model->get_names();
-		$sum = 0;
+
 		$weight = 0;
+		foreach ($this->problems as $problem) {
+			$weight = $weight + $problem['weight'];
+		}
+		$sum = 0;
+		$final_grade = array();
+		$number_of_sub = array();
+
 		foreach ($submissions as &$item)
 		{
 			$item['name'] = $names[$item['username']];
@@ -329,14 +336,19 @@ class Submissions extends CI_Controller
 				$item['final_score'] = 0;
 			else
 				$item['final_score'] = ceil($item['pre_score']*$item['coefficient']/100);
-			$sum = $sum + $item['final_score']*$item['weight'];
-			$weight = $weight + $item['weight'];
+
+			if (isset($final_grade[$item['username']]))
+				$final_grade[$item['username']] = $final_grade[$item['username']] + ($item['final_score']*$item['weight']/100);
+			else
+				$final_grade[$item['username']] = ($item['final_score']*$item['weight']/100);
+
+			if (isset($number_of_sub[$item['username']])) {
+				$number_of_sub[$item['username']] = $number_of_sub[$item['username']] + 1;
+			}
+			else
+				$number_of_sub[$item['username']] = 1;
 		}
-		if ($weight != 0)
-			$final_grade = ($sum/$weight);
-		else
-			$final_grade = 0;
-			
+
 		$data = array(
 			'view' => 'final',
 			'all_assignments' => $this->assignment_model->all_assignments(),
@@ -350,7 +362,9 @@ class Submissions extends CI_Controller
 			'per_page' => $config['per_page'],
 			'show_final_grade'=> $this->show_final_grade,
 			'final_grade' => $final_grade,
+			'numberOfSub' => $number_of_sub,
 		);
+
 
 		$this->twig->display('pages/submissions.twig', $data);
 	}
