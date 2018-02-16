@@ -110,10 +110,14 @@
 	{% set i=0 %}
 	{% set j=0 %}
 	{% set un='' %}
+	{% set new = false %}
 	{% for submission in submissions %}
 		{% set i = i+1 %}
 		{% if submission.username != un %}
 			{% set j = j+1 %}
+			{% set new = true %}
+		{% else %}
+			{% set new = false %}
 		{% endif %}
 		{% set un = submission.username %}
 		<tr data-u="{{ submission.username }}" data-a="{{ submission.assignment }}" data-p="{{ submission.problem }}" data-s="{{ submission.submit_id }}" {% if view == 'final' and j is even %}class="hl"{% endif %}>
@@ -150,11 +154,11 @@
 			<td style="font-weight: bold;">{{ submission.final_score }} </td>
 
 			{% if user.level >= 2%}
-				{% if loop.index0 % numberOfSub[un] == 0 %}
+				{% if new == true %}
 			    <td rowspan="{{ numberOfSub[un] }}">{{ final_grade[un] }}</td>
 				{% endif %}
 			{% elseif show_final_grade == 1%}
-				{% if loop.index0 % numberOfSub[un] == 0 %}
+				{% if new == true %}
 					<td rowspan=" {{ numberOfSub[un] }}">{{ final_grade[un] }}</td>
 				{% endif %}
 			{% endif %}
