@@ -110,6 +110,7 @@ class Twig
  	 */
 	public function display($template, $data = array())
 	{
+		// merging param data and displayData
 		$data = array_merge($data, $this->displayData());
 		$template = $this->twig->loadTemplate($template);
 		$this->_ci->output->append_output($template->render($data));

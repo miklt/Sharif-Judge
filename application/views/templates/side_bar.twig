@@ -62,7 +62,7 @@
 			</a>
 		</li>
 
-		 {% if enable_scoreboard == 1 and user.level >= 2 %}
+		 {% if enable_scoreboard == 1 or user.level >= 2 %}
 		<li class="color-scoreboard{{ selected=='scoreboard' ? ' selected' }}">
 			<a href="{{ site_url('scoreboard') }}">
 				<i class="fa fa-star fa-lg"></i>

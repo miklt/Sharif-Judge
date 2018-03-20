@@ -90,8 +90,8 @@
 			</tr>
 		{% else %}
 				<th width="10%" rowspan="2">Problem</th>
-				<th width="5%" rowspan="2">Weight</th>
 				<th width="30%" rowspan="2">Submit Time</th>
+				<th width="5%" rowspan="2">Weight</th>
 				<th width="7%" colspan="3">Score</th>
 				{% if show_final_grade == 1 %}
 				<th width="3%" rowspan="2">Final Grade</th>
@@ -110,14 +110,14 @@
 	{% set i=0 %}
 	{% set j=0 %}
 	{% set un='' %}
-	{% set new = false %}
+	{% set new_user = false %}
 	{% for submission in submissions %}
 		{% set i = i+1 %}
 		{% if submission.username != un %}
 			{% set j = j+1 %}
-			{% set new = true %}
+			{% set new_user = true %}
 		{% else %}
-			{% set new = false %}
+			{% set new_user = false %}
 		{% endif %}
 		{% set un = submission.username %}
 		<tr data-u="{{ submission.username }}" data-a="{{ submission.assignment }}" data-p="{{ submission.problem }}" data-s="{{ submission.submit_id }}" {% if view == 'final' and j is even %}class="hl"{% endif %}>
@@ -154,11 +154,11 @@
 			<td style="font-weight: bold;">{{ submission.final_score }} </td>
 
 			{% if user.level >= 2%}
-				{% if new == true %}
+				{% if new_user == true %}
 			    <td rowspan="{{ numberOfSub[un] }}">{{ final_grade[un] }}</td>
 				{% endif %}
 			{% elseif show_final_grade == 1%}
-				{% if new == true %}
+				{% if new_user == true %}
 					<td rowspan=" {{ numberOfSub[un] }}">{{ final_grade[un] }}</td>
 				{% endif %}
 			{% endif %}
