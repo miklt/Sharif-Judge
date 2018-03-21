@@ -94,6 +94,7 @@ class Twig
 	 public function displayData()
 	 {
 		 $data = array();
+		 $data['SHJ_VERSION'] = SHJ_VERSION;
 		 $data['enable_scoreboard'] = $this->_ci->settings_model->get_setting('enable_scoreboard');
 		 return $data;
 	 }
@@ -138,7 +139,6 @@ class Twig
 	 */
 	public function ci_function_init()
 	{
-		$this->twig->addGlobal('SHJ_VERSION', SHJ_VERSION);
 
 		/* Functions */
 		$this->twig->addFunction('base_url', new Twig_Function_Function('base_url', array('is_safe' => array('html'))));

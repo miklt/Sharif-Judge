@@ -1,94 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="CodeIgniter Application Test Suite" tests="3" assertions="3" errors="0" failures="0" skipped="0" time="0.729968">
-    <testsuite name="Welcome_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Welcome_test.php" tests="3" assertions="3" errors="0" failures="0" skipped="0" time="0.729968">
-      <testcase name="test_index" class="Welcome_test" classname="Welcome_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Welcome_test.php" line="13" assertions="1" time="0.705712"/>
-      <testcase name="test_method_404" class="Welcome_test" classname="Welcome_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Welcome_test.php" line="19" assertions="1" time="0.022923">
-        <system-out>
-A PHP Error was encountered
-
-Severity: NoticeMessage:  Use of undefined constant SHJ_VERSION - assumed 'SHJ_VERSION'Filename: /var/www/html/Sharif-Judge/application/libraries/Twig.phpLine Number: 141
-
-Backtrace:
-			
-			
-			
-	File: /var/www/html/Sharif-Judge/application/libraries/Twig.php	Line: 141	Function: _error_handler
-		
-			
-	File: /var/www/html/Sharif-Judge/application/libraries/Twig.php	Line: 73	Function: ci_function_init
-		
-			
-	File: /var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/replacing/core/Loader.php	Line: 1346	Function: __construct
-		
-			
-	File: /var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/replacing/core/Loader.php	Line: 1130	Function: _ci_init_library
-		
-			
-	File: /var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/replacing/core/Loader.php	Line: 226	Function: _ci_load_library
-		
-			
-	File: /var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/replacing/core/Loader.php	Line: 210	Function: library
-		
-			
-	File: /var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/replacing/core/Loader.php	Line: 1423	Function: library
-		
-			
-	File: /var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/replacing/core/Loader.php	Line: 161	Function: _ci_autoloader
-		
-			
-			
-	File: /var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/CIPHPUnitTest.php	Line: 99	Function: __construct
-		
-			
-	File: /var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/CIPHPUnitTestRouter.php	Line: 63	Function: createCodeIgniterInstance
-		
-			
-	File: /var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/CIPHPUnitTestRequest.php	Line: 267	Function: getRoute
-		
-			
-	File: /var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/CIPHPUnitTestRequest.php	Line: 151	Function: requestUri
-		
-			
-	File: /var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/CIPHPUnitTestCase.php	Line: 183	Function: request
-		
-			
-	File: /var/www/html/Sharif-Judge/application/tests/controllers/Welcome_test.php	Line: 21	Function: request
-		
-			
-			
-	File: phar:///usr/local/bin/phpunit/phpunit/Framework/TestCase.php	Line: 1071	Function: invokeArgs
-		
-			
-	File: phar:///usr/local/bin/phpunit/phpunit/Framework/TestCase.php	Line: 939	Function: runTest
-		
-			
-	File: phar:///usr/local/bin/phpunit/phpunit/Framework/TestResult.php	Line: 698	Function: runBare
-		
-			
-	File: phar:///usr/local/bin/phpunit/phpunit/Framework/TestCase.php	Line: 894	Function: run
-		
-			
-	File: phar:///usr/local/bin/phpunit/phpunit/Framework/TestSuite.php	Line: 744	Function: run
-		
-			
-	File: phar:///usr/local/bin/phpunit/phpunit/Framework/TestSuite.php	Line: 744	Function: run
-		
-			
-	File: phar:///usr/local/bin/phpunit/phpunit/TextUI/TestRunner.php	Line: 537	Function: run
-		
-			
-	File: phar:///usr/local/bin/phpunit/phpunit/TextUI/Command.php	Line: 195	Function: doRun
-		
-			
-	File: phar:///usr/local/bin/phpunit/phpunit/TextUI/Command.php	Line: 148	Function: run
-		
-			
-	File: /usr/local/bin/phpunit	Line: 566	Function: main
-		
-	</system-out>
-      </testcase>
-      <testcase name="test_APPPATH" class="Welcome_test" classname="Welcome_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Welcome_test.php" line="25" assertions="1" time="0.001333"/>
+  <testsuite name="CodeIgniter Application Test Suite" tests="8" assertions="8" errors="0" failures="0" skipped="0" time="0.926885">
+    <testsuite name="Assignments_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Assignments_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.185521">
+      <testcase name="test_index" class="Assignments_test" classname="Assignments_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Assignments_test.php" line="13" assertions="1" time="0.185521"/>
+    </testsuite>
+    <testsuite name="Dashboard_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Dashboard_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.130811">
+      <testcase name="test_index" class="Dashboard_test" classname="Dashboard_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Dashboard_test.php" line="13" assertions="1" time="0.130811"/>
+    </testsuite>
+    <testsuite name="Login_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Login_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.027180">
+      <testcase name="test_index" class="Login_test" classname="Login_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Login_test.php" line="13" assertions="1" time="0.027180"/>
+    </testsuite>
+    <testsuite name="Notifications_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Notifications_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.115661">
+      <testcase name="test_index" class="Notifications_test" classname="Notifications_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Notifications_test.php" line="13" assertions="1" time="0.115661"/>
+    </testsuite>
+    <testsuite name="Problems_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Problems_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.112987">
+      <testcase name="test_index" class="Problems_test" classname="Problems_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Problems_test.php" line="13" assertions="1" time="0.112987"/>
+    </testsuite>
+    <testsuite name="Submissions_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Submissions_test.php" tests="2" assertions="2" errors="0" failures="0" skipped="0" time="0.234289">
+      <testcase name="test_final" class="Submissions_test" classname="Submissions_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Submissions_test.php" line="13" assertions="1" time="0.120982"/>
+      <testcase name="test_all" class="Submissions_test" classname="Submissions_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Submissions_test.php" line="20" assertions="1" time="0.113307"/>
+    </testsuite>
+    <testsuite name="Submit_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Submit_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.120437">
+      <testcase name="test_index" class="Submit_test" classname="Submit_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Submit_test.php" line="13" assertions="1" time="0.120437"/>
     </testsuite>
   </testsuite>
 </testsuites>
