@@ -12,13 +12,13 @@ class Assignments_test extends TestCase
 {
 	public function test_index()
 	{
-        $this->login();
+        $this->login('aluno', '123456');
         $output = $this->request('GET','assignments');
 		$this->assertContains('<title>Assignments - Sharif Judge</title>', $output);
 	}   
 
-    public function login() {
-        $output = $this->request('POST','login', ['username' => 'aluno', 'password' => '123456']);
+    public function login($username, $password) {
+        $output = $this->request('POST','login', ['username' => $username, 'password' => $password]);
     }
 
 }

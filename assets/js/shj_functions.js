@@ -435,6 +435,8 @@ $(document).ready(function(){
 			]
 		});
 	});
+
+	
 	$('.delete_submissions').click(function(){
 		var row = $(this).parents('tr');
 		var user_id = row.data('id');
@@ -484,4 +486,42 @@ $(document).ready(function(){
  */
 $(document).ready(function(){
 	$('input').attr('dir', 'auto');
+});
+
+
+/* All Submissions */
+
+
+$(document).ready(function(){
+
+
+	function reloadtable() {
+		$("#sub-table").load(shj.site_url + "submissions/all" + " #sub-table");
+		console.log("I just reloaded");
+	}
+
+	function checkForPending() {
+		let flag = false;
+		$("tr.sub-info").each(function() {
+		var text = $(this).find("td.status").text();
+		if (text.trim() == 'PENDING') {
+			flag = true;
+		}
+		});
+		return flag;
+	}
+
+	if (checkForPending()) {
+		let refresher = setInterval(reloadtable, 2000);
+		setTimeout(function(){
+			if (!checkForPending()) {
+				clearInterval(refresher);
+			}
+		}
+	,20000)
+	}
+
+
+
+
 });

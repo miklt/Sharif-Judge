@@ -14,7 +14,7 @@ class Problems_test extends TestCase
 	{
         $this->login();
         $output = $this->request('GET','problems');
-		$this->assertContains('<title>Problem 1 - Sharif Judge</title>', $output);
+		$this->assertContains('<table class="sharif_table">', $output);
 	}
 
     public function login() {

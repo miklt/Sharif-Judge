@@ -43,7 +43,7 @@ class Assignments extends CI_Controller
 		foreach ($data['all_assignments'] as &$item)
 		{
 			$extra_time = $item['extra_time'];
-			$delay = shj_now()-strtotime($item['finish_time']);;
+			$delay = shj_now()-strtotime($item['finish_time']);
 			ob_start();
 			if ( eval($item['late_rule']) === FALSE )
 				$coefficient = "error";
@@ -280,7 +280,6 @@ class Assignments extends CI_Controller
 					return;
 				//}
 			}
-
 		$data = array(
 			'all_assignments' => $this->assignment_model->all_assignments(),
 			'messages' => $this->messages,
@@ -313,7 +312,7 @@ class Assignments extends CI_Controller
 						'diff_cmd' => 'diff',
 						'diff_arg' => '-bB',
 						'is_upload_only' => 0,
-						'weight' => 5
+						'weight' => 100
 					)
 				);
 			else
