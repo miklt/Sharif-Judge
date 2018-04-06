@@ -1,35 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="CodeIgniter Application Test Suite" tests="9" assertions="8" errors="0" failures="1" skipped="0" time="1.112946">
-    <testsuite name="Assignments_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Assignments_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.188497">
-      <testcase name="test_index" class="Assignments_test" classname="Assignments_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Assignments_test.php" line="13" assertions="1" time="0.188497"/>
+  <testsuite name="CodeIgniter Application Test Suite" tests="8" assertions="8" errors="0" failures="0" skipped="0" time="2.435073">
+    <testsuite name="Assignments_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Assignments_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.865673">
+      <testcase name="test_index" class="Assignments_test" classname="Assignments_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Assignments_test.php" line="13" assertions="1" time="0.865673"/>
     </testsuite>
-    <testsuite name="Dashboard_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Dashboard_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.154818">
-      <testcase name="test_index" class="Dashboard_test" classname="Dashboard_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Dashboard_test.php" line="13" assertions="1" time="0.154818"/>
+    <testsuite name="Dashboard_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Dashboard_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.380369">
+      <testcase name="test_index" class="Dashboard_test" classname="Dashboard_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Dashboard_test.php" line="13" assertions="1" time="0.380369"/>
     </testsuite>
-    <testsuite name="Login_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Login_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.036604">
-      <testcase name="test_index" class="Login_test" classname="Login_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Login_test.php" line="13" assertions="1" time="0.036604"/>
+    <testsuite name="Login_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Login_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.028277">
+      <testcase name="test_index" class="Login_test" classname="Login_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Login_test.php" line="13" assertions="1" time="0.028277"/>
     </testsuite>
-    <testsuite name="Notifications_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Notifications_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.138179">
-      <testcase name="test_index" class="Notifications_test" classname="Notifications_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Notifications_test.php" line="13" assertions="1" time="0.138179"/>
+    <testsuite name="Notifications_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Notifications_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.137810">
+      <testcase name="test_index" class="Notifications_test" classname="Notifications_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Notifications_test.php" line="13" assertions="1" time="0.137810"/>
     </testsuite>
-    <testsuite name="Problems_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Problems_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.226119">
-      <testcase name="test_index" class="Problems_test" classname="Problems_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Problems_test.php" line="13" assertions="1" time="0.226119"/>
+    <testsuite name="Problems_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Problems_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.337920">
+      <testcase name="test_index" class="Problems_test" classname="Problems_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Problems_test.php" line="13" assertions="1" time="0.337920"/>
     </testsuite>
-    <testsuite name="Submissions_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Submissions_test.php" tests="2" assertions="2" errors="0" failures="0" skipped="0" time="0.257108">
-      <testcase name="test_final" class="Submissions_test" classname="Submissions_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Submissions_test.php" line="13" assertions="1" time="0.132219"/>
-      <testcase name="test_all" class="Submissions_test" classname="Submissions_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Submissions_test.php" line="20" assertions="1" time="0.124889"/>
+    <testsuite name="Submissions_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Submissions_test.php" tests="2" assertions="2" errors="0" failures="0" skipped="0" time="0.513049">
+      <testcase name="test_final" class="Submissions_test" classname="Submissions_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Submissions_test.php" line="13" assertions="1" time="0.374150"/>
+      <testcase name="test_all" class="Submissions_test" classname="Submissions_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Submissions_test.php" line="20" assertions="1" time="0.138899"/>
     </testsuite>
-    <testsuite name="Submit_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Submit_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.110621">
-      <testcase name="test_index" class="Submit_test" classname="Submit_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Submit_test.php" line="13" assertions="1" time="0.110621"/>
-    </testsuite>
-    <testsuite name="Assignment_model_test" file="/var/www/html/Sharif-Judge/application/tests/models/Assignments_model_test.php" tests="1" assertions="0" errors="0" failures="1" skipped="0" time="0.001000">
-      <testcase name="Warning" assertions="0" time="0.001000">
-        <warning type="PHPUnit\Framework\Warning">Warning
-No tests found in class "Assignment_model_test".
-
-</warning>
-      </testcase>
+    <testsuite name="Submit_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Submit_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.171975">
+      <testcase name="test_index" class="Submit_test" classname="Submit_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Submit_test.php" line="13" assertions="1" time="0.171975"/>
     </testsuite>
   </testsuite>
 </testsuites>
