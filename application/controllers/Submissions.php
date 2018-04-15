@@ -492,6 +492,19 @@ class Submissions extends CI_Controller
 		echo json_encode($json_result);
 	}
 
+	public function update_row() {
+		if ( ! $this->input->is_ajax_request() )
+			show_404();
+		$username = $this->input->post('username');
+		$assignment = $this->input->post('assignment');
+		$problem = $this->input->post('problem');
+		$submit_id = $this->input->post('sub_id');
+		$res = $this->submit_model->get_submission($username, $assignment, $problem, $submit_id);	
+		echo json_encode($res);
+
+	}
+
+
 
 
 

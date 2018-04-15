@@ -140,7 +140,7 @@
 			<td><a href="{{ site_url('submissions/'~view~(filter_user?'/user/'~filter_user)~'/problem/'~submission.problem) }}" title="{{ problems[submission.problem].name }}">{{ submission.problem }}</a></td>
 			<td>{{ submission.weight }}</td>
 			<td>{{ submission.time}}</td>
-			<td>{{ submission.pre_score }}</td>
+			<td class='score-td'>{{ submission.pre_score }}</td>
 			<td>
 				<span class="tiny_text" {{ submission.delay > 0 ? 'style="color:red;"' }}>
 				{% if submission.delay <= 0 %}
@@ -151,7 +151,7 @@
 				</span><br>
 				{{ submission.coefficient }}%
 			</td>
-			<td style="font-weight: bold;">{{ submission.final_score }} </td>
+			<td class='final-score-td' style="font-weight: bold;">{{ submission.final_score }} </td>
 
 			{% if user.level >= 2 and view == 'final'%}
 				{% if new_user == true %}
