@@ -4,6 +4,11 @@
  * @file Submit.php
  * @author Mohammad Javad Naderi <mjnaderi@gmail.com>
  */
+
+
+// Conferir o arquivo que o aluno manda?
+
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Submit extends CI_Controller
@@ -167,6 +172,11 @@ class Submit extends CI_Controller
 		$this->filetype = $this->_language_to_type(strtolower(trim($this->input->post('language'))));
 		$this->ext = substr(strrchr($_FILES['userfile']['name'],'.'),1); // uploaded file extension
 		$this->file_name = basename($_FILES['userfile']['name'], ".{$this->ext}"); // uploaded file name without extension
+
+		$username = $this->user->username;
+		$numberofSubs = $this->user->selected_assignment['total_submits']+1;
+		$new_file_name = $username."_".$numberofSubs;
+
 		if ( $this->queue_model->in_queue($this->user->username,$this->user->selected_assignment['id'], $this->problem['id']) )
 			show_error('You have already submitted for this problem. Your last submission is still in queue.');
 		if ($this->user->level==0 && !$this->user->selected_assignment['open'])
@@ -198,7 +208,7 @@ class Submit extends CI_Controller
 		$config['upload_path'] = $user_dir;
 		$config['allowed_types'] = '*';
 		$config['max_size']	= $this->settings_model->get_setting('file_size_limit');
-		$config['file_name'] = $this->file_name."-".($this->user->selected_assignment['total_submits']+1).".".$this->ext;
+		$config['file_name'] = $new_file_name.".".$this->ext;
 		$config['max_file_name'] = 20;
 		$config['remove_spaces'] = TRUE;
 		$this->upload->initialize($config);
