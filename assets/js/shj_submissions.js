@@ -150,7 +150,10 @@ $(document).ready(function(){
 			dataType: 'json',
 			success: function(result) {
 				if (result.status == 'PENDING') {
-					getAjaxResponse(result.username, result.assignment, result.problem, result.submit_id);
+					setTimeout(() => {
+						getAjaxResponse(result.username, result.assignment, result.problem, result.submit_id);
+					}, 2000);
+					console.log("Made a request");
 				}
 
 				else {

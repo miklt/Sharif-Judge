@@ -6,8 +6,6 @@
  */
 
 
-// Conferir o arquivo que o aluno manda?
-
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
