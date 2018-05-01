@@ -138,8 +138,8 @@
 			<td dir="auto">{{ submission.name }}</td>
 		{% endif %}
 			<td><a href="{{ site_url('submissions/'~view~(filter_user?'/user/'~filter_user)~'/problem/'~submission.problem) }}" title="{{ problems[submission.problem].name }}">{{ submission.problem }}</a></td>
-			<td>{{ submission.weight }}</td>
 			<td>{{ submission.time}}</td>
+			<td>{{ submission.weight }}</td>
 			<td class='score-td'>{{ submission.pre_score }}</td>
 			<td>
 				<span class="tiny_text" {{ submission.delay > 0 ? 'style="color:red;"' }}>
@@ -170,6 +170,7 @@
 				{% if submission.status == 'Uploaded' %}
 					Uploaded
 				{% else %}
+
 					{% if submission.status|lower == 'pending' %}
 						{% set submission_class = 'btn' %}
 					{% elseif submission.status|lower == 'score' %}
@@ -180,10 +181,12 @@
 					<div class="{{ submission_class }}" data-type="result" >
 						{% if submission.status == 'SCORE' %}
 							{{ submission.final_score }}
+							</div>
 						{% else %}
 							{{ submission.status }}
+							</div>
+							<div class='tiny_text_b'></div>
 						{% endif %}
-					</div>
 				{% endif %}
 			</td>
 			<td>

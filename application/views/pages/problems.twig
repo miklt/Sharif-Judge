@@ -96,12 +96,18 @@ $(document).ready(function(){
 		<input type="hidden" name="problem" value="{{ problem.id }}"/>
 
 		<p class="input_p">
-			<select id="languages" name="language" class="sharif_input full-width">
-				<option value="0" selected="selected">-- Select Language --</option>
-				{% for l in problem.allowed_languages %}
-					<option value="{{ l }}">{{ l }}</option>
-				{% endfor %}
-			</select>
+			{% if problem.allowed_languages|length > 1%}
+				<select id="languages" name="language" class="sharif_input full-width">
+					<option value="0" selected="selected">-- Select Language --</option>
+					{% for l in problem.allowed_languages %}
+						<option value="{{ l }}">{{ l }}</option>
+					{% endfor %}
+				</select>
+			{% else %}
+				<select id="languages" name="language" class="sharif_input full-width">
+					<option value="{{problem.allowed_languages[0]}}" selected="selected">{{problem.allowed_languages[0]}}</option>
+			{% endif %}
+
 		</p>
 		<p class="input_p">
 			<input type="file" id="file" class="sharif_input full-width" name="userfile"/>

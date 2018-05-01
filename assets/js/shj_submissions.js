@@ -124,13 +124,14 @@ $(document).ready(function(){
 	function checkForPending() {
 		let arr = []
 		$("tr.sub-info").each(function() {
-		var text = $(this).find("td.status").text();
+		var text = $(this).find("td.status div:first-child").text();
 		if (text.trim() == 'PENDING') {
 			var sub_id = $(this).attr('data-s');
 			var username = $(this).attr('data-u');
 			var problem = $(this).attr('data-p');
 			var assignment = $(this).attr('data-a');
 			arr.push([username, assignment, problem, sub_id]);
+			put_position(username, assignment, problem, sub_id);
 		}
 		});
 		return arr;
@@ -150,28 +151,42 @@ $(document).ready(function(){
 			dataType: 'json',
 			success: function(result) {
 				if (result.status == 'PENDING') {
-					setTimeout(() => {
-						getAjaxResponse(result.username, result.assignment, result.problem, result.submit_id);
-					}, 2000);
-					console.log("Made a request");
-				}
 
+					setTimeout(() => {
+						update_positions(checkForPending());
+						getAjaxResponse(result.username, result.assignment, result.problem, result.submit_id);
+					}, 1000);
+
+				}
 				else {
 					if (result.status == 'SCORE') {
 						/* Get the button, the final score, and score with jquery and
 						 	change it to the ajax response */
 
 						var final_score = Math.ceil(result.pre_score*parseInt(result.coefficient)/10000);
+						console.log(final_score);
 
-						var button = $("tr[data-u='" + result.username +"'][data-a='" + result.assignment +"'][data-p='" + result.problem +"'][data-s='" + result.submit_id +"']").find("td.status").children('div.btn');
-						button.addClass('shj-green');
+						if (final_score <= 50) {
 
+							var button = $("tr[data-u='" + result.username +"'][data-a='" + result.assignment +"'][data-p='" + result.problem +"'][data-s='" + result.submit_id +"']").find("td.status").children('div.btn');
+							button.addClass('shj-red');
+						}
+
+						else {
+							var button = $("tr[data-u='" + result.username +"'][data-a='" + result.assignment +"'][data-p='" + result.problem +"'][data-s='" + result.submit_id +"']").find("td.status").children('div.btn');
+							button.addClass('shj-green');
+						}
 						button.text(final_score);
+
 						var final_score_td = $("tr[data-u='" + result.username +"'][data-a='" + result.assignment +"'][data-p='" + result.problem +"'][data-s='" + result.submit_id +"']").find("td.final-score-td");
 						final_score_td.text(final_score);
 
 						var score = $("tr[data-u='" + result.username +"'][data-a='" + result.assignment +"'][data-p='" + result.problem +"'][data-s='" + result.submit_id +"']").find("td.score-td");
 						score.text(result.pre_score/100);
+
+						var position_in_queue = $("tr[data-u='" + result.username +"'][data-a='" + result.assignment +"'][data-p='" + result.problem +"'][data-s='" + result.submit_id +"']").find("td.status div:last-child").remove();
+
+						update_positions(checkForPending());
 						
 						if (result.is_final == 1) {
 							/* if the submission is final, unmark the previous final
@@ -187,7 +202,7 @@ $(document).ready(function(){
 						var button = $("tr[data-u='" + result.username +"'][data-a='" + result.assignment +"'][data-p='" + result.problem +"'][data-s='" + result.submit_id +"']").find("td.status").children('div.btn');
 						button.addClass('shj-blue');
 						button.text("Compilation Error");
-						console.log(result);
+						var position_in_queue = $("tr[data-u='" + result.username +"'][data-a='" + result.assignment +"'][data-p='" + result.problem +"'][data-s='" + result.submit_id +"']").find("td.status div:last-child").remove();	
 
 					}
 				}
@@ -195,13 +210,36 @@ $(document).ready(function(){
 		});
 	}
 
+	function update_positions(array) {
+		for(var i = 0; i < array.length; i++) {
+			put_position(array[i][0],array[i][1], array[i][2], array[i][3]);
+		}
+	}
 
 	function update_table(sub_array){
 		for (var i = 0; i < sub_array.length; i++) {
 			getAjaxResponse(sub_array[i][0], sub_array[i][1], sub_array[i][2],sub_array[i][3]);
 		}
 	}
-	
-	
+
+	function put_position(username, assignment, problem, sub_id) {
+		var request = $.ajax({
+			type: 'POST',
+			url: shj.site_url + 'queue/get_position_in_queue',
+			data: {
+				sub_id: sub_id,
+				shj_csrf_token: shj.csrf_token
+			},
+			success: function (result) {
+				if (result == '-1') {
+				}
+				else {
+					var position = $("tr[data-u='" + username +"'][data-a='" + assignment +"'][data-p='" + problem +"'][data-s='" + sub_id +"']").find("td.status div:last-child");
+					position.text("Position " + result + " in queue.");
+				}
+			}
+		});
+	}
+
 	update_table(checkForPending());
 });

@@ -15,8 +15,8 @@ class Queue extends CI_Controller
 		parent::__construct();
 		if ( ! $this->session->userdata('logged_in')) // if not logged in
 		redirect('login');
-		if ( $this->user->level <= 1) // permission denied
-			show_404();
+/* 		if ( $this->user->level <= 1) // permission denied
+			show_404(); */
 		$this->load->model('queue_model');
 	}
 
@@ -26,13 +26,15 @@ class Queue extends CI_Controller
 
 	public function index()
 	{
-
+		if ( ! $this->session->userdata('logged_in')) // if not logged in
+		redirect('login');
+		if ( $this->user->level <= 1) // permission denied
+			show_404();
 		$data = array(
 			'all_assignments' => $this->assignment_model->all_assignments(),
 			'queue' => $this->queue_model->get_queue(),
 			'working' => $this->settings_model->get_setting('queue_is_working')
 		);
-
 		$this->twig->display('pages/admin/queue.twig', $data);
 	}
 
@@ -71,4 +73,15 @@ class Queue extends CI_Controller
 		$this->queue_model->empty_queue();
 		echo 'success';
 	}
+
+	public function get_position_in_queue() {
+		if ( ! $this->input->is_ajax_request() )
+			show_404();
+		$submission_id = $this->input->post('sub_id');
+		$position = $this->queue_model->get_position_in_queue($submission_id);
+		if ($position != -1) {
+			return $position;
+		}
+	}
+
 }
