@@ -138,8 +138,8 @@
 			<td dir="auto">{{ submission.name }}</td>
 		{% endif %}
 			<td><a href="{{ site_url('submissions/'~view~(filter_user?'/user/'~filter_user)~'/problem/'~submission.problem) }}" title="{{ problems[submission.problem].name }}">{{ submission.problem }}</a></td>
-			<td>{{ submission.time}}</td>
 			<td>{{ submission.weight }}</td>
+			<td>{{ submission.time}}</td>
 			<td class='score-td'>{{ submission.pre_score }}</td>
 			<td>
 				<span class="tiny_text" {{ submission.delay > 0 ? 'style="color:red;"' }}>

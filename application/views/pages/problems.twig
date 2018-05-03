@@ -104,8 +104,8 @@ $(document).ready(function(){
 					{% endfor %}
 				</select>
 			{% else %}
-				<select id="languages" name="language" class="sharif_input full-width">
-					<option value="{{problem.allowed_languages[0]}}" selected="selected">{{problem.allowed_languages[0]}}</option>
+				{{problem.allowed_languages[0]}}
+				<input type="hidden" name="language" value="{{problem.allowed_languages[0]}}">
 			{% endif %}
 
 		</p>
