@@ -227,15 +227,11 @@ class Queue_model extends CI_Model
 	if the submission is not there returns -1 */
 	public function get_position_in_queue($submission_id) {
 		$queue = $this->queue_model->get_queue();
-		$isinQueue = false;
 		for ($i = 0; $i < sizeof($queue); $i++) {
 			if ($queue[$i]['submit_id'] == $submission_id) {
-				echo($i + 1);
-				$isInQueue = true;
+				return ($i + 1);
 			}
-		}
-		if ($isinQueue) {
-			echo('-1');
-		}
+	}
+	return -1;
 	}
 }

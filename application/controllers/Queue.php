@@ -79,9 +79,7 @@ class Queue extends CI_Controller
 			show_404();
 		$submission_id = $this->input->post('sub_id');
 		$position = $this->queue_model->get_position_in_queue($submission_id);
-		if ($position != -1) {
-			return $position;
-		}
+		echo $position;
 	}
 
 }

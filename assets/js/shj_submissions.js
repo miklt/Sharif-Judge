@@ -164,18 +164,18 @@ $(document).ready(function(){
 						 	change it to the ajax response */
 
 						var final_score = Math.ceil(result.pre_score*parseInt(result.coefficient)/10000);
-						console.log(final_score);
 
+						var button;
 						if (final_score <= 50) {
-
-							var button = $("tr[data-u='" + result.username +"'][data-a='" + result.assignment +"'][data-p='" + result.problem +"'][data-s='" + result.submit_id +"']").find("td.status").children('div.btn');
+							button = $("tr[data-u='" + result.username +"'][data-a='" + result.assignment +"'][data-p='" + result.problem +"'][data-s='" + result.submit_id +"']").find("td.status").children('div.btn');
 							button.addClass('shj-red');
 						}
 
 						else {
-							var button = $("tr[data-u='" + result.username +"'][data-a='" + result.assignment +"'][data-p='" + result.problem +"'][data-s='" + result.submit_id +"']").find("td.status").children('div.btn');
+							button = $("tr[data-u='" + result.username +"'][data-a='" + result.assignment +"'][data-p='" + result.problem +"'][data-s='" + result.submit_id +"']").find("td.status").children('div.btn');
 							button.addClass('shj-green');
 						}
+
 						button.text(final_score);
 
 						var final_score_td = $("tr[data-u='" + result.username +"'][data-a='" + result.assignment +"'][data-p='" + result.problem +"'][data-s='" + result.submit_id +"']").find("td.final-score-td");
