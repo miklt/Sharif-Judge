@@ -1,0 +1,97 @@
+{#
+ # Sharif Judge
+ # file: classes.twig
+ # @author Pedro Viganó da Silva Santos <pedro.vigano.santos@usp.br> #}
+{% set selected = 'classes' %}
+{% extends 'templates/base.twig' %}
+{% block icon %}fa-users{% endblock %}
+{% block title %}Classes{% endblock %}
+{% block head_title %}Classes{% endblock %}
+
+{% block title_menu %}
+	<span class="title_menu_item"><a href="https://github.com/mjnaderi/Sharif-Judge/blob/docs/v1.4/users.md" target="_blank"><i class="fa fa-question-circle color6"></i> Help</a></span>
+	{% if user.level >= 2 %}
+		<span class="title_menu_item"><a href="{{ site_url('classes/add') }}"><i class="fa fa-plus color11"></i> Add Class</a></span>
+	{% endif %}
+{% endblock %}
+
+{% block main_content %}
+{#Alerta quando deletar a classe#}
+<script type="text/javascript">
+function confirm_alert(node) {
+    return confirm("Are you sure you want to delete this class? Please, click on OK to confirm.");
+}
+</script>
+
+{% if user.level > 0 %}
+{# Botão para seleção das classes de acordo com o usuário#}
+{{ form_open('classes/selection') }}
+		<p class="input_p">
+				<select onchange="this.form.submit()" id="class_selection" name="class_selection" class="sharif_input">
+					<option id="all_classes" {{ class_selection == 0 ? 'selected="selected"' }} value="0">
+					All classes</option>
+					<option id="my_classes" {{ class_selection == 1 ? 'selected="selected"' }} value="1">
+					My classes</option>
+				</select>
+		</p><br>
+</form>
+{% endif %}
+
+
+<div style="height:15px"></div>
+
+<table class="sharif_table" id="table_classes">
+	<thead>
+		<tr>
+			<th>Class Name</th>
+			<th>Day</th>
+			<th>Starting Time</th>
+			<th>Ending Time</th>
+			<th>Classroom</th>
+			<th>Teachers</th>
+			<th>Assistants</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	{# Conteúdo da linha da sala #}
+	{% for class in classes %}
+		{#{% if sortClasses == 0 %}#}
+			<tr data-id="{{ class.id }}">
+				<td>{{ class.class_name }}</td>
+				<td>
+				{% if class.day == '1' %} Sunday
+				{% elseif class.day == '2' %} Monday
+				{% elseif class.day == '3' %} Tuesday
+				{% elseif class.day == '4' %} Wednesday
+				{% elseif class.day == '5' %} Thursday
+				{% elseif class.day == '6' %} Friday
+				{% elseif class.day == '7' %} Saturday
+				{% endif %}
+				</td>
+				<td>{{ class.time_start }}</td>
+				<td>{{ class.time_end }}</td>
+				<td>{{ class.classroom }}</td>
+				<td>
+				{% for teacher in class.teachers %}
+					{{ teacher }}<br>
+				{% endfor %}
+				</td>
+				<td>
+				{% for assistant in class.assistants %}
+					{{ assistant }}<br>
+				{% endfor %}
+				</td>
+
+				<td> {# Actions realizadas sobre o usuário #}
+					{% if user.level >= 2 %}
+						<a title="Edit" href="{{ site_url('classes/edit/'~class.class_id) }}"><i class="fa fa-pencil fa-lg color9"></i></a>
+						<a title="Delete" href="{{ site_url('classes/delete/'~class.class_id) }}" onclick="return confirm_alert(this)" ><i class="fa fa-times fa-lg color2"></i></a>
+					{% endif %}
+					<a title="View Class" href="{{ site_url('classes/displayClass/'~class.class_id) }}"><i class="fa fa-eye fa-lg color9"></i></a>
+				</td>
+			</tr>
+	{% endfor %}
+</table>
+<br>
+
+{% endblock %}  {# main_content #}

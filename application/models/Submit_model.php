@@ -169,4 +169,21 @@ class Submit_model extends CI_Model {
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
+	/**
+		 * Export submissions as a CSV file 
+		 *
+		 *
+		 * @return $mixed
+		 */
+		public function exportSubmissions_csv()
+		{
+			$this->load->dbutil();
+			$querySubmissions = $this->db->query("SELECT * FROM shj_submissions");
+			return $this->dbutil->csv_from_result($querySubmissions);
+		}
+
+
 }

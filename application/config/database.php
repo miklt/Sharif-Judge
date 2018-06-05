@@ -83,11 +83,11 @@ $db['default'] = array(
 	'dsn'	=> '',
 
 	/*  Enter database connection settings here:  */
-	'dbdriver' => 'mysqli',     // database driver (mysqli, postgre)
+	'dbdriver' => 'postgre',     // database driver (mysqli, postgre)
 	'hostname' => 'localhost',  // database host
-	'username' => '',           // database username
-	'password' => '',           // database password
-	'database' => '',           // database name
+	'username' => 'pedrovigano',           // database username
+	'password' => 'manaca',           // database password
+	'database' => 'Judge',           // database name
 	'dbprefix' => 'shj_',       // table prefix
 	/**********************************************/
 

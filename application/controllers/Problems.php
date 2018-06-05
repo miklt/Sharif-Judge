@@ -104,7 +104,7 @@ class Problems extends CI_Controller
       OR shj_now() > strtotime($assignment['finish_time'])+$assignment['extra_time'] // deadline = finish_time + extra_time
       OR ! $this->assignment_model->is_participant($assignment['participants'], $this->user->username)
     )
-      $data['can_submit'] = FALSE;
+      $data['can_submit'] = FALSE;	
 	  $this->twig->display('pages/problems.twig', $data);
 	}
 

@@ -49,7 +49,6 @@
 		$("#add").click(function(){
 			$('#problems_table>tbody').append(shj.row.replace(/PID/g, (shj.num_of_problems+1)));
 			shj.num_of_problems++;
-			$('#nop').attr('value', shj.num_of_problems);
 		});
 		$(document).on('click', '.delete_problem', function(){
 			if (shj.num_of_problems==1) return;
@@ -128,6 +127,17 @@
 				Only these users are able to submit. You can use keyword "ALL".</span>
 		</label>
 		<textarea id="form_participants" name="participants" rows="5" class="sharif_input medium">{{ edit ? edit_assignment.participants : set_value('participants', 'ALL') }}</textarea>
+	</p>
+	<p class="input_p clear">
+		<label for="form_Classes">Classes<br>
+			<span class="form_comment">Select here all classes that are attending to this assigment. To select multiple classes, press Ctrl.</span>
+		</label>
+		<select name="classes[]" multiple class="sharif_input medium">
+			{% for class in classes %}
+				<option value="{{class.class_id}}" {{ (class.class_id in edit_assignment.classes_selected) ? 'selected="selected"' }}>{{class.class_name}}</option>
+			{% endfor %}
+		</select>
+		{{ week_start == 1 ? 'selected="selected"' }}
 	</p>
 	<p class="input_p clear">
 		<label for="form_tests_desc">Tests and Descriptions (zip file)<br>

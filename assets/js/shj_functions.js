@@ -435,6 +435,7 @@ $(document).ready(function(){
 			]
 		});
 	});
+
 	$('.delete_submissions').click(function(){
 		var row = $(this).parents('tr');
 		var user_id = row.data('id');

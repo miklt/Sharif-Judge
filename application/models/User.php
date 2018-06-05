@@ -10,8 +10,8 @@ class User extends CI_Model
 {
 
 	public $username;
-	public $selected_assignment;
-	public $level;
+	public $selected_assignment; // Vetor com os dados do assignment cujo ID seja correspondente ao valor de "selected_assignment" da tabela usuário.
+	public $level; // Número correspondente ao "role" do usuário logado.
 	public $email;
 
 
@@ -20,16 +20,17 @@ class User extends CI_Model
 		parent::__construct();
 		$this->username = $this->session->userdata('username');
 		if ($this->username === NULL)
-			return;
+			return; // Salva o nome do usuário logado em username.
 
 		$user = $this->db
 			->select('selected_assignment, role, email')
 			->get_where('users', array('username' => $this->username))
-			->row();
+			->row(); // Vetor com dados do usuário logado.
 
 		$this->email = $user->email;
 
 		$query = $this->db->get_where('assignments', array('id' => $user->selected_assignment));
+		// Vetor com os dados do assignment cujo ID seja correspondente ao valor de "selected_assignment" da tabela usuário.
 		if ($query->num_rows() != 1)
 			$this->selected_assignment = array(
 				'id' => 0,

@@ -17,9 +17,13 @@
 	<span class="title_menu_item"><a href="{{ site_url('users/list_excel') }}"><i class="fa fa-download color9"></i> Excel</a></span>
 {% endblock %}
 
-
-
 {% block main_content %}
+{#Alerta quando deletar todos os estudantes#}
+<script type="text/javascript">
+function confirm_alert(node) {
+    return confirm("Are you sure you want to delete all students? Please, click on OK to confirm.");
+}
+</script>
 {% if deleted_user %}
 	<p class="shj_ok">User deleted successfully.</p>
 {% endif %}
@@ -41,6 +45,7 @@
 			<th>Actions</th>
 		</tr>
 	</thead>
+	{# Conteúdo da linha do usuário #}
 	{% for user in users %}
 		<tr data-id="{{ user.id }}">
 			<td>{{ loop.index }}</td>
@@ -51,7 +56,7 @@
 			<td>{{ user.role }}</td>
 			<td>{{ user.first_login_time ? user.first_login_time : 'Never' }}</td>
 			<td>{{ user.last_login_time ? user.last_login_time : 'Never' }}</td>
-			<td>
+			<td> {# Actions realizadas sobre o usuário #}
 				<a title="Edit" href="{{ site_url('profile/'~user.id) }}"><i class="fa fa-pencil fa-lg color9"></i></a>
 				<a title="Submissions" href="{{ site_url('submissions/all/user/'~user.username) }}"><i class="fa fa-bars fa-lg color12"></i></a>
 				<span title="Delete User" class="delete_user pointer"><i title="Delete User" class="fa fa-times fa-lg color2"></i></span>
@@ -60,4 +65,9 @@
 		</tr>
 	{% endfor %}
 </table>
+<br>
+
+<span >Click <a href="{{ site_url('users/delete_all_students/') }}" onclick="return confirm_alert(this)" class="btn-danger btn-xs" >here</a> to delete all students and their submissions. It is highly recommended to do a <a href="{{ site_url('assignments/download_all_submissions')}}" class="btn-info btn-xs">backup</a> first</span>
+
 {% endblock %}  {# main_content #}
+

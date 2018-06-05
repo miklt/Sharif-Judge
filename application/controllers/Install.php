@@ -247,7 +247,48 @@ class Install extends CI_Controller
 			if ( ! $this->dbforge->create_table('users', TRUE))
 				show_error("Error creating database table ".$this->db->dbprefix('users'));
 
+			//create table 'classes'
+			$fields = array(
+				'id' => array('type' => 'INT', 'constraint' => 11, 'unsigned' => TRUE, 'auto_increment' => TRUE),
+				'time_start' => array('type' => 'VARCHAR', 'constraint' => 5),
+				'time_end' => array('type' => 'VARCHAR', 'constraint' => 5),
+				'day' => array('type' => 'INT'),
+				'classroom' => array('type' => 'VARCHAR', 'constraint' => 20),
+				'class_name' => array('type' => 'VARCHAR', 'constraint' => 20),
+			);
+			$this->dbforge->add_field($fields);
+			$this->dbforge->add_key('id', TRUE); // PRIMARY KEY
+			if ( ! $this->dbforge->create_table('classes', TRUE))
+				show_error("Error creating database table ".$this->db->dbprefix('classes'));
 
+			//create table 'users_classes'
+			$fields = array(
+				'user_id' => array('type' => 'INT', 'constraint' => 11),
+				'class_id' => array('type' => 'INT', 'constraint' => 11),
+				'responsible' => array('type' => 'INT'),
+			);
+			$this->dbforge->add_field($fields);
+			$this->dbforge->add_key('user_id', TRUE);
+			$this->dbforge->add_key('class_id', TRUE);
+			if ( ! $this->dbforge->create_table('users_classes', TRUE))
+				show_error("Error creating database table ".$this->db->dbprefix('users_classes'));
+
+			$this->db->query('ALTER TABLE `users_classes` ADD FOREIGN KEY(`user_id`) REFERENCES 'users'(`id`) ON DELETE CASCADE;');
+			$this->db->query('ALTER TABLE `users_classes` ADD FOREIGN KEY(`class_id`) REFERENCES 'classes'(`id`) ON DELETE CASCADE;');
+
+			//create table 'assignments_classes'
+			$fields = array(
+				'assignment_id' => array('type' => 'INT', 'constraint' => 11),
+				'class_id' => array('type' => 'INT', 'constraint' => 11),
+			);
+			$this->dbforge->add_field($fields);
+			$this->dbforge->add_key('assignment_id', TRUE);
+			$this->dbforge->add_key('class_id', TRUE);
+			if ( ! $this->dbforge->create_table('assignments_classes', TRUE))
+				show_error("Error creating database table ".$this->db->dbprefix('assignments_classes'));
+
+			$this->db->query('ALTER TABLE `assignments_classes` ADD FOREIGN KEY(`assignment_id`) REFERENCES 'assignments'(`id`) ON DELETE CASCADE;');
+			$this->db->query('ALTER TABLE `assignments_classes` ADD FOREIGN KEY(`class_id`) REFERENCES 'classes'(`id`) ON DELETE CASCADE;');
 
 			// add admin user
 			$this->user_model->add_user(
@@ -271,7 +312,6 @@ class Install extends CI_Controller
 			$data['enc_key'] = $this->config->item('encryption_key');
 			$data['random_key'] = random_string('alnum', 32);
 		}
-
 
 		$this->twig->display('pages/admin/install.twig', $data);
 
