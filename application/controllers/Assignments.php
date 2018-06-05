@@ -6,6 +6,7 @@
  */
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+
 class Assignments extends CI_Controller
 {
 
@@ -33,10 +34,10 @@ class Assignments extends CI_Controller
 
 
 	public function index()
-	{	
+	{
 
 		$this->load->model('class_model');
-		
+
 		if ($this->user->level == 0){//Estudantes veem apenas sua própria classe
 			$user_id = $this->user_model->username_to_user_id($this->user->username);
 			$classes_id = array();
@@ -53,10 +54,17 @@ class Assignments extends CI_Controller
 				'messages' => $this->messages,
 			);
 		}
+
+		$data = array(
+			'all_assignments' => $this->assignment_model->all_assignments(),
+			'messages' => $this->messages
+		);
+
+
 		foreach ($data['all_assignments'] as &$item)
 		{
 			$extra_time = $item['extra_time'];
-			$delay = shj_now()-strtotime($item['finish_time']);;
+			$delay = shj_now()-strtotime($item['finish_time']);
 			ob_start();
 			if ( eval($item['late_rule']) === FALSE )
 				$coefficient = "error";
@@ -66,7 +74,7 @@ class Assignments extends CI_Controller
 			$item['coefficient'] = $coefficient;
 			$item['finished'] = ($delay > $extra_time);
 		}
-		$this->twig->display('pages/assignments.twig', $data);	
+		$this->twig->display('pages/assignments.twig', $data);
 	}
 
 
@@ -109,7 +117,7 @@ class Assignments extends CI_Controller
 
 		if ( $this->user->level == 0) // Estudantes não podem ver esta página.
 			show_404();
-			
+
 		$this->load->model('class_model');
 
 		if($this->input->post('assignment_selection') == "0"){
@@ -118,7 +126,7 @@ class Assignments extends CI_Controller
 				'messages' => $this->messages,
 				'assignment_selection' => $this->input->post('assignment_selection')
 			);
-		} 
+		}
 		elseif($this->input->post('assignment_selection') == "1"){
 			$user_id = $this->user_model->username_to_user_id($this->user->username);
 			$classes_id = array();
@@ -144,8 +152,8 @@ class Assignments extends CI_Controller
 			$item['coefficient'] = $coefficient;
 			$item['finished'] = ($delay > $extra_time);
 		}
-		$this->twig->display('pages/assignments.twig', $data); 
-		
+		$this->twig->display('pages/assignments.twig', $data);
+
 	}
 	// ------------------------------------------------------------------------
 
@@ -357,7 +365,6 @@ class Assignments extends CI_Controller
 					return;
 				//}
 			}
-
 		$data = array(
 			'all_assignments' => $this->assignment_model->all_assignments(),
 			'messages' => $this->messages,
@@ -381,7 +388,7 @@ class Assignments extends CI_Controller
 				$data['problems'] = array(
 					array(
 						'id' => 1,
-						'name' => 'Exercício ',
+						'name' => 'Exercicio ',
 						'score' => 100,
 						'c_time_limit' => 500,
 						'python_time_limit' => 1500,
@@ -391,7 +398,8 @@ class Assignments extends CI_Controller
             'allowed_languages' => 'C++',
 						'diff_cmd' => 'diff',
 						'diff_arg' => '-bB',
-						'is_upload_only' => 0
+						'is_upload_only' => 0,
+						'weight' => 100
 					)
 				);
 			else
@@ -405,6 +413,7 @@ class Assignments extends CI_Controller
 				$ft = $this->input->post('languages');
 				$dc = $this->input->post('diff_cmd');
 				$da = $this->input->post('diff_arg');
+				$weight = $this->input->post('weight');
 				$data['problems'] = array();
 				$uo = $this->input->post('is_upload_only');
 				if ($uo === NULL)
@@ -422,6 +431,7 @@ class Assignments extends CI_Controller
 						'diff_cmd' => $dc[$i],
 						'diff_arg' => $da[$i],
 						'is_upload_only' => in_array($i+1,$uo)?1:0,
+						'weight' => $weight[$i],
 					));
 				}
 			}
@@ -459,11 +469,27 @@ class Assignments extends CI_Controller
 		$this->form_validation->set_rules('languages[]', 'languages', 'required');
 		$this->form_validation->set_rules('diff_cmd[]', 'diff command', 'required');
 		$this->form_validation->set_rules('diff_arg[]', 'diff argument', 'required');
+		$this->form_validation->set_rules('weight[]', 'weight', 'required|integer');
 
 		// Validate input data
 
 		if ( ! $this->form_validation->run())
 			return FALSE;
+
+		// Check if sum of weights is 10.
+
+		$sum = 0;
+		for ($i=0; $i < $this->input->post('number_of_problems'); $i++) {
+			$sum = $sum + $this->input->post('weight')[$i];
+		}
+		if ($sum != 100) {
+			$this->messages[] = array(
+				'type' => 'error',
+				'text' => 'Error: Sum of weights must be 100. '
+			);
+			return FALSE;
+
+		}
 
 
 		// Preparing variables

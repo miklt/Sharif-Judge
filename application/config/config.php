@@ -39,7 +39,7 @@
 | path to your installation.
 |
 */
-$config['base_url']	= '';
+$config['base_url'] = 'http://localhost/Sharif-Judge/';
 
 /*
 |--------------------------------------------------------------------------
@@ -272,7 +272,7 @@ $config['cache_path'] = '';
 | http://codeigniter.com/user_guide/libraries/sessions.html
 |
 */
-$config['encryption_key'] = 'yAwS0NHiVFoBKx8RTjvk6GPD3gqthClX';
+$config['encryption_key'] = 'BSo4qYlk1E9r8F7UOsRKwc3gifmbX0e5';
 
 /*
 |--------------------------------------------------------------------------
@@ -295,16 +295,15 @@ $config['encryption_key'] = 'yAwS0NHiVFoBKx8RTjvk6GPD3gqthClX';
 | 'sess_time_to_update'		= how many seconds between CI refreshing Session Information
 |
 */
-$config['sess_driver']			= 'cookie';
+$config['sess_driver']			= 'files';
+//$config['sess_save_path']       = s
 $config['sess_valid_drivers']	= array();
 $config['sess_cookie_name']		= 'shjsession';
 $config['sess_expiration']		= 7200;
-$config['sess_expire_on_close']	= FALSE;
 $config['sess_encrypt_cookie']	= TRUE;
 $config['sess_use_database']	= TRUE;
 $config['sess_table_name']		= 'sessions';
 $config['sess_match_ip']		= FALSE;
-$config['sess_match_useragent']	= TRUE;
 $config['sess_time_to_update']	= 300;
 
 /*
@@ -446,6 +445,9 @@ $config['rewrite_short_tags'] = FALSE;
 | Array:		array('10.0.1.200', '192.168.5.0/24')
 */
 $config['proxy_ips'] = '';
+
+$config['composer_autoload'] = TRUE;
+
 
 
 /* End of file config.php */

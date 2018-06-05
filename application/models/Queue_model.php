@@ -221,4 +221,17 @@ class Queue_model extends CI_Model
 		$this->scoreboard_model->update_scoreboard($submission['assignment']);
 	}
 
+
+/* 
+	returns the position of a submission in the queue,
+	if the submission is not there returns -1 */
+	public function get_position_in_queue($submission_id) {
+		$queue = $this->queue_model->get_queue();
+		for ($i = 0; $i < sizeof($queue); $i++) {
+			if ($queue[$i]['submit_id'] == $submission_id) {
+				return ($i + 1);
+			}
+	}
+	return -1;
+	}
 }

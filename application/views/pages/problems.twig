@@ -95,27 +95,30 @@ $(document).ready(function(){
 		{% if can_submit %}
 		<div class="problems_widget">
 			<p><i class="fa fa-upload fa-lg color11"></i> Submit</p>
-			{{ form_open_multipart('problems/form_validation') }} {# Formulário para envio do problema #}
+			{{ form_open_multipart('problems/form_validation') }}
 			<input type="hidden" name="problem" value="{{ problem.id }}"/>
 
 			<p class="input_p">
+			{% if problem.allowed_languages|length > 1%}
 				<select id="languages" name="language" class="sharif_input full-width">
 					<option value="0" selected="selected">-- Select Language --</option>
 					{% for l in problem.allowed_languages %}
 						<option value="{{ l }}">{{ l }}</option>
 					{% endfor %}
 				</select>
-			</p>
-			<p class="input_p">
-				<input type="file" id="file" class="sharif_input full-width" name="userfile"/>
-			</p>
-			<p class="input_p">
-				<input type="submit" value="Submit" class="sharif_input"/>
-			</p>
-			</form>
-		</div>
-		{% endif %}
-
+			{% else %}
+				<p>Language: {{problem.allowed_languages[0]}}</p>
+				<input type="hidden" name="language" value="{{problem.allowed_languages[0]}}">
+			{% endif %}
+		</p>
+		<p class="input_p">
+			<input type="file" id="file" class="sharif_input full-width" name="userfile"/>
+		</p>
+		<p class="input_p">
+			<input type="submit" value="Submit" class="sharif_input"/>
+		</p>
+		</form>
 	</div>
-{% endif %}
+	{% endif %}
+	</div>
 {% endblock %}  {# main_content #}

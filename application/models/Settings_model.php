@@ -64,6 +64,12 @@ class Settings_model extends CI_Model
 		}
 	}
 
+	public function add_key() {
+		$result = $this->db->insert_batch('settings', array(
+			array('shj_key' => 'final_grade',
+						'shj_value' => '0')
+			));
+	}
 
 
 }

@@ -63,7 +63,7 @@ class Profile extends CI_Controller
 			'email' => $user->email,
 			'display_name' => $user->display_name,
 			'role' => $user->role,
-			'form_status' => $this->form_status,
+			'form_status' => $this->form_status
 		);
 
 		$this->twig->display('pages/profile.twig', $data);

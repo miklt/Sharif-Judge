@@ -89,6 +89,7 @@ class Assignment_model extends CI_Model
 		$dc = $this->input->post('diff_cmd');
 		$da = $this->input->post('diff_arg');
 		$uo = $this->input->post('is_upload_only');
+		$weight = $this->input->post('weight');
 		if ($uo === NULL)
 			$uo = array();
 		for ($i=1; $i<=$this->input->post('number_of_problems'); $i++)
@@ -127,6 +128,7 @@ class Assignment_model extends CI_Model
 				'allowed_languages' => $ft[$i-1],
 				'diff_cmd' => $dc[$i-1],
 				'diff_arg' => $da[$i-1],
+				'weight' => $weight[$i-1],
 			);
 			$this->db->insert('problems', $problem);
 		}
