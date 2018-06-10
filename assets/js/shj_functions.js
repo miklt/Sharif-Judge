@@ -436,10 +436,6 @@ $(document).ready(function(){
 		});
 	});
 
-<<<<<<< HEAD
-=======
-	
->>>>>>> 2b82274b0ef4ed488a5b07dc43fed7243ab6027a
 	$('.delete_submissions').click(function(){
 		var row = $(this).parents('tr');
 		var user_id = row.data('id');

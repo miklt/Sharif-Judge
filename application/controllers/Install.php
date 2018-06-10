@@ -205,6 +205,7 @@ class Install extends CI_Controller
 				array('shj_key' => 'enable_easysandbox',     'shj_value' => '1'),
 				array('shj_key' => 'enable_c_shield',        'shj_value' => '1'),
 				array('shj_key' => 'enable_cpp_shield',      'shj_value' => '1'),
+				array('shj_key' => 'enable_scoreboard',      'shj_value' => '1'),
 				array('shj_key' => 'enable_py2_shield',      'shj_value' => '1'),
 				array('shj_key' => 'enable_py3_shield',      'shj_value' => '1'),
 				array('shj_key' => 'enable_java_policy',     'shj_value' => '1'),
@@ -272,7 +273,6 @@ class Install extends CI_Controller
 			$this->dbforge->add_key('class_id', TRUE);
 			if ( ! $this->dbforge->create_table('users_classes', TRUE))
 				show_error("Error creating database table ".$this->db->dbprefix('users_classes'));
-
 			$this->db->query('ALTER TABLE `users_classes` ADD FOREIGN KEY(`user_id`) REFERENCES 'users'(`id`) ON DELETE CASCADE;');
 			$this->db->query('ALTER TABLE `users_classes` ADD FOREIGN KEY(`class_id`) REFERENCES 'classes'(`id`) ON DELETE CASCADE;');
 
