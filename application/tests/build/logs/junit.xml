@@ -1,27 +1,113 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="CodeIgniter Application Test Suite" tests="8" assertions="8" errors="0" failures="0" skipped="0" time="2.435073">
-    <testsuite name="Assignments_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Assignments_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.865673">
-      <testcase name="test_index" class="Assignments_test" classname="Assignments_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Assignments_test.php" line="13" assertions="1" time="0.865673"/>
+  <testsuite name="CodeIgniter Application Test Suite" tests="11" assertions="6" errors="5" failures="2" skipped="0" time="1.807568">
+    <testsuite name="Assignments_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Assignments_test.php" tests="1" assertions="0" errors="1" failures="0" skipped="0" time="0.112915">
+      <testcase name="test_index" class="Assignments_test" classname="Assignments_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Assignments_test.php" line="13" assertions="0" time="0.112915">
+        <error type="Error">Assignments_test::test_index
+Error: Call to a member function result() on boolean
+
+/var/www/html/Sharif-Judge/application/models/Class_model.php:203
+/var/www/html/Sharif-Judge/application/controllers/Assignments.php:44
+/var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/CIPHPUnitTestRequest.php:348
+/var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/CIPHPUnitTestRequest.php:282
+/var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/CIPHPUnitTestRequest.php:151
+/var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/CIPHPUnitTestCase.php:183
+/var/www/html/Sharif-Judge/application/tests/controllers/Assignments_test.php:16
+</error>
+      </testcase>
     </testsuite>
-    <testsuite name="Dashboard_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Dashboard_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.380369">
-      <testcase name="test_index" class="Dashboard_test" classname="Dashboard_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Dashboard_test.php" line="13" assertions="1" time="0.380369"/>
+    <testsuite name="Dashboard_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Dashboard_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.171473">
+      <testcase name="test_index" class="Dashboard_test" classname="Dashboard_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Dashboard_test.php" line="13" assertions="1" time="0.171473"/>
     </testsuite>
-    <testsuite name="Login_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Login_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.028277">
-      <testcase name="test_index" class="Login_test" classname="Login_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Login_test.php" line="13" assertions="1" time="0.028277"/>
+    <testsuite name="Login_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Login_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.034290">
+      <testcase name="test_index" class="Login_test" classname="Login_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Login_test.php" line="13" assertions="1" time="0.034290"/>
     </testsuite>
-    <testsuite name="Notifications_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Notifications_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.137810">
-      <testcase name="test_index" class="Notifications_test" classname="Notifications_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Notifications_test.php" line="13" assertions="1" time="0.137810"/>
+    <testsuite name="Notifications_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Notifications_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.138388">
+      <testcase name="test_index" class="Notifications_test" classname="Notifications_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Notifications_test.php" line="13" assertions="1" time="0.138388"/>
     </testsuite>
-    <testsuite name="Problems_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Problems_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.337920">
-      <testcase name="test_index" class="Problems_test" classname="Problems_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Problems_test.php" line="13" assertions="1" time="0.337920"/>
+    <testsuite name="Problems_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Problems_test.php" tests="1" assertions="0" errors="1" failures="0" skipped="0" time="0.066173">
+      <testcase name="test_index" class="Problems_test" classname="Problems_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Problems_test.php" line="13" assertions="0" time="0.066173">
+        <error type="Error">Problems_test::test_index
+Error: Call to a member function result_array() on boolean
+
+/var/www/html/Sharif-Judge/application/models/Assignment_model.php:354
+/var/www/html/Sharif-Judge/application/controllers/Problems.php:73
+/var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/CIPHPUnitTestRequest.php:348
+/var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/CIPHPUnitTestRequest.php:282
+/var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/CIPHPUnitTestRequest.php:151
+/var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/CIPHPUnitTestCase.php:183
+/var/www/html/Sharif-Judge/application/tests/controllers/Problems_test.php:16
+</error>
+      </testcase>
     </testsuite>
-    <testsuite name="Submissions_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Submissions_test.php" tests="2" assertions="2" errors="0" failures="0" skipped="0" time="0.513049">
-      <testcase name="test_final" class="Submissions_test" classname="Submissions_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Submissions_test.php" line="13" assertions="1" time="0.374150"/>
-      <testcase name="test_all" class="Submissions_test" classname="Submissions_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Submissions_test.php" line="20" assertions="1" time="0.138899"/>
+    <testsuite name="Queue_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Queue_test.php" tests="2" assertions="1" errors="1" failures="1" skipped="0" time="0.794083">
+      <testcase name="test_index" class="Queue_test" classname="Queue_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Queue_test.php" line="16" assertions="0" time="0.729150">
+        <error type="RuntimeException">Queue_test::test_index
+RuntimeException: Unable to write in the cache directory (/var/www/html/Sharif-Judge/application/cache/Twig/b1/e8).
+
+/var/www/html/Sharif-Judge/application/third_party/Twig/lib/Twig/Environment.php:1239
+/var/www/html/Sharif-Judge/application/third_party/Twig/lib/Twig/Environment.php:334
+/var/www/html/Sharif-Judge/application/libraries/Twig.php:116
+/var/www/html/Sharif-Judge/application/controllers/Queue.php:38
+/var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/CIPHPUnitTestRequest.php:348
+/var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/CIPHPUnitTestRequest.php:282
+/var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/CIPHPUnitTestRequest.php:151
+/var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/CIPHPUnitTestCase.php:183
+/var/www/html/Sharif-Judge/application/tests/controllers/Queue_test.php:19
+</error>
+      </testcase>
+      <testcase name="test_post_do_upload" class="Queue_test" classname="Queue_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Queue_test.php" line="27" assertions="1" time="0.064933">
+        <failure type="PHPUnit\Framework\ExpectationFailedException">Queue_test::test_post_do_upload
+Failed asserting that 'Submit/index is not found' contains "Description not found".
+
+/var/www/html/Sharif-Judge/application/tests/controllers/Queue_test.php:44
+</failure>
+        <system-out>/var/www/html/Sharif-Judge/application/tests/fixtures/teste-judge/exer1.cpp</system-out>
+      </testcase>
     </testsuite>
-    <testsuite name="Submit_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Submit_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.171975">
-      <testcase name="test_index" class="Submit_test" classname="Submit_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Submit_test.php" line="13" assertions="1" time="0.171975"/>
+    <testsuite name="Submissions_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Submissions_test.php" tests="2" assertions="0" errors="2" failures="0" skipped="0" time="0.418015">
+      <testcase name="test_final" class="Submissions_test" classname="Submissions_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Submissions_test.php" line="13" assertions="0" time="0.295775">
+        <error type="RuntimeException">Submissions_test::test_final
+RuntimeException: Unable to write in the cache directory (/var/www/html/Sharif-Judge/application/cache/Twig/ae/07).
+
+/var/www/html/Sharif-Judge/application/third_party/Twig/lib/Twig/Environment.php:1239
+/var/www/html/Sharif-Judge/application/third_party/Twig/lib/Twig/Environment.php:334
+/var/www/html/Sharif-Judge/application/libraries/Twig.php:116
+/var/www/html/Sharif-Judge/application/controllers/Submissions.php:369
+/var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/CIPHPUnitTestRequest.php:348
+/var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/CIPHPUnitTestRequest.php:282
+/var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/CIPHPUnitTestRequest.php:151
+/var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/CIPHPUnitTestCase.php:183
+/var/www/html/Sharif-Judge/application/tests/controllers/Submissions_test.php:16
+</error>
+      </testcase>
+      <testcase name="test_all" class="Submissions_test" classname="Submissions_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Submissions_test.php" line="20" assertions="0" time="0.122240">
+        <error type="RuntimeException">Submissions_test::test_all
+RuntimeException: Unable to write in the cache directory (/var/www/html/Sharif-Judge/application/cache/Twig/ae/07).
+
+/var/www/html/Sharif-Judge/application/third_party/Twig/lib/Twig/Environment.php:1239
+/var/www/html/Sharif-Judge/application/third_party/Twig/lib/Twig/Environment.php:334
+/var/www/html/Sharif-Judge/application/libraries/Twig.php:116
+/var/www/html/Sharif-Judge/application/controllers/Submissions.php:430
+/var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/CIPHPUnitTestRequest.php:348
+/var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/CIPHPUnitTestRequest.php:282
+/var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/CIPHPUnitTestRequest.php:151
+/var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/CIPHPUnitTestCase.php:183
+/var/www/html/Sharif-Judge/application/tests/controllers/Submissions_test.php:22
+</error>
+      </testcase>
+    </testsuite>
+    <testsuite name="Submit_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Submit_test.php" tests="1" assertions="1" errors="0" failures="1" skipped="0" time="0.062757">
+      <testcase name="test_index" class="Submit_test" classname="Submit_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Submit_test.php" line="13" assertions="1" time="0.062757">
+        <failure type="PHPUnit\Framework\ExpectationFailedException">Submit_test::test_index
+Failed asserting that 'Submit/index is not found' contains "&lt;title&gt;Submit - Sharif Judge&lt;/title&gt;".
+
+/var/www/html/Sharif-Judge/application/tests/controllers/Submit_test.php:17
+</failure>
+      </testcase>
+    </testsuite>
+    <testsuite name="Queue_model_test" file="/var/www/html/Sharif-Judge/application/tests/models/Queue_model_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.009474">
+      <testcase name="test_empty_method" class="Queue_model_test" classname="Queue_model_test" file="/var/www/html/Sharif-Judge/application/tests/models/Queue_model_test.php" line="17" assertions="1" time="0.009474"/>
     </testsuite>
   </testsuite>
 </testsuites>
