@@ -10,11 +10,10 @@
 
 class Assignments_test extends TestCase
 {
-	public function test_index()
-	{
+	public function test_index() {
         $this->login('aluno', '123456');
         $output = $this->request('GET','assignments');
-		$this->assertContains('<title>Assignments - Sharif Judge</title>', $output);
+            $this->assertContains('<title>Assignments - Sharif Judge</title>', $output);
 	}   
 
     public function login($username, $password) {
