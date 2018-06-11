@@ -211,6 +211,7 @@ class Install extends CI_Controller
 				array('shj_key' => 'enable_java_policy',     'shj_value' => '1'),
 				array('shj_key' => 'enable_log',             'shj_value' => '1'),
 				array('shj_key' => 'submit_penalty',         'shj_value' => '300'),
+				array('shj_key' => 'final_score',            'shj_value' => '1'),
 				array('shj_key' => 'enable_registration',    'shj_value' => '0'),
 				array('shj_key' => 'registration_code',      'shj_value' => '0'),
 				array('shj_key' => 'mail_from',              'shj_value' => 'shj@example.com'),
@@ -271,10 +272,27 @@ class Install extends CI_Controller
 			$this->dbforge->add_field($fields);
 			$this->dbforge->add_key('user_id', TRUE);
 			$this->dbforge->add_key('class_id', TRUE);
-			if ( ! $this->dbforge->create_table('users_classes', TRUE))
+			if ( ! $this->dbforge->create_table('users_classes', TRUE)) {
 				show_error("Error creating database table ".$this->db->dbprefix('users_classes'));
-			$this->db->query('ALTER TABLE `users_classes` ADD FOREIGN KEY(`user_id`) REFERENCES 'users'(`id`) ON DELETE CASCADE;');
-			$this->db->query('ALTER TABLE `users_classes` ADD FOREIGN KEY(`class_id`) REFERENCES 'classes'(`id`) ON DELETE CASCADE;');
+			}
+
+
+			$this->db->query(
+				"ALTER TABLE {$this->db->dbprefix('users_classes')}
+				 ADD CONSTRAINT {$this->db->dbprefix('user_classes_fkey')} FOREIGN KEY(user_id) REFERENCES {$this->db->dbprefix('users')}(id) ON DELETE CASCADE;"
+			);
+
+
+
+			$this->db->query(
+				"ALTER TABLE {$this->db->dbprefix('users_classes')}
+				 ADD CONSTRAINT {$this->db->dbprefix('classes_fkey')} FOREIGN KEY(class_id) REFERENCES {$this->db->dbprefix('classes')}(id) ON DELETE CASCADE;"
+			);
+
+
+			/*
+			$this->db->query("ALTER TABLE 'users_classes' ADD FOREIGN KEY('class_id') REFERENCES 'classes'('id') ON DELETE CASCADE;");
+			 */
 
 			//create table 'assignments_classes'
 			$fields = array(
@@ -287,8 +305,17 @@ class Install extends CI_Controller
 			if ( ! $this->dbforge->create_table('assignments_classes', TRUE))
 				show_error("Error creating database table ".$this->db->dbprefix('assignments_classes'));
 
-			$this->db->query('ALTER TABLE `assignments_classes` ADD FOREIGN KEY(`assignment_id`) REFERENCES 'assignments'(`id`) ON DELETE CASCADE;');
-			$this->db->query('ALTER TABLE `assignments_classes` ADD FOREIGN KEY(`class_id`) REFERENCES 'classes'(`id`) ON DELETE CASCADE;');
+
+			$this->db->query(
+				"ALTER TABLE {$this->db->dbprefix('assignments_classes')}
+				 ADD CONSTRAINT {$this->db->dbprefix('assignment_fkey')} FOREIGN KEY(assignment_id) REFERENCES {$this->db->dbprefix('assignments')}(id) ON DELETE CASCADE;"
+			);
+
+
+			$this->db->query(
+				"ALTER TABLE {$this->db->dbprefix('assignments_classes')}
+				 ADD CONSTRAINT {$this->db->dbprefix('class_fkey')} FOREIGN KEY(class_id) REFERENCES {$this->db->dbprefix('classes')}(id) ON DELETE CASCADE;"
+			);
 
 			// add admin user
 			$this->user_model->add_user(
