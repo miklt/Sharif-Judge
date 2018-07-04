@@ -16,7 +16,6 @@ class Submissions extends CI_Controller
 {
 
 	private $problems;
-
 	private $filter_user;
 	private $filter_problem;
 	private $page_number;

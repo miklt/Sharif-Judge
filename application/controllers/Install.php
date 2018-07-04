@@ -57,6 +57,7 @@ class Install extends CI_Controller
 				'ip_address'    => array('type' => 'VARCHAR', 'constraint' => 45, 'default' => '0'),
 				'user_agent'    => array('type' => 'VARCHAR', 'constraint' => 120),
 				'last_activity' => array('type' => 'INT', 'constraint' => 10, 'unsigned' => TRUE, 'default' => '0'),
+				'weight' => array('type' => 'INT'),
 				'user_data'     => array('type' => 'TEXT'),
 			);
 			$this->dbforge->add_field($fields);
