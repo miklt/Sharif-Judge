@@ -404,6 +404,7 @@ class Assignments extends CI_Controller
 				$ft = $this->input->post('languages');
 				$dc = $this->input->post('diff_cmd');
 				$da = $this->input->post('diff_arg');
+				$weight = $this->input->post('weight');
 				$data['problems'] = array();
 				$uo = $this->input->post('is_upload_only');
 				if ($uo === NULL)
@@ -421,6 +422,7 @@ class Assignments extends CI_Controller
 						'diff_cmd' => $dc[$i],
 						'diff_arg' => $da[$i],
 						'is_upload_only' => in_array($i+1,$uo)?1:0,
+						'weight' => $weight[$i],
 					));
 				}
 			}
@@ -458,6 +460,21 @@ class Assignments extends CI_Controller
 		$this->form_validation->set_rules('languages[]', 'languages', 'required');
 		$this->form_validation->set_rules('diff_cmd[]', 'diff command', 'required');
 		$this->form_validation->set_rules('diff_arg[]', 'diff argument', 'required');
+		$this->form_validation->set_rules('weight[]', 'weight', 'required|integer');
+
+		$sum = 0;
+		for ($i=0; $i < $this->input->post('number_of_problems'); $i++) {
+			$sum = $sum + $this->input->post('weight')[$i];
+		}
+		if ($sum != 100) {
+			$this->messages[] = array(
+				'type' => 'error',
+				'text' => 'Error: Sum of weights must be 100. '
+			);
+			return FALSE;
+
+		}
+
 
 		// Validate input data
 

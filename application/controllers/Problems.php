@@ -360,6 +360,7 @@ class Problems extends CI_Controller
 				'username' => $this->user->username,
 				'assignment' => $this->user->selected_assignment['id'],
 				'problem' => $this->problem['id'],
+				'weight'  => $this->problem['weight'],
 				'file_name' => $result['raw_name'],
 				'main_file_name' => $this->file_name,
 				'file_type' => $this->filetype,

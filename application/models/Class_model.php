@@ -299,7 +299,9 @@ class Class_model extends CI_Model
 		foreach ($query_classes_user->result() as $row) {
 			array_push($classes_id, $row->class_id);
 		}
-
+		if (!$classes_id) {
+			return [];
+		}
 		$this->db->where_in('id', $classes_id);
 		$query_classes = $this->db->get('classes');
 		$classes = array();

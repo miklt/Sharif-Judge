@@ -57,7 +57,6 @@ class Install extends CI_Controller
 				'ip_address'    => array('type' => 'VARCHAR', 'constraint' => 45, 'default' => '0'),
 				'user_agent'    => array('type' => 'VARCHAR', 'constraint' => 120),
 				'last_activity' => array('type' => 'INT', 'constraint' => 10, 'unsigned' => TRUE, 'default' => '0'),
-				'weight' => array('type' => 'INT'),
 				'user_data'     => array('type' => 'TEXT'),
 			);
 			$this->dbforge->add_field($fields);
@@ -82,6 +81,7 @@ class Install extends CI_Controller
 				'file_name'     => array('type' => 'VARCHAR', 'constraint' => 30),
 				'main_file_name'=> array('type' => 'VARCHAR', 'constraint' => 30),
 				'file_type'     => array('type' => 'VARCHAR', 'constraint' => 6),
+				'weight'        => array('type' => 'INT'),
 			);
 			$this->dbforge->add_field($fields);
 			$this->dbforge->add_key(array('assignment', 'submit_id'));
@@ -141,6 +141,7 @@ class Install extends CI_Controller
 				'allowed_languages' => array('type' => 'TEXT', 'default' => ''),
 				'diff_cmd'          => array('type' => 'VARCHAR', 'constraint' => 20, 'default' => 'diff'),
 				'diff_arg'          => array('type' => 'VARCHAR', 'constraint' => 20, 'default' => '-bB'),
+				'weight' => array('type' => 'INT'),
 			);
 			$this->dbforge->add_field($fields);
 			$this->dbforge->add_key(array('assignment', 'id'));
