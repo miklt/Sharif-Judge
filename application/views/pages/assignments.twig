@@ -14,6 +14,7 @@
 {% block title_menu %}
 {% if user.level >= 2 %}
 <span class="title_menu_item"><a href="{{ site_url('assignments/add') }}"><i class="fa fa-plus color8"></i> Add</a></span>
+<span class="title_menu_item"><a href="{{ site_url('assignments/download_all_submissions') }}"><i class="fa fa-cloud-download color11"></i> Backup all assignments and submissions</a></span>
 {% endif %}
 {% endblock %}
 {% block main_content %}
@@ -25,20 +26,17 @@
 {% if all_assignments|length == 0 %}
 	<p style="text-align: center;">Nothing to show...</p>
 {% else %}
-<br/>
 {% if user.level > 0 %}
 {# Botão para seleção de assignments de acordo com o usuário#}
 {{ form_open('assignments/selection') }}
 		<p class="input_p">
 				<select onchange="this.form.submit()" id="assignment_selection" name="assignment_selection" class="sharif_input">
 					<option id="all_assignments" {{ assignment_selection == 0 ? 'selected="selected"' }} value="0">
-					All assignments</option>
-					<option id="my_classes_assignments" {{ assignment_selection == 1 ? 'selected="selected"' }} value="1">
-					Assignments of My classes</option>
-					{#{% for class in user_classes %}
-						<option id="{{class.class_id}}" {{ assignment_selection == {{class.class_id}} ? 'selected="selected"' }} value="{{class.class_id}}">
+					All classes</option>
+					{% for class in user_classes %}
+						<option {{ (assignment_selection == class.class_id) ? 'selected="selected"' }} value="{{class.class_id}}">
 						{{class.class_name}}</option>
-					{% endfor %}#}
+					{% endfor %}
 				</select>
 		</p><br>
 </form>
@@ -108,10 +106,5 @@
 </tr>
 {% endfor %}
 </table>
-{% endif %}
-{% if user.level >= 2 %} 
-{# Backup assignments: apenas se o usuário for "admin" ou "head_instructor"#}
-	<br>
-	<a style="text-align:right;" title = "Backup assignments" href="{{ site_url('assignments/download_all_submissions')}}">Backup all assignments and submissions</a>
 {% endif %}
 {% endblock %}  {# main_content #}

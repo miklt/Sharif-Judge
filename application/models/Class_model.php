@@ -190,6 +190,36 @@ class Class_model extends CI_Model
 
 // ------------------------------------------------------------------------
 	/**
+	 * Get Classes without users of classes
+	 *
+	 *
+	 * @return array of all classes without their users
+	 */
+	public function get_parameters_Classes()
+	{
+		$query_classes = $this->db->get('classes');
+		$classes = array();
+
+		foreach ($query_classes->result() as $row)
+		{
+        	$params = array(
+        		"class_id" => $row->id,
+        		"class_name" => $row->class_name,
+        		"day" => $row->day,
+        		"time_start" => $row->time_start,
+        		"time_end" => $row->time_end,
+        		"classroom" => $row->classroom
+        	);
+        	$this->load->library('classObject', $params);
+        	$class = new ClassObject($params);
+        	array_push($classes, $class);
+		}
+		return $classes;
+	}
+
+
+// ------------------------------------------------------------------------
+	/**
 	 * Get Classes of user
 	 *
 	 *
@@ -253,6 +283,43 @@ class Class_model extends CI_Model
 		}
 		return $classes;
 	}
+
+// ------------------------------------------------------------------------
+	/**
+	 * Get Classes of user
+	 *
+	 *
+	 * @return array of parameters of all classes the user participates 
+	 */
+	public function get_parameters_Classes_user($user_id)
+	{
+		$this->db->select('class_id');
+		$query_classes_user = $this->db->get_where('users_classes', array('user_id' => $user_id));
+		$classes_id = array();
+		foreach ($query_classes_user->result() as $row) {
+			array_push($classes_id, $row->class_id);
+		}
+
+		$this->db->where_in('id', $classes_id);
+		$query_classes = $this->db->get('classes');
+		$classes = array();
+	
+		foreach ($query_classes->result() as $row)
+		{
+        	$params = array(
+        		"class_id" => $row->id,
+        		"class_name" => $row->class_name,
+        		"day" => $row->day,
+        		"time_start" => $row->time_start,
+        		"time_end" => $row->time_end,
+        		"classroom" => $row->classroom
+        	);
+        	$this->load->library('classObject', $params);
+        	$class = new ClassObject($params);
+        	array_push($classes, $class);
+		}
+		return $classes;
+	}	
 
 // ------------------------------------------------------------------------
 	/**

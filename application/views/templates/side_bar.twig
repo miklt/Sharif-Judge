@@ -30,7 +30,7 @@
 		{% endif %}
 		<li class="color-classes{{ selected=='classes' ? ' selected' }}">
 			<a href="{{ site_url('classes') }}">
-				<i class="fa fa-pencil fa-lg"></i>
+				<i class="fa fa-graduation-cap fa-lg"></i>
 				<span class="sidebar_text">Classes</span>
 			</a>
 		</li>
@@ -64,16 +64,12 @@
 				<span class="sidebar_text">All Submissions</span>
 			</a>
 		</li>
-
-		 {% if enable_scoreboard == 1 or user.level >= 2 %}
 		<li class="color-scoreboard{{ selected=='scoreboard' ? ' selected' }}">
 			<a href="{{ site_url('scoreboard') }}">
 				<i class="fa fa-star fa-lg"></i>
 				<span class="sidebar_text">Scoreboard</span>
 			</a>
 		</li>
-		{% endif %}
-
 	</ul>
 	<div id="sidebar_bottom">
 		<p>

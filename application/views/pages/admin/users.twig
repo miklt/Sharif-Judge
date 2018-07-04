@@ -15,13 +15,15 @@
 	<span class="title_menu_item"><a href="https://github.com/mjnaderi/Sharif-Judge/blob/docs/v1.4/users.md" target="_blank"><i class="fa fa-question-circle color6"></i> Help</a></span>
 	<span class="title_menu_item"><a href="{{ site_url('users/add') }}"><i class="fa fa-plus color11"></i> Add Users</a></span>
 	<span class="title_menu_item"><a href="{{ site_url('users/list_excel') }}"><i class="fa fa-download color9"></i> Excel</a></span>
+	<span class="title_menu_item"><a href="{{ site_url('assignments/download_all_submissions') }}"><i class="fa fa-cloud-download color11"></i> Backup</a></span>
+	<span class="title_menu_item"><a  href="{{ site_url('users/delete_all_students/') }}" onclick="return confirm_alert(this)"><i class="fa fa-trash color1"></i> Delete All Students</a></span>
 {% endblock %}
 
 {% block main_content %}
 {#Alerta quando deletar todos os estudantes#}
 <script type="text/javascript">
 function confirm_alert(node) {
-    return confirm("Are you sure you want to delete all students? Please, click on OK to confirm.");
+    return confirm("Are you sure you want to delete all students? It is highly recommended to do a backup first. Please, click on OK to confirm.");
 }
 </script>
 {% if deleted_user %}
@@ -66,8 +68,6 @@ function confirm_alert(node) {
 	{% endfor %}
 </table>
 <br>
-
-<span >Click <a href="{{ site_url('users/delete_all_students/') }}" onclick="return confirm_alert(this)" class="btn-danger btn-xs" >here</a> to delete all students and their submissions. It is highly recommended to do a <a href="{{ site_url('assignments/download_all_submissions')}}" class="btn-info btn-xs">backup</a> first</span>
 
 {% endblock %}  {# main_content #}
 
