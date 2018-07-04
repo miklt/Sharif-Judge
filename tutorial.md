@@ -50,6 +50,7 @@ $ createdb Judge;
 ```sh
 $ chown -R www-data:www-data var/www/html/Judge
 ```
+- In /application/config/config.php change line 42 to set the base_url as the URL for the website
 
 - Type in you browser and follow all the instructions
 ```sh
