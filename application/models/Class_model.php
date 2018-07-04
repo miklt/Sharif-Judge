@@ -203,49 +203,53 @@ class Class_model extends CI_Model
 		foreach ($query_classes_user->result() as $row) {
 			array_push($classes_id, $row->class_id);
 		}
-
-		$this->db->where_in('id', $classes_id);
+		if ($classes_id) {
+			$this->db->where_in('id', $classes_id);	
+		}
 		$query_classes = $this->db->get('classes');
 		$classes = array();
 		$teachers = array();
 		$assistants = array();
 		$students = array();
 
-		foreach ($query_classes->result() as $row)
-		{
-			$query_users = $this->db->get_where('users_classes', array('class_id' => $row->id));
-			foreach ($query_users->result() as $user)
-			{	
-				//vetor com professores:
-				if($user->responsible == 2){
-					array_push($teachers, $this->user_model->user_id_to_username($user->user_id));
+
+		if ($query_classes) {
+			foreach ($query_classes->result() as $row)
+			{
+				$query_users = $this->db->get_where('users_classes', array('class_id' => $row->id));
+				foreach ($query_users->result() as $user)
+				{	
+					//vetor com professores:
+					if($user->responsible == 2){
+						array_push($teachers, $this->user_model->user_id_to_username($user->user_id));
+					}
+					//vetor com monitores:
+					if($user->responsible == 1){
+						array_push($assistants, $this->user_model->user_id_to_username($user->user_id));
+					}
+					//vetor com alunos:
+					if($user->responsible == 0){
+						array_push($students, $this->user_model->user_id_to_username($user->user_id));
+					}
 				}
-				//vetor com monitores:
-				if($user->responsible == 1){
-					array_push($assistants, $this->user_model->user_id_to_username($user->user_id));
-				}
-				//vetor com alunos:
-				if($user->responsible == 0){
-					array_push($students, $this->user_model->user_id_to_username($user->user_id));
-				}
+				$params = array(
+					"class_id" => $row->id,
+					"class_name" => $row->class_name,
+					"day" => $row->day,
+					"time_start" => $row->time_start,
+					"time_end" => $row->time_end,
+					"classroom" => $row->classroom,
+					"teachers" => $teachers,
+					"assistants" => $assistants,
+					"students" => $students
+				);
+				$this->load->library('classObject', $params);
+				$class = new ClassObject($params);
+				array_push($classes, $class);
+				$teachers = array();
+				$assistants = array();
+				$students = array();
 			}
-        	$params = array(
-        		"class_id" => $row->id,
-        		"class_name" => $row->class_name,
-        		"day" => $row->day,
-        		"time_start" => $row->time_start,
-        		"time_end" => $row->time_end,
-        		"classroom" => $row->classroom,
-        		"teachers" => $teachers,
-        		"assistants" => $assistants,
-        		"students" => $students
-        	);
-        	$this->load->library('classObject', $params);
-        	$class = new ClassObject($params);
-        	array_push($classes, $class);
-        	$teachers = array();
-        	$assistants = array();
-        	$students = array();
 		}
 		return $classes;
 	}

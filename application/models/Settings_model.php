@@ -25,12 +25,7 @@ class Settings_model extends CI_Model
 
 	public function get_setting($key)
 	{
-		if (!$this->db->select('shj_value')->get_where('settings', array('shj_key'=>$key))) {
-			return;
-		}
-		else {
-		return $this->db->select('shj_value')->get_where('settings', array('shj_key'=>$key))->row()->shj_value; // Retorna um vetor com os "shj_values" da tabela "shj_settings" nos quais "shj_key" seja igual a $key.
-		} 
+		return $this->db->select('shj_value')->get_where('settings', array('shj_key'=>$key))->row()->shj_value; // Retorna um vetor com os "shj_values" da tabela "shj_settings" nos quais "shj_key" seja igual a $key. 
 	}
 
 

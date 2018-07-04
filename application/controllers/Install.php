@@ -57,6 +57,7 @@ class Install extends CI_Controller
 				'ip_address'    => array('type' => 'VARCHAR', 'constraint' => 45, 'default' => '0'),
 				'user_agent'    => array('type' => 'VARCHAR', 'constraint' => 120),
 				'last_activity' => array('type' => 'INT', 'constraint' => 10, 'unsigned' => TRUE, 'default' => '0'),
+				'weight' => array('type' => 'INT'),
 				'user_data'     => array('type' => 'TEXT'),
 			);
 			$this->dbforge->add_field($fields);
@@ -211,7 +212,7 @@ class Install extends CI_Controller
 				array('shj_key' => 'enable_java_policy',     'shj_value' => '1'),
 				array('shj_key' => 'enable_log',             'shj_value' => '1'),
 				array('shj_key' => 'submit_penalty',         'shj_value' => '300'),
-				array('shj_key' => 'final_score',            'shj_value' => '1'),
+				array('shj_key' => 'final_grade',            'shj_value' => '1'),
 				array('shj_key' => 'enable_registration',    'shj_value' => '0'),
 				array('shj_key' => 'registration_code',      'shj_value' => '0'),
 				array('shj_key' => 'mail_from',              'shj_value' => 'shj@example.com'),

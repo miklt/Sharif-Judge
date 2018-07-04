@@ -1,42 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="CodeIgniter Application Test Suite" tests="9" assertions="8" errors="1" failures="0" skipped="0" time="1.067445">
-    <testsuite name="Assignments_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Assignments_test.php" tests="1" assertions="0" errors="1" failures="0" skipped="0" time="0.131444">
-      <testcase name="test_index" class="Assignments_test" classname="Assignments_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Assignments_test.php" line="13" assertions="0" time="0.131444">
-        <error type="Error">Assignments_test::test_index
-Error: Call to a member function result() on boolean
+  <testsuite name="CodeIgniter Application Test Suite" tests="9" assertions="2" errors="7" failures="0" skipped="0" time="0.260836">
+    <testsuite name="Assignments_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Assignments_test.php" tests="1" assertions="0" errors="1" failures="0" skipped="0" time="0.067862">
+      <testcase name="test_index" class="Assignments_test" classname="Assignments_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Assignments_test.php" line="13" assertions="0" time="0.067862">
+        <error type="PHPUnit\Framework\Exception">Assignments_test::test_index
+PHPUnit\Framework\Exception: Argument #2 (No Value) of PHPUnit\Framework\Assert::assertContains() must be a array, traversable or string
 
-/var/www/html/Sharif-Judge/application/models/Class_model.php:214
-/var/www/html/Sharif-Judge/application/controllers/Assignments.php:44
-/var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/CIPHPUnitTestRequest.php:348
-/var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/CIPHPUnitTestRequest.php:282
-/var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/CIPHPUnitTestRequest.php:151
-/var/www/html/Sharif-Judge/application/tests/_ci_phpunit_test/CIPHPUnitTestCase.php:183
-/var/www/html/Sharif-Judge/application/tests/controllers/Assignments_test.php:15
+/var/www/html/Sharif-Judge/application/tests/controllers/Assignments_test.php:16
 </error>
       </testcase>
     </testsuite>
-    <testsuite name="Dashboard_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Dashboard_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.165562">
-      <testcase name="test_index" class="Dashboard_test" classname="Dashboard_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Dashboard_test.php" line="13" assertions="1" time="0.165562"/>
+    <testsuite name="Dashboard_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Dashboard_test.php" tests="1" assertions="0" errors="1" failures="0" skipped="0" time="0.043675">
+      <testcase name="test_index" class="Dashboard_test" classname="Dashboard_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Dashboard_test.php" line="13" assertions="0" time="0.043675">
+        <error type="PHPUnit\Framework\Exception">Dashboard_test::test_index
+PHPUnit\Framework\Exception: Argument #2 (No Value) of PHPUnit\Framework\Assert::assertContains() must be a array, traversable or string
+
+/var/www/html/Sharif-Judge/application/tests/controllers/Dashboard_test.php:17
+</error>
+      </testcase>
     </testsuite>
-    <testsuite name="Login_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Login_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.026091">
-      <testcase name="test_index" class="Login_test" classname="Login_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Login_test.php" line="13" assertions="1" time="0.026091"/>
+    <testsuite name="Login_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Login_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.037345">
+      <testcase name="test_index" class="Login_test" classname="Login_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Login_test.php" line="13" assertions="1" time="0.037345"/>
     </testsuite>
-    <testsuite name="Notifications_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Notifications_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.099751">
-      <testcase name="test_index" class="Notifications_test" classname="Notifications_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Notifications_test.php" line="13" assertions="1" time="0.099751"/>
+    <testsuite name="Notifications_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Notifications_test.php" tests="1" assertions="0" errors="1" failures="0" skipped="0" time="0.025469">
+      <testcase name="test_index" class="Notifications_test" classname="Notifications_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Notifications_test.php" line="13" assertions="0" time="0.025469">
+        <error type="PHPUnit\Framework\Exception">Notifications_test::test_index
+PHPUnit\Framework\Exception: Argument #2 (No Value) of PHPUnit\Framework\Assert::assertContains() must be a array, traversable or string
+
+/var/www/html/Sharif-Judge/application/tests/controllers/Notifications_test.php:17
+</error>
+      </testcase>
     </testsuite>
-    <testsuite name="Problems_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Problems_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.281357">
-      <testcase name="test_index" class="Problems_test" classname="Problems_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Problems_test.php" line="13" assertions="1" time="0.281357"/>
+    <testsuite name="Problems_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Problems_test.php" tests="1" assertions="0" errors="1" failures="0" skipped="0" time="0.020301">
+      <testcase name="test_index" class="Problems_test" classname="Problems_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Problems_test.php" line="13" assertions="0" time="0.020301">
+        <error type="PHPUnit\Framework\Exception">Problems_test::test_index
+PHPUnit\Framework\Exception: Argument #2 (No Value) of PHPUnit\Framework\Assert::assertContains() must be a array, traversable or string
+
+/var/www/html/Sharif-Judge/application/tests/controllers/Problems_test.php:17
+</error>
+      </testcase>
     </testsuite>
-    <testsuite name="Queue_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Queue_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.110150">
-      <testcase name="test_index" class="Queue_test" classname="Queue_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Queue_test.php" line="16" assertions="1" time="0.110150"/>
+    <testsuite name="Queue_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Queue_test.php" tests="1" assertions="0" errors="1" failures="0" skipped="0" time="0.019120">
+      <testcase name="test_index" class="Queue_test" classname="Queue_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Queue_test.php" line="16" assertions="0" time="0.019120">
+        <error type="PHPUnit\Framework\Exception">Queue_test::test_index
+PHPUnit\Framework\Exception: Argument #2 (No Value) of PHPUnit\Framework\Assert::assertContains() must be a array, traversable or string
+
+/var/www/html/Sharif-Judge/application/tests/controllers/Queue_test.php:20
+</error>
+      </testcase>
     </testsuite>
-    <testsuite name="Submissions_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Submissions_test.php" tests="2" assertions="2" errors="0" failures="0" skipped="0" time="0.247263">
-      <testcase name="test_final" class="Submissions_test" classname="Submissions_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Submissions_test.php" line="13" assertions="1" time="0.117248"/>
-      <testcase name="test_all" class="Submissions_test" classname="Submissions_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Submissions_test.php" line="20" assertions="1" time="0.130015"/>
+    <testsuite name="Submissions_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Submissions_test.php" tests="2" assertions="0" errors="2" failures="0" skipped="0" time="0.038875">
+      <testcase name="test_final" class="Submissions_test" classname="Submissions_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Submissions_test.php" line="13" assertions="0" time="0.020134">
+        <error type="PHPUnit\Framework\Exception">Submissions_test::test_final
+PHPUnit\Framework\Exception: Argument #2 (No Value) of PHPUnit\Framework\Assert::assertContains() must be a array, traversable or string
+
+/var/www/html/Sharif-Judge/application/tests/controllers/Submissions_test.php:17
+</error>
+      </testcase>
+      <testcase name="test_all" class="Submissions_test" classname="Submissions_test" file="/var/www/html/Sharif-Judge/application/tests/controllers/Submissions_test.php" line="20" assertions="0" time="0.018741">
+        <error type="PHPUnit\Framework\Exception">Submissions_test::test_all
+PHPUnit\Framework\Exception: Argument #2 (No Value) of PHPUnit\Framework\Assert::assertContains() must be a array, traversable or string
+
+/var/www/html/Sharif-Judge/application/tests/controllers/Submissions_test.php:23
+</error>
+      </testcase>
     </testsuite>
-    <testsuite name="Queue_model_test" file="/var/www/html/Sharif-Judge/application/tests/models/Queue_model_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.005827">
-      <testcase name="test_empty_method" class="Queue_model_test" classname="Queue_model_test" file="/var/www/html/Sharif-Judge/application/tests/models/Queue_model_test.php" line="17" assertions="1" time="0.005827"/>
+    <testsuite name="Queue_model_test" file="/var/www/html/Sharif-Judge/application/tests/models/Queue_model_test.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.008189">
+      <testcase name="test_empty_method" class="Queue_model_test" classname="Queue_model_test" file="/var/www/html/Sharif-Judge/application/tests/models/Queue_model_test.php" line="17" assertions="1" time="0.008189"/>
     </testsuite>
   </testsuite>
 </testsuites>
