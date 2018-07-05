@@ -41,10 +41,30 @@
 	{% endif %}
 {% endblock %} {# title_menu #}
 
-
-
-
 {% block main_content %}
+{% for userfs in filter_user %}
+	{{userfs}}
+{% endfor %}
+
+{% if user.level > 0 %}
+{# Botão para seleção de submissions de acordo com as classes#}
+{% if view == 'all' %}
+{{ form_open('submissions/all') }}
+{% elseif view == 'final' %}
+{{ form_open('submissions/final') }}
+{% endif %}
+		<p class="input_p">
+				<select onchange="this.form.submit()" id="submission_selection" name="submission_selection" class="sharif_input">
+					<option id="all_classes" {{ submission_selection == 0 ? 'selected="selected"' }} value="0">
+					All classes</option>
+					{% for class in user_classes %}
+						<option {{ (submission_selection == class.class_id) ? 'selected="selected"' }} value="{{class.class_id}}">
+						{{class.class_name}}</option>
+					{% endfor %}
+				</select>
+		</p><br>
+</form>
+{% endif %}
 
 <p>{{ view|title }} Submissions of <span dir="auto">{{ user.selected_assignment.name }}</span></p>
 {%  if view == 'all' %}

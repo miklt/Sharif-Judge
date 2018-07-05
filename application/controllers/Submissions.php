@@ -299,6 +299,9 @@ class Submissions extends CI_Controller
 		if ($this->page_number<1)
 			show_404();
 
+		$this->load->model('class_model');
+		$user_id = $this->user_model->username_to_user_id($this->user->username);
+	
 		$config = array(
 			'base_url' => site_url('submissions/final'.($this->filter_user?'/user/'.$this->filter_user:'').($this->filter_problem?'/problem/'.$this->filter_problem:'')),
 			'cur_page' => $this->page_number,
@@ -312,7 +315,19 @@ class Submissions extends CI_Controller
 			$config['per_page'] = $config['total_rows'];
 		$this->load->library('shj_pagination', $config);
 
-		$submissions = $this->submit_model->get_final_submissions($this->user->selected_assignment['id'], $this->user->level, $this->user->username, $this->page_number, $this->filter_user, $this->filter_problem);
+		//Select submissions by classes:
+		$class_id = $this->input->post('submission_selection');
+		if($class_id != 0){
+			$class = $this->class_model->getClass($class_id);
+			$students_usernames = array();
+			foreach($class->new_students as $student){
+				array_push($students_usernames, $student->username);
+			}
+		}else{
+			$students_usernames = NULL;
+		}
+
+		$submissions = $this->submit_model->get_final_submissions($this->user->selected_assignment['id'], $this->user->level, $this->user->username, $this->page_number, $this->filter_user, $this->filter_problem, $students_usernames);
 
 		$names = $this->user_model->get_names();
 
@@ -362,6 +377,8 @@ class Submissions extends CI_Controller
 			'show_final_grade'=> $this->show_final_grade,
 			'final_grade' => $final_grade,
 			'numberOfSub' => $number_of_sub,
+			'user_classes' => $this->class_model->get_parameters_Classes_user($user_id),
+			'submission_selection' => $this->input->post('submission_selection')
 		);
 
 
@@ -385,6 +402,9 @@ class Submissions extends CI_Controller
 		if ($this->page_number < 1)
 			show_404();
 
+		$this->load->model('class_model');
+		$user_id = $this->user_model->username_to_user_id($this->user->username);
+
 		$config = array(
 			'base_url' => site_url('submissions/all'.($this->filter_user?'/user/'.$this->filter_user:'').($this->filter_problem?'/problem/'.$this->filter_problem:'')),
 			'cur_page' => $this->page_number,
@@ -398,7 +418,19 @@ class Submissions extends CI_Controller
 			$config['per_page'] = $config['total_rows'];
 		$this->load->library('shj_pagination', $config);
 
-		$submissions = $this->submit_model->get_all_submissions($this->user->selected_assignment['id'], $this->user->level, $this->user->username, $this->page_number, $this->filter_user, $this->filter_problem);
+		//Select submissions by classes:
+		$class_id = $this->input->post('submission_selection');
+		if($class_id != 0){
+			$class = $this->class_model->getClass($class_id);
+			$students_usernames = array();
+			foreach($class->new_students as $student){
+				array_push($students_usernames, $student->username);
+			}
+		}else{
+			$students_usernames = NULL;
+		}
+
+		$submissions = $this->submit_model->get_all_submissions($this->user->selected_assignment['id'], $this->user->level, $this->user->username, $this->page_number, $this->filter_user, $this->filter_problem, $students_usernames);
 
 		$names = $this->user_model->get_names();
 
@@ -423,12 +455,30 @@ class Submissions extends CI_Controller
 			'excel_link' => site_url('submissions/all_excel'.($this->filter_user?'/user/'.$this->filter_user:'').($this->filter_problem?'/problem/'.$this->filter_problem:'')),
 			'filter_user' => $this->filter_user,
 			'filter_problem' => $this->filter_problem,
-			'pagination' => $this->shj_pagination->create_links()
+			'pagination' => $this->shj_pagination->create_links(),
+			'user_classes' => $this->class_model->get_parameters_Classes_user($user_id),
+			'submission_selection' => $this->input->post('submission_selection')
 		);
 
 		$this->twig->display('pages/submissions.twig', $data);
 	}
 
+
+
+	// ------------------------------------------------------------------------
+
+
+
+
+	/**
+	 * Select submissions by classes
+	 */
+	public function selection_classes()
+	{
+
+	}
+
+		
 
 
 
