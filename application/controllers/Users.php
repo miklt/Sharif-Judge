@@ -15,7 +15,7 @@ class Users extends CI_Controller
 		parent::__construct();
 		if ( ! $this->session->userdata('logged_in')) // if not logged in
 			redirect('login');
-		if ( $this->user->level <= 2) // permission denied
+		if ( $this->user->level <= 2) // Apenas admins podem ver esta página.
 			show_404();
 	}
 
@@ -31,11 +31,11 @@ class Users extends CI_Controller
 	{
 
 		$data = array(
-			'all_assignments' => $this->assignment_model->all_assignments(),
-			'users' => $this->user_model->get_all_users()
+			'all_assignments' => $this->assignment_model->all_assignments(), // Vetor com todos os assignments.
+			'users' => $this->user_model->get_all_users() // Vetor com todos os usuários.
 		);
 
-		$this->twig->display('pages/admin/users.twig', $data);
+		$this->twig->display('pages/admin/users.twig', $data); // Carrega a view "users".
 	}
 
 
@@ -50,7 +50,7 @@ class Users extends CI_Controller
 	{
 		$data = array(
 			'all_assignments' => $this->assignment_model->all_assignments(),
-		);
+		); // Vetor com todos os assignments.
 		$this->form_validation->set_rules('new_users', 'New Users', 'required');
 		if ($this->form_validation->run())
 		{
@@ -130,6 +130,28 @@ class Users extends CI_Controller
 
 	// ------------------------------------------------------------------------
 
+
+
+
+	/**
+	 * Controller for deleting all students and their submissions
+	 * Called by ajax request
+	 */
+	public function delete_all_students(){
+		$this->user_model->delete_all_students();
+		$data = array(
+			'all_assignments' => $this->assignment_model->all_assignments(), // Vetor com todos os assignments.
+			'users' => $this->user_model->get_all_users() // Vetor com todos os usuários.
+		);
+
+		$this->twig->display('pages/admin/users.twig', $data); // Carrega a view "users".
+	}
+	
+
+
+
+
+	// ------------------------------------------------------------------------
 
 
 

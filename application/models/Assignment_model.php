@@ -51,7 +51,7 @@ class Assignment_model extends CI_Model
 			'finish_time' => date('Y-m-d H:i:s', strtotime($this->input->post('finish_time'))),
 			'extra_time' => $extra_time*60,
 			'late_rule' => $this->input->post('late_rule'),
-			'participants' => $this->input->post('participants')
+			'participants' => $this->input->post('participants'),
 		);
 		if($edit)
 		{
@@ -64,6 +64,14 @@ class Assignment_model extends CI_Model
 		}
 		else
 			$this->db->insert('assignments', $assignment);
+			foreach ($this->input->post('classes') as $class_id){
+				$assignments_classes = array(
+					'assignment_id' => $id,
+					'class_id' => $class_id
+				);
+				$this->db->insert('assignments_classes', $assignments_classes);
+			}
+
 
 		/* **** Adding problems to "problems" table **** */
 
@@ -81,6 +89,7 @@ class Assignment_model extends CI_Model
 		$dc = $this->input->post('diff_cmd');
 		$da = $this->input->post('diff_arg');
 		$uo = $this->input->post('is_upload_only');
+		$weight = $this->input->post('weight');
 		if ($uo === NULL)
 			$uo = array();
 		for ($i=1; $i<=$this->input->post('number_of_problems'); $i++)
@@ -119,6 +128,7 @@ class Assignment_model extends CI_Model
 				'allowed_languages' => $ft[$i-1],
 				'diff_cmd' => $dc[$i-1],
 				'diff_arg' => $da[$i-1],
+				'weight'   => $weight[$i-1]
 			);
 			$this->db->insert('problems', $problem);
 		}
@@ -188,6 +198,60 @@ class Assignment_model extends CI_Model
 			$assignments[$item['id']] = $item;
 		}
 		return $assignments;
+	}
+
+	// ------------------------------------------------------------------------
+
+
+
+	/**
+	 * All Assignments of user classes
+	 *
+	 * Returns a list of all assignments and their information
+	 *
+	 * @return mixed
+	 */
+	public function all_assignments_classes($classes_id)
+	{
+
+		$this->db->select('assignment_id');
+		$this->db->where_in('class_id', $classes_id);
+		$query_assignments_classes = $this->db->get('assignments_classes');
+		$assignments_id = array();
+		foreach ($query_assignments_classes->result() as $row) {
+			array_push($assignments_id, $row->assignment_id);
+		}
+
+		$this->db->where_in('id', $assignments_id);
+		$result = $this->db->order_by('id')->get('assignments')->result_array();
+		$assignments = array();
+		foreach ($result as $item)
+		{
+			$assignments[$item['id']] = $item;
+		}
+		return $assignments;
+	}
+
+
+
+
+	// ------------------------------------------------------------------------
+
+
+
+	/**
+	 * All Assignments
+	 *
+	 * Returns a list of all assignments id
+	 *
+	 * @return mixed
+	 */
+	public function get_all_assignments_id()
+	{
+		$query = $this->db->select('id')->get('assignments');
+		if ($query->num_rows() <= 0)
+			return FALSE;
+		return $query->result();
 	}
 
 
@@ -275,7 +339,7 @@ class Assignment_model extends CI_Model
 	public function assignment_info($assignment_id)
 	{
 		$query = $this->db->get_where('assignments', array('id'=>$assignment_id));
-		if ($query->num_rows() != 1)
+		if ($query->num_rows() != 1){
 			return array(
 				'id' => 0,
 				'name' => 'Not Selected',
@@ -283,7 +347,15 @@ class Assignment_model extends CI_Model
 				'extra_time' => 0,
 				'problems' => 0
 			);
-		return $query->row_array();
+		}
+		$info = $query->row_array();
+		$query_classes = $this->db->get_where('assignments_classes', array('assignment_id'=>$assignment_id));
+		$classes = array();
+		foreach($query_classes->result_array() as $class){
+			array_push($classes, $class['class_id']);
+		}
+		$info['classes_selected'] = $classes;
+		return $info;
 	}
 
 
@@ -295,7 +367,7 @@ class Assignment_model extends CI_Model
 	/**
 	 * Is Participant
 	 *
-	 * Returns TRUE if $username if one of the $participants
+	 * Returns TRUE if $username is one of the $participants
 	 * Examples for participants: "ALL" or "user1, user2,user3"
 	 *
 	 * @param $participants
@@ -421,6 +493,26 @@ class Assignment_model extends CI_Model
 
 	// ------------------------------------------------------------------------
 
+
+	/**
+		 * Export assignments and problems as a CSV file 
+		 *
+		 *
+		 * @return $mixed
+		 */
+		public function exportAssignments_csv()
+		{
+			$this->load->dbutil();
+			$queryAssignments = $this->db->query("SELECT * FROM shj_assignments");
+			$queryProblems = $this->db->query("SELECT * FROM shj_problems");
+			return array(
+				'backupAssignments' => $this->dbutil->csv_from_result($queryAssignments),
+				'backupProblems' => $this->dbutil->csv_from_result($queryProblems)
+			);
+		}
+
+
+	// ------------------------------------------------------------------------
 
 
 	/**

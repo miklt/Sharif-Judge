@@ -86,22 +86,11 @@ $(document).ready(function(){
 		{{ form_error('output_size_limit', '<div class="shj_error">', '</div>') }}
 	</p>
 	<p class="input_p">
-		<label for="form_rpp_all">Results Per Page</label>
-		<input id="form_rpp_all" type="text" name="rpp_all" class="sharif_input medium" value="{{ results_per_page_all }}"/>
-		<p class="form_comment clear">In "All Submissions"<br>Enter 0 for no limit</p>
-		{{ form_error('results_per_page_all', '<div class="shj_error">', '</div>') }}
-	</p>
-	<p class="input_p">
-		<label for="form_rpp_final">Results Per Page</label>
-		<input id="form_rpp_final" type="text" name="rpp_final" class="sharif_input medium" value="{{ results_per_page_final }}"/>
-		<p class="form_comment clear">In "Final Submissions"<br>Enter 0 for no limit</p>
-		{{ form_error('results_per_page_final', '<div class="shj_error">', '</div>') }}
-	</p>
-	<p class="input_p">
 		<input id="form_en_reg" type="checkbox" name="enable_registration" value="1" {{ enable_registration ? 'checked' }}/>
 		<label for="form_en_reg">Registration</label><br>
 		<span class="form_comment">Open Public Registration.</span>
 	</p>
+
 	<p class="input_p">
 		<label for="form_reg_code">Registration Code</label>
 		<input id="form_reg_code" type="text" name="registration_code" class="sharif_input medium" value="{{ registration_code }}"/><br>
@@ -118,6 +107,32 @@ $(document).ready(function(){
 		<label for="form_late_rule">Default Coefficient Rule</label>
 		<span class="form_comment clear">PHP script without &lt;?php ?&gt; tags</span><br>
 		<textarea id="form_late_rule" name="default_late_rule" rows="15" class="sharif_input add_text clear">{{ default_late_rule }}</textarea>
+	</p>
+
+	<h2 class="shj_form"> Interface </h2>
+	<p class="input_p">
+		<label for="form_rpp_all">Results Per Page</label>
+		<input id="form_rpp_all" type="text" name="rpp_all" class="sharif_input medium" value="{{ results_per_page_all }}"/>
+		<p class="form_comment clear">In "All Submissions"<br>Enter 0 for no limit</p>
+		{{ form_error('results_per_page_all', '<div class="shj_error">', '</div>') }}
+	</p>
+	<p class="input_p">
+		<label for="form_rpp_final">Results Per Page</label>
+		<input id="form_rpp_final" type="text" name="rpp_final" class="sharif_input medium" value="{{ results_per_page_final }}"/>
+		<p class="form_comment clear">In "Final Submissions"<br>Enter 0 for no limit</p>
+		{{ form_error('results_per_page_final', '<div class="shj_error">', '</div>') }}
+	</p>
+
+	<p class="input_p">
+		<input id="form_en_score" type="checkbox" name="enable_scoreboard" value="1" {{ enable_scoreboard ? 'checked' }}/>
+		<label for="form_en_score">Show Scoreboard</label><br>
+		<span class="form_comment">Allow Scoreboard tab for students and instructors.</span>
+	</p>
+
+	<p class="input_p">
+		<input id="form_en_score" type="checkbox" name="final_grade" value="1" {{ final_grade ? 'checked' }}/>
+		<label for="form_en_score">Show final grade</label><br>
+		<span class="form_comment">Show final grade on final submissions for students and instructors.</span>
 	</p>
 
 	<h2 class="shj_form">Email</h2>

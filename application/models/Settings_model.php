@@ -25,7 +25,7 @@ class Settings_model extends CI_Model
 
 	public function get_setting($key)
 	{
-		return $this->db->select('shj_value')->get_where('settings', array('shj_key'=>$key))->row()->shj_value;
+		return $this->db->select('shj_value')->get_where('settings', array('shj_key'=>$key))->row()->shj_value; // Retorna um vetor com os "shj_values" da tabela "shj_settings" nos quais "shj_key" seja igual a $key. 
 	}
 
 
@@ -64,6 +64,12 @@ class Settings_model extends CI_Model
 		}
 	}
 
+	public function add_key() {
+		$result = $this->db->insert_batch('settings', array(
+			array('shj_key' => 'final_grade',
+						'shj_value' => '0')
+			));
+	}
 
 
 }

@@ -5,7 +5,10 @@
 
 ### Part 1 - Setting up your environment
 - Install a Linux distro
-- Install the LAMP package - Apache2, PHP and Postgres.
+- Install the LAMP package - Apache2, PHP5 (PHP7 does not work with PHPExcel) and MySql. Make sure that your current version is PHP5 typing:
+```sh
+$ php -v
+```
 - Check if it is all right with Apache installation just typing your server address in your browser, e.g., 
 ```sh
 127.0.0.1
@@ -30,13 +33,17 @@ var/www/html
 
 
 ### Part 3 - Setting up a database
-- Access Postgres's shell by typing
+- Access mysql's shell by typing (where **** is your password defined at the mysql's installation process)
 ```sh
-$ -i -u postgres 
+$ mysql -uroot -p**** 
 ```
 - Create a database for the Judge typing 
 ```sh
-$ createdb Judge;
+$ create database Judge;
+```
+- Exit the shell by typing 
+```sh
+$ exit
 ```
 
 
@@ -46,9 +53,9 @@ $ createdb Judge;
 ```sh
 /application/config/database.php 
 ```
-- Give to the Judge folder access to be writable by PHP 
+- Give to Twig folder access to be writable by PHP 
 ```sh
-$ chown -R www-data:www-data var/www/html/Judge
+$ chown -R www-data:www-data /application/cache/Twig
 ```
 - In /application/config/config.php change line 42 to set the base_url as the URL for the website
 

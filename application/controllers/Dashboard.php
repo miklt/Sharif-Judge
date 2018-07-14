@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 /**
  * Sharif Judge online judge
  * @file Dashboard.php
@@ -13,11 +16,11 @@ class Dashboard extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		if ( ! $this->db->table_exists('sessions'))
+		if ( ! $this->db->table_exists('sessions')) // Se não existir banco de dados, redirecionar para a página de instalação.
 			redirect('install');
-		if ( ! $this->session->userdata('logged_in')) // if not logged in
+		if ( ! $this->session->userdata('logged_in')) // Se não estiver logado, redirecionar para a página de login.
 			redirect('login');
-		$this->load->model('notifications_model')->helper('text');
+		$this->load->model('notifications_model')->helper('text'); // Carregar "notifications_model".
 	}
 
 
@@ -27,13 +30,13 @@ class Dashboard extends CI_Controller
 	public function index()
 	{
 		$data = array(
-			'all_assignments'=>$this->assignment_model->all_assignments(),
+			'all_assignments'=>$this->assignment_model->all_assignments(), // Vetor com todos os assignments.
 			'week_start'=>$this->settings_model->get_setting('week_start'),
-			'wp'=>$this->user->get_widget_positions(),
-			'notifications' => $this->notifications_model->get_latest_notifications()
+			'wp'=>$this->user->get_widget_positions(), // Retorna as posições dos widgets específicas do usuário logado.
+			'notifications' => $this->notifications_model->get_latest_notifications() // Retorna as últimas dez notificações.
 		);
 
-		// detecting errors:
+		// detecting errors in the installation:
 		$data['errors'] = array();
 		if($this->user->level === 3){
 			$path = $this->settings_model->get_setting('assignments_root');
@@ -49,7 +52,7 @@ class Dashboard extends CI_Controller
 				array_push($data['errors'], 'The folder <code>"'.$path.'"</code> is not writable by PHP. Make it writable. But make sure that this folder is only accessible by you.');
 		}
 
-		$this->twig->display('pages/dashboard.twig', $data);
+		$this->twig->display('pages/dashboard.twig', $data); // Carrega a view do Dashboard.
 	}
 
 

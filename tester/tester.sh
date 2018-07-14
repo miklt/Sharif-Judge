@@ -298,7 +298,7 @@ if [ "$EXT" = "c" ] || [ "$EXT" = "cpp" ]; then
 	ISCOMPRESSED=false
 	for compressedext in zip rar 7z; do
 		if [ -f "$PROBLEMPATH/$UN/$FILENAME.$compressedext" ]; then
-			7z x "$PROBLEMPATH/$UN/$FILENAME.$compressedext" >/dev/null
+			7z e "$PROBLEMPATH/$UN/$FILENAME.$compressedext" >/dev/null
 			
 			# Concatenate all *.cpp and *.h files into a single file
 			# This allow file visualization on the web interface

@@ -54,54 +54,62 @@ $(document).ready(function(){
 
 
 {% block main_content %}
-<div class="problem_description">
-	{{ problem.description|raw }}
-</div>
-
-<div id="right_sidebar">
-
-	<div class="problems_widget">
-		<p dir="auto"><i class="fa fa-file-text fa-lg color9"></i> {{ description_assignment.name }}</p>
-
-		{% if all_problems|length == 0 %}
-			<p style="text-align: center;">Nothing to show...</p>
-		{% endif %}
-
-		<table class="sharif_table">
-			<thead>
-			<tr>
-				<th rowspan="2">#</th>
-				<th rowspan="2">Problem</th>
-				<th rowspan="2">Score</th>
-				<th rowspan="2">Upload<br>Only</th>
-			</tr>
-			</thead>
-			{% for one_problem in all_problems %}
-				<tr{{ problem.id == one_problem.id ? ' class="hl"' }}>
-					<td>{{ one_problem.id }}</td>
-					<td>
-						<a dir="auto" href="{{ site_url("problems/#{description_assignment.id}/#{one_problem.id}") }}">{{ one_problem.name }}</a>
-					</td>
-					<td>{{ one_problem.score }}</td>
-					<td>{{ one_problem.is_upload_only ? 'Yes' : 'No' }}</td>
-				</tr>
-			{% endfor %}
-		</table>
+{% if error != 'none' and form_validation %}
+{<p>{{ error }}</p>
+{% else %}
+	<div class="problem_description">
+		{{ problem.description|raw }}
 	</div>
 
-	{% if can_submit %}
-	<div class="problems_widget">
-		<p><i class="fa fa-upload fa-lg color11"></i> Submit</p>
-		{{ form_open_multipart('submit') }}
-		<input type="hidden" name="problem" value="{{ problem.id }}"/>
+	<div id="right_sidebar">
 
-		<p class="input_p">
-			<select id="languages" name="language" class="sharif_input full-width">
-				<option value="0" selected="selected">-- Select Language --</option>
-				{% for l in problem.allowed_languages %}
-					<option value="{{ l }}">{{ l }}</option>
+		<div class="problems_widget">
+			<p dir="auto"><i class="fa fa-file-text fa-lg color9"></i> {{ description_assignment.name }}</p>
+
+			{% if all_problems|length == 0 %}
+				<p style="text-align: center;">Nothing to show...</p>
+			{% endif %}
+
+			<table class="sharif_table">
+				<thead>
+				<tr>
+					<th rowspan="2">#</th>
+					<th rowspan="2">Problem</th>
+					<th rowspan="2">Score</th>
+					<th rowspan="2">Upload<br>Only</th>
+				</tr>
+				</thead>
+				{% for one_problem in all_problems %}
+					<tr{{ problem.id == one_problem.id ? ' class="hl"' }}>
+						<td>{{ one_problem.id }}</td>
+						<td>
+							<a dir="auto" href="{{ site_url("problems/#{description_assignment.id}/#{one_problem.id}") }}">{{ one_problem.name }}</a>
+						</td>
+						<td>{{ one_problem.score }}</td>
+						<td>{{ one_problem.is_upload_only ? 'Yes' : 'No' }}</td>
+					</tr>
 				{% endfor %}
-			</select>
+			</table>
+		</div>
+
+		{% if can_submit %}
+		<div class="problems_widget">
+			<p><i class="fa fa-upload fa-lg color11"></i> Submit</p>
+			{{ form_open_multipart('problems/form_validation') }}
+			<input type="hidden" name="problem" value="{{ problem.id }}"/>
+
+			<p class="input_p">
+			{% if problem.allowed_languages|length > 1%}
+				<select id="languages" name="language" class="sharif_input full-width">
+					<option value="0" selected="selected">-- Select Language --</option>
+					{% for l in problem.allowed_languages %}
+						<option value="{{ l }}">{{ l }}</option>
+					{% endfor %}
+				</select>
+			{% else %}
+				<p>Language: {{problem.allowed_languages[0]}}</p>
+				<input type="hidden" name="language" value="{{problem.allowed_languages[0]}}">
+			{% endif %}
 		</p>
 		<p class="input_p">
 			<input type="file" id="file" class="sharif_input full-width" name="userfile"/>
@@ -111,7 +119,7 @@ $(document).ready(function(){
 		</p>
 		</form>
 	</div>
+		{% endif %}
 	{% endif %}
-
-</div>
+	</div>
 {% endblock %}  {# main_content #}
