@@ -214,9 +214,9 @@ class Assignment_model extends CI_Model
 	public function all_assignments_classes($classes_id)
 	{
 		if ($classes_id == []) {
-			return $this->all_assignments();
+			return;
 		}
-		
+
 		$this->db->select('assignment_id');
 		$this->db->where_in('class_id', $classes_id);
 		$query_assignments_classes = $this->db->get('assignments_classes');
@@ -224,7 +224,9 @@ class Assignment_model extends CI_Model
 		foreach ($query_assignments_classes->result() as $row) {
 			array_push($assignments_id, $row->assignment_id);
 		}
-
+		if ($assignments_id == []) {
+			return;
+		}
 		$this->db->where_in('id', $assignments_id);
 		$result = $this->db->order_by('id')->get('assignments')->result_array();
 		$assignments = array();
