@@ -47,15 +47,17 @@ class Assignments extends CI_Controller
 				'all_assignments' => $this->assignment_model->all_assignments_classes($classes_id),
 				'messages' => $this->messages
 			);
-		}else{
+		}
+		else{
 			$data = array(
 				'all_assignments' => $this->assignment_model->all_assignments(),
 				'messages' => $this->messages,
 				'user_classes' => $this->class_model->get_parameters_Classes_user($user_id)
 			);
 		}
-		foreach ($data['all_assignments'] as &$item)
-		{
+		if ($data['all_assignments'] != []) {
+			foreach ($data['all_assignments'] as &$item)
+			{
 			$extra_time = $item['extra_time'];
 			$delay = shj_now()-strtotime($item['finish_time']);;
 			ob_start();
@@ -66,6 +68,7 @@ class Assignments extends CI_Controller
 			ob_end_clean();
 			$item['coefficient'] = $coefficient;
 			$item['finished'] = ($delay > $extra_time);
+			}
 		}
 		$this->twig->display('pages/assignments.twig', $data);	
 	}
