@@ -73,11 +73,23 @@ class Problems extends CI_Controller
       $assignment = $this->assignment_model->assignment_info($assignment_id);
 
       $data = array(
-        'all_assignments' => $this->all_assignments,
         'all_problems' => $this->assignment_model->all_problems($assignment_id),
         'description_assignment' => $assignment,
         'can_submit' => TRUE
       );
+
+      //Obtendo todos os assignments para top-bar:
+		$this->load->model('class_model');
+		$user_id = $this->user_model->username_to_user_id($this->user->username);
+		if ($this->user->level == 0){//Estudantes veem apenas os assignments de sua própria classe
+			$classes_id = array();
+			foreach ($this->class_model->get_parameters_Classes_user($user_id) as $class){
+				array_push($classes_id, $class->class_id);
+			}
+			$data['all_assignments'] = $this->assignment_model->all_assignments_classes($classes_id);
+		} else{
+			$data['all_assignments'] = $this->assignment_model->all_assignments();
+		}
 
       if ( ! is_numeric($problem_id) || $problem_id < 1 || $problem_id > $data['description_assignment']['problems'])
         show_404();

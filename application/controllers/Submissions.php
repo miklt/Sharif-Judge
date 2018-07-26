@@ -380,7 +380,6 @@ class Submissions extends CI_Controller
 
 		$data = array(
 			'view' => 'final',
-			'all_assignments' => $this->assignment_model->all_assignments(),
 			'problems' => $this->problems,
 			'submissions' => $submissions,
 			'excel_link' => site_url('submissions/final_excel'.($this->filter_user?'/user/'.$this->filter_user:'').($this->filter_problem?'/problem/'.$this->filter_problem:'')),
@@ -395,6 +394,19 @@ class Submissions extends CI_Controller
 			'user_classes' => $this->class_model->get_parameters_Classes_user($user_id),
 			'submission_selection' => $this->input->post('submission_selection')
 		);
+
+		//Obtendo todos os assignments para top-bar:
+		$this->load->model('class_model');
+		$user_id = $this->user_model->username_to_user_id($this->user->username);
+		if ($this->user->level == 0){//Estudantes veem apenas os assignments de sua própria classe
+			$classes_id = array();
+			foreach ($this->class_model->get_parameters_Classes_user($user_id) as $class){
+				array_push($classes_id, $class->class_id);
+			}
+			$data['all_assignments'] = $this->assignment_model->all_assignments_classes($classes_id);
+		} else{
+			$data['all_assignments'] = $this->assignment_model->all_assignments();
+		}
 
 
 		$this->twig->display('pages/submissions.twig', $data);
@@ -465,7 +477,6 @@ class Submissions extends CI_Controller
 
 		$data = array(
 			'view' => 'all',
-			'all_assignments' => $this->assignment_model->all_assignments(),
 			'problems' => $this->problems,
 			'submissions' => $submissions,
 			'excel_link' => site_url('submissions/all_excel'.($this->filter_user?'/user/'.$this->filter_user:'').($this->filter_problem?'/problem/'.$this->filter_problem:'')),
@@ -475,6 +486,19 @@ class Submissions extends CI_Controller
 			'user_classes' => $this->class_model->get_parameters_Classes_user($user_id),
 			'submission_selection' => $this->input->post('submission_selection')
 		);
+
+		//Obtendo todos os assignments para top-bar:
+		$this->load->model('class_model');
+		$user_id = $this->user_model->username_to_user_id($this->user->username);
+		if ($this->user->level == 0){//Estudantes veem apenas os assignments de sua própria classe
+			$classes_id = array();
+			foreach ($this->class_model->get_parameters_Classes_user($user_id) as $class){
+				array_push($classes_id, $class->class_id);
+			}
+			$data['all_assignments'] = $this->assignment_model->all_assignments_classes($classes_id);
+		} else{
+			$data['all_assignments'] = $this->assignment_model->all_assignments();
+		}
 
 		$this->twig->display('pages/submissions.twig', $data);
 	}
