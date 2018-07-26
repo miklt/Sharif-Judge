@@ -49,19 +49,19 @@ class Problems extends CI_Controller
 	// ------------------------------------------------------------------------
 
 
-	/**
-	 * Displays detail description of given problem
-	 *
-	 * @param int $assignment_id
-	 * @param int $problem_id
-	 */
-	public function index($assignment_id = NULL, $problem_id = 1)
-	{
+  /**
+  * Displays detail description of given problem
+  *
+  * @param int $assignment_id
+  * @param int $problem_id
+  */
+  public function index($assignment_id = NULL, $problem_id = 1)
+  {
 
-		// If no assignment is given, use selected assignment
-		if ($assignment_id === NULL)
-			$assignment_id = $this->user->selected_assignment['id'];
-		if ($assignment_id == 0){
+    // If no assignment is given, use selected assignment
+    if ($assignment_id === NULL)
+      $assignment_id = $this->user->selected_assignment['id'];
+    if ($assignment_id == 0){
 			//show_error('No assignment selected.');
       $data['problem'] = array(
         'id' => NULL,
@@ -77,19 +77,6 @@ class Problems extends CI_Controller
         'description_assignment' => $assignment,
         'can_submit' => TRUE
       );
-
-      //Obtendo todos os assignments para top-bar:
-		$this->load->model('class_model');
-		$user_id = $this->user_model->username_to_user_id($this->user->username);
-		if ($this->user->level == 0){//Estudantes veem apenas os assignments de sua própria classe
-			$classes_id = array();
-			foreach ($this->class_model->get_parameters_Classes_user($user_id) as $class){
-				array_push($classes_id, $class->class_id);
-			}
-			$data['all_assignments'] = $this->assignment_model->all_assignments_classes($classes_id);
-		} else{
-			$data['all_assignments'] = $this->assignment_model->all_assignments();
-		}
 
       if ( ! is_numeric($problem_id) || $problem_id < 1 || $problem_id > $data['description_assignment']['problems'])
         show_404();
@@ -110,6 +97,19 @@ class Problems extends CI_Controller
         $data['problem']['description'] = file_get_contents($path);
     }
 
+    //Obtendo todos os assignments para top-bar:
+		$this->load->model('class_model');
+		$user_id = $this->user_model->username_to_user_id($this->user->username);
+		if ($this->user->level == 0){//Estudantes veem apenas os assignments de sua própria classe
+			$classes_id = array();
+			foreach ($this->class_model->get_parameters_Classes_user($user_id) as $class){
+				array_push($classes_id, $class->class_id);
+			}
+			$data['all_assignments'] = $this->assignment_model->all_assignments_classes($classes_id);
+		} else{
+			$data['all_assignments'] = $this->assignment_model->all_assignments();
+		}
+
     if ( $assignment_id == 0
       OR ( $this->user->level == 0 && ! $assignment['open'] )
       OR shj_now() < strtotime($assignment['start_time'])
@@ -117,6 +117,14 @@ class Problems extends CI_Controller
       OR ! $this->assignment_model->is_participant($assignment['participants'], $this->user->username)
     )
       $data['can_submit'] = FALSE;
+
+    $possible_assignments_ids = array();
+    foreach ($data['all_assignments'] as $possible_assignment) {
+    	array_push($possible_assignments_ids, $possible_assignment['id']);    
+    }
+    if(!in_array($assignment_id, $possible_assignments_ids) && ($this->user->level == 0)){
+    	show_404();
+    }
 	  $this->twig->display('pages/problems.twig', $data);
 	}
 

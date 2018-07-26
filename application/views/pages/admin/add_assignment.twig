@@ -132,7 +132,7 @@
 			<span class="form_comment">Select here all classes that are doing this assignment. To select multiple classes, press Ctrl.</span>
 		</label>
 		<input id="all_classes" name="all_classes" type="checkbox" {{ edit_assignment.classes_selected|length == 0 ? 'checked="true"'}}> Select all students</input><br>
-		<select id="classes" name="classes[]" multiple class="sharif_input medium">
+		<select id="classes" name="classes[]" multiple class="sharif_input medium" {{edit_assignment.classes_selected|length == 0 ? 'disabled'}}>
 			{% for class in classes %}
 				<option class="possible_classes" value="{{class.class_id}}" 
 				{{ (class.class_id in edit_assignment.classes_selected) ? 'selected="selected"' }}
