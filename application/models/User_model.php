@@ -694,7 +694,7 @@ class User_model extends CI_Model
 	 */
 	public function get_all_assistants()
 	{
-		$roles = array('instructor', 'head_instructor');
+		$roles = array('instructor', 'head_instructor', 'admin');
 		$this->db->where_in('role', $roles);
 		$query = $this->db->get('users');
 		if ($query->num_rows() <= 0)

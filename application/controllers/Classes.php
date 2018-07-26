@@ -22,15 +22,20 @@ class Classes extends CI_Controller
 	public function index()
 	{
 		$this->load->model('class_model');
+		$this->load->model('assignment_model');
 		
 		if ($this->user->level == 0){//Estudantes veem apenas sua própria classe
 			$user_id = $this->user_model->username_to_user_id($this->user->username);
 			$data = array(
+				'all_assignments' => $this->assignment_model->all_assignments(),
 				'classes' => $this->class_model->getClasses_user($user_id),
 			);
 			$this->twig->display('pages/classes.twig', $data); 
 		} else {
-			$data = array('classes' => $this->class_model->getClasses());
+			$data = array(
+				'all_assignments' => $this->assignment_model->all_assignments(),
+				'classes' => $this->class_model->getClasses()
+			);
 			$this->twig->display('pages/classes.twig', $data); // Carrega a view "classes".
 		}
 	}

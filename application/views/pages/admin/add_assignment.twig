@@ -131,10 +131,12 @@
 		<label for="form_Classes">Classes<br>
 			<span class="form_comment">Select here all classes that are doing this assignment. To select multiple classes, press Ctrl.</span>
 		</label>
-		<input id="all_classes" name="all_classes" type="checkbox">Select all classes</input><br>
+		<input id="all_classes" name="all_classes" type="checkbox" {{ edit_assignment.classes_selected|length == 0 ? 'checked="true"'}}> Select all students</input><br>
 		<select id="classes" name="classes[]" multiple class="sharif_input medium">
 			{% for class in classes %}
-				<option class="possible_classes" value="{{class.class_id}}" {{ (class.class_id in edit_assignment.classes_selected) ? 'selected="selected"' }}>{{class.class_name}}</option>
+				<option class="possible_classes" value="{{class.class_id}}" 
+				{{ (class.class_id in edit_assignment.classes_selected) ? 'selected="selected"' }}
+				>{{class.class_name}}</option>
 			{% endfor %}
 		</select>
 		{{ week_start == 1 ? 'selected="selected"' }}
@@ -234,7 +236,7 @@
 {{ form_error('diff_cmd[]', '<div class="shj_error">', '</div>') }}
 {{ form_error('diff_arg[]', '<div class="shj_error">', '</div>') }}
 <p class="input_p">
-	<input type="submit" value="{{ edit ? 'Edit' : 'Add' }} Assignment" class="sharif_input"/>
+	<input id="submit_button" type="submit" value="{{ edit ? 'Edit' : 'Add' }} Assignment" class="sharif_input"/>
 </p>
 </form>
 {% endblock %}  {# main_content #}

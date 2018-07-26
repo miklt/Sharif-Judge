@@ -19,6 +19,7 @@ class Submissions extends CI_Controller
 	private $filter_user;
 	private $filter_problem;
 	private $page_number;
+	private $submission_selection;
 
 	// ------------------------------------------------------------------------
 
@@ -56,11 +57,11 @@ class Submissions extends CI_Controller
 	/**
 	 * Uses PHPExcel library to generate excel file of submissions
 	 */
-	private function _download_excel($view)
+	private function _download_excel($view, $submission_selection)
 	{
 		if ( ! in_array($view, array('all', 'final')))
 			exit;
-
+		$this->load->model('class_model');
 		$now = shj_now_str(); // current time
 
 		// Load PHPExcel library
@@ -120,7 +121,20 @@ class Submissions extends CI_Controller
 		/*if ($view === 'final')
 			$items = $this->submit_model->get_final_submissions($this->user->selected_assignment['id'], $this->user->level, $this->user->username, NULL, $this->filter_user, $this->filter_problem);
 		else*/
-		$itemsOld = $this->submit_model->get_all_submissions($this->user->selected_assignment['id'], $this->user->level, $this->user->username, NULL, $this->filter_user, $this->filter_problem);
+
+		//Select submissions by classes:
+		$class_id = $submission_selection;
+		if($class_id != 0){
+			$class = $this->class_model->getClass($class_id);
+			$students_usernames = array();
+			foreach($class->new_students as $student){
+				array_push($students_usernames, $student->username);
+			}
+		}else{
+			$students_usernames = NULL;
+		}
+
+		$itemsOld = $this->submit_model->get_all_submissions($this->user->selected_assignment['id'], $this->user->level, $this->user->username, NULL, $this->filter_user, $this->filter_problem, $students_usernames);
 		$items = array_reverse($itemsOld);
 		$names = $this->user_model->get_names();
 
@@ -270,16 +284,16 @@ class Submissions extends CI_Controller
 
 
 
-	public function final_excel()
+	public function final_excel($submission_selection = 0)
 	{
-		$this->_download_excel('final');
+		$this->_download_excel('final', $submission_selection);
 	}
 
 
 
-	public function all_excel()
+	public function all_excel($submission_selection = 0)
 	{
-		$this->_download_excel('all');
+		$this->_download_excel('all', $submission_selection);
 	}
 
 
@@ -316,7 +330,8 @@ class Submissions extends CI_Controller
 		$this->load->library('shj_pagination', $config);
 
 		//Select submissions by classes:
-		$class_id = $this->input->post('submission_selection');
+		$this->submission_selection = $this->input->post('submission_selection');
+		$class_id = $this->submission_selection;
 		if($class_id != 0){
 			$class = $this->class_model->getClass($class_id);
 			$students_usernames = array();
@@ -419,7 +434,8 @@ class Submissions extends CI_Controller
 		$this->load->library('shj_pagination', $config);
 
 		//Select submissions by classes:
-		$class_id = $this->input->post('submission_selection');
+		$this->submission_selection = $this->input->post('submission_selection');
+		$class_id = $this->submission_selection;
 		if($class_id != 0){
 			$class = $this->class_model->getClass($class_id);
 			$students_usernames = array();
@@ -463,22 +479,6 @@ class Submissions extends CI_Controller
 		$this->twig->display('pages/submissions.twig', $data);
 	}
 
-
-
-	// ------------------------------------------------------------------------
-
-
-
-
-	/**
-	 * Select submissions by classes
-	 */
-	public function selection_classes()
-	{
-
-	}
-
-		
 
 
 

@@ -64,13 +64,23 @@ class Assignment_model extends CI_Model
 		}
 		else
 			$this->db->insert('assignments', $assignment);
+	
+		if($this->input->post("all_classes")){
+				$assignments_classes = array(
+					'assignment_id' => $id,
+					'class_id' => NULL,
+				);
+				$this->db->insert('assignments_classes', $assignments_classes);
+		}else{
 			foreach ($this->input->post('classes') as $class_id){
 				$assignments_classes = array(
 					'assignment_id' => $id,
-					'class_id' => $class_id
+					'class_id' => $class_id,
 				);
 				$this->db->insert('assignments_classes', $assignments_classes);
 			}
+		}
+			
 
 
 		/* **** Adding problems to "problems" table **** */
@@ -213,12 +223,12 @@ class Assignment_model extends CI_Model
 	 */
 	public function all_assignments_classes($classes_id)
 	{
-		if ($classes_id == []) {
-			return;
-		}
-
 		$this->db->select('assignment_id');
-		$this->db->where_in('class_id', $classes_id);
+		if($classes_id == []){
+			$this->db->where('class_id', NULL);
+		}else{
+			$this->db->where_in('class_id', $classes_id)->or_where('class_id', NULL);
+		}
 		$query_assignments_classes = $this->db->get('assignments_classes');
 		$assignments_id = array();
 		foreach ($query_assignments_classes->result() as $row) {
@@ -357,6 +367,10 @@ class Assignment_model extends CI_Model
 		$query_classes = $this->db->get_where('assignments_classes', array('assignment_id'=>$assignment_id));
 		$classes = array();
 		foreach($query_classes->result_array() as $class){
+			if($class['class_id'] == NULL ){
+				$info['classes_selected'] = NULL;
+				return $info;
+			}
 			array_push($classes, $class['class_id']);
 		}
 		$info['classes_selected'] = $classes;
@@ -514,6 +528,21 @@ class Assignment_model extends CI_Model
 				'backupAssignments' => $this->dbutil->csv_from_result($queryAssignments),
 				'backupProblems' => $this->dbutil->csv_from_result($queryProblems)
 			);
+		}
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+		 * Delete rows of table assignments_classes of specific assignment_id 
+		 *
+		 * This function is called when editing an assignment 
+		 * 
+		 */
+
+		public function delete_assignments_classes_rows($assignment_id)
+		{
+			$this->db->delete('assignments_classes', array('assignment_id'=>$assignment_id));
 		}
 
 

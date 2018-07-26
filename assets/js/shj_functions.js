@@ -344,11 +344,9 @@ $(document).ready(function () {
 	$("#top_bar").hoverIntent({
 		over: function () {
 			$(this).children(".top_menu").show();
-			$(this).addClass('shj_white');
 		},
 		out: function () {
 			$(this).children(".top_menu").hide();
-			$(this).removeClass('shj_white');
 		},
 		selector: '.top_object.shj_menu'
 	});
@@ -486,4 +484,3 @@ $(document).ready(function(){
 $(document).ready(function(){
 	$('input').attr('dir', 'auto');
 });
-

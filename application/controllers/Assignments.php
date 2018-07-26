@@ -487,10 +487,14 @@ class Assignments extends CI_Controller
 
 		// Preparing variables
 
-		if ($this->edit)
+		if ($this->edit){
 			$the_id = $this->edit_assignment;
-		else
+			//Deletando as linhas da tabela assignments_classes para que sejam readicionadas durante a edição
+			$this->assignment_model->delete_assignments_classes_rows($the_id);
+		}
+		else{
 			$the_id = $this->assignment_model->new_assignment_id();
+		}
 
 		$assignments_root = rtrim($this->settings_model->get_setting('assignments_root'), '/');
 		$assignment_dir = "$assignments_root/assignment_{$the_id}";

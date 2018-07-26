@@ -299,11 +299,11 @@ class Install extends CI_Controller
 			//create table 'assignments_classes'
 			$fields = array(
 				'assignment_id' => array('type' => 'INT', 'constraint' => 11),
-				'class_id' => array('type' => 'INT', 'constraint' => 11),
+				'class_id' => array('type' => 'INT', 'constraint' => 11, 'null' => TRUE),
 			);
 			$this->dbforge->add_field($fields);
-			$this->dbforge->add_key('assignment_id', TRUE);
-			$this->dbforge->add_key('class_id', TRUE);
+			$this->dbforge->add_key('assignment_id');
+			$this->dbforge->add_key('class_id');
 			if ( ! $this->dbforge->create_table('assignments_classes', TRUE))
 				show_error("Error creating database table ".$this->db->dbprefix('assignments_classes'));
 
