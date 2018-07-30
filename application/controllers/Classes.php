@@ -122,7 +122,7 @@ class Classes extends CI_Controller
 		}
 
 		//Estudantes não podem visualizar outras classes:
-    if(!in_array($class_id, $classes_id) && ($this->user->level == 0)){
+    if(($this->user->level == 0) && (!in_array($class_id, $classes_id))){
     	show_404();
     }
 		$this->twig->display('pages/class.twig', $data); 

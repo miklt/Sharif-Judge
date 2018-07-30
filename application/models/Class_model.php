@@ -143,6 +143,7 @@ class Class_model extends CI_Model
 	 */
 	public function getClasses()
 	{
+		$this->db->order_by('class_name', 'ASC');
 		$query_classes = $this->db->get('classes');
 		$classes = array();
 		$teachers = array();
@@ -197,6 +198,7 @@ class Class_model extends CI_Model
 	 */
 	public function get_parameters_Classes()
 	{
+		$this->db->order_by('class_name', 'ASC');
 		$query_classes = $this->db->get('classes');
 		$classes = array();
 
@@ -236,6 +238,7 @@ class Class_model extends CI_Model
 		if ($classes_id) {
 			$this->db->where_in('id', $classes_id);	
 		}
+		$this->db->order_by('class_name', 'ASC');
 		$query_classes = $this->db->get('classes');
 		$classes = array();
 		$teachers = array();

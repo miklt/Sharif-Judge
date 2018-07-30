@@ -87,11 +87,11 @@
 				<th width="14%" rowspan="2">Name</th>
 				<th width="4%" rowspan="2">Problem</th>
 				<th width="14%" rowspan="2">Submit Time</th>
+				{% if (user.level >= 2 or show_final_grade == 1) and view == 'final' %}
 				<th width="5%" rowspan="2">Weight</th>
+				{% endif %}
 				<th colspan="3">Score</th>
-				{% if user.level >= 2 and view == 'final' %}
-				<th width="3%" rowspan="2">Final Grade</th>
-				{% elseif show_final_grade == 1 and view == 'final'%}
+				{% if (user.level >= 2 or show_final_grade == 1) and view == 'final' %}
 				<th width="3%" rowspan="2">Final Grade</th>
 				{% endif %}
 				<th width="1%" rowspan="2">Language</th>
@@ -111,9 +111,11 @@
 		{% else %}
 				<th width="10%" rowspan="2">Problem</th>
 				<th width="30%" rowspan="2">Submit Time</th>
+				{% if show_final_grade == 1 and view == 'final' %}
 				<th width="5%" rowspan="2">Weight</th>
+				{% endif %}
 				<th width="7%" colspan="3">Score</th>
-				{% if show_final_grade == 1 %}
+				{% if show_final_grade == 1 and view == 'final' %}
 				<th width="3%" rowspan="2">Final Grade</th>
 				{% endif %}
 				<th width="1%" rowspan="2">Language</th>
@@ -159,7 +161,11 @@
 		{% endif %}
 			<td><a href="{{ site_url('submissions/'~view~(filter_user?'/user/'~filter_user)~'/problem/'~submission.problem) }}" title="{{ problems[submission.problem].name }}">{{ submission.problem }}</a></td>
 			<td>{{ submission.time}}</td>
+			{# AQUIII #}
+			{% if (user.level >= 2 or show_final_grade == 1) and view == 'final'%}
 			<td>{{ submission.weight }}</td>
+			{% endif %}
+
 			<td class='score-td'>{{ submission.pre_score }}</td>
 			<td>
 				<span class="tiny_text" {{ submission.delay > 0 ? 'style="color:red;"' }}>
