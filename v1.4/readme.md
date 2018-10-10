@@ -5,6 +5,7 @@ Table of contents:
 * [Installation](installation.md)
 * [Clean URLs](clean_urls.md)
 * [Users](users.md)
+* [Classes](classes.md)
 * [Add Assignment](add_assignment.md)
 * [Sample Assignment](sample_assignment.md)
 * [Tests Structure](tests_structure.md)
