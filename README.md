@@ -26,7 +26,8 @@ Download the latest release from https://github.com/mjnaderi/Sharif-Judge/releas
   * Rejudge
   * Scoreboard
   * Notifications
-  * ...
+  * Classes
+  * Backup of all assignments and submissions
 
 ## Requirements
 
