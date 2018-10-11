@@ -63,3 +63,15 @@ e.g.
     student2
     student3
     student4
+
+View/Edit Classes
+==============
+
+Users of levels admin, head_instructor and instructor can visualize a list of all classes registered. With an input of type select, it is possible to restrict the list by only showing the classes which the user participates ("My Classes"). For users of level student, only their classes are shown. 
+
+There are several settings in "Add Class" page:
+
+Edit Class
+---------------
+
+Users of levels admin, head_instructor and instructor can edit an especific class by clicking on the blue pencil in the collumn "Actions".
