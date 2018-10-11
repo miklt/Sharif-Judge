@@ -18,7 +18,7 @@ Select users of levels admin, head_instructor and instructor as the teachers of 
 Assistants
 ---------------
 
-Select users of levels admin, head_instructor e instructor as the assistants of the class. The same user cannot be added twice.
+Select users of levels admin, head_instructor and instructor as the assistants of the class. The same user cannot be added twice.
 
 Students
 ------------
@@ -50,7 +50,7 @@ Ending time of the class.
 Classroom
 -----
 
-Write the name of the classroom where the class is going to be taught.
+Name/Number of the classroom where the class is going to be taught.
 
 Add Students
 ------------
