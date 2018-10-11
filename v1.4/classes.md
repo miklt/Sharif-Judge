@@ -69,9 +69,12 @@ View/Edit Classes
 
 Users of levels admin, head_instructor and instructor can visualize a list of all classes registered. With an input of type select, it is possible to restrict the list by only showing the classes which the user participates ("My Classes"). For users of level student, only their classes are shown. 
 
-There are several settings in "Add Class" page:
-
 Edit Class
 ---------------
 
-Users of levels admin, head_instructor and instructor can edit an especific class by clicking on the blue pencil in the collumn "Actions".
+Users of levels admin, head_instructor and instructor can edit an especific class by clicking on the blue pencil in the collumn "Actions". In the next page, it is possible to edit class informations and add/remove teachers, assistants and students, respecting the fact that a user cannot be add twice and a class must have at least on professor.
+
+View Class
+---------------
+
+Users can view the information of an especific class by clicking on the blue eye in the collumn "Actions". In the next page, class information and their participants are diplayed.
