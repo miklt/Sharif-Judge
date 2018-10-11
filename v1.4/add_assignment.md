@@ -42,7 +42,7 @@ e.g.
 Classes
 ------------
 
-Select classes that are doing the assignment. Only the students of these classes are able to submit. If "Select All Students" is checked, all users, even if not in a class, will be able to submit.
+Select classes that are doing the assignment. Only students of these classes are able to submit. If "Select All Students" is checked, all users, even if not in a class, will be able to submit.
 
 Tests
 -----
