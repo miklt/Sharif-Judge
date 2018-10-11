@@ -3,9 +3,7 @@ Add Assignment
 
 See [Sample Assignment](sample_assignment.md) to learn and test adding assignments by adding a sample assignment.
 
-You can add a new assignment by clicking on "Add" in "Assignments" page. You will see this page:
-
-![Add Assignment](img/add_assignment.png)
+You can add a new assignment by clicking on "Add" in "Assignments" page.
 
 There are several settings in "Add Assignment" page:
 
@@ -40,6 +38,11 @@ Enter usernames of participants here (comma separated). Only these users are abl
 e.g.
 
     admin, instructor1 , instructor2 ,student1  ,   student2,student3 , student4
+    
+Classes
+------------
+
+Select classes that are doing the assignment. Only the students of these classes are able to submit. If "Select All Students" is checked, all users, even if not in a class, will be able to submit.
 
 Tests
 -----
@@ -147,6 +150,11 @@ Memory Limit
 ------------
 
 Set memory limit in kilobytes. This memory limit is not very accurate.
+
+Weight
+------------
+
+If the assignment has multiple problems, it is possible to assign different weights for them. Weights must always sum "100".
 
 Allowed Languages
 -----------------
