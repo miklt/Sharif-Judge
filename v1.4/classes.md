@@ -1,7 +1,7 @@
 Add Classes
 ==============
 
-You can add a new class by clicking on "Add Class" in "Classes" page. This page, though, can be only seen by users of levels admin, head_instructor and instructor.
+You can add a new class by clicking on "Add Class" in "Classes" page. This page, though, can only be seen by users of levels admin, head_instructor and instructor.
 
 There are several settings in "Add Class" page:
 
