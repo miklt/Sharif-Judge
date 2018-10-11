@@ -1,7 +1,7 @@
 Add Classes
 ==============
 
-You can add a new class by clicking on "Add Class" in "Classes" page. This page, though, can only be seen by users of levels admin, head_instructor and instructor.
+You can add a new class by clicking on "Add Class" in "Classes" page. This page, though, can only be seen by users of levels "admin", "head_instructor" or "instructor".
 
 There are several settings in "Add Class" page:
 
@@ -13,24 +13,12 @@ The class will be shown with this name in list of classes.
 Teachers
 ---------------
 
-Select users of levels admin, head_instructor and instructor as the teachers of the class. The same user cannot be added twice.
+Select users of levels "admin", "head_instructor" or "instructor" as the teachers of the class. The same user cannot be added twice.
 
 Assistants
 ---------------
 
-Select users of levels admin, head_instructor and instructor as the assistants of the class. The same user cannot be added twice.
-
-Students
-------------
-
-Enter usernames of users who will be shown as students in the class. Each username should be written in a different line.
-
-e.g.
-
-    student1
-    student2
-    student3
-    student4
+Select users of levels "admin", "head_instructor" or "instructor" as the assistants of the class. The same user cannot be added twice.
     
 Day
 ----------
@@ -67,12 +55,12 @@ e.g.
 View/Edit Classes
 ==============
 
-Users of levels admin, head_instructor and instructor can visualize a list of all classes registered. With an input of type select, it is possible to restrict the list by only showing the classes which the user participates ("My Classes"). For users of level student, only their classes are shown. 
+Users of levels "admin", "head_instructor" or "instructor" can visualize a list of all classes registered. With an input of type select, it is possible to restrict the list by only showing the classes which the user participates ("My Classes"). For users of level "student", only their classes are shown. 
 
 Edit Class
 ---------------
 
-Users of levels admin, head_instructor and instructor can edit an especific class by clicking on the blue pencil in the collumn "Actions". In the next page, it is possible to edit class informations and add/remove teachers, assistants and students, respecting the fact that a user cannot be add twice and a class must have at least on professor.
+Users of levels "admin", "head_instructor" or "instructor" can edit an especific class by clicking on the blue pencil in the collumn "Actions". In the next page, it is possible to edit class informations and add/remove teachers, assistants and students, respecting the fact that a user cannot be added twice and a class must have at least one professor.
 
 View Class
 ---------------
