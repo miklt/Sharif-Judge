@@ -23,7 +23,7 @@
 
 <script type="text/javascript" src="{{ base_url('assets/js/jquery-ui-timepicker-addon.js') }}"></script>
 <script>
-	shj.num_of_teachers={{ professors|length }};
+	shj.num_of_teachers={{ teachers|length }};
 	shj.row_teacher='<tr><td>\
 					<select name="teachers[]" class="sharif_input">\
 						{% for teacher in teachers %}\
@@ -91,7 +91,6 @@
 			</tr>
 		</thead>
 		<tbody>
-			{% for professor in professors %}
 				<tr>
 					<td>
 						<select name="teachers[]" class="sharif_input">
@@ -102,7 +101,6 @@
 					</td>
 					<td><i class="fa fa-times-circle fa-lg color1 delete_teacher pointer"></i></td>
 				</tr>
-			{% endfor %}
 		</tbody>
 	</table>
 	</p>
@@ -116,7 +114,6 @@
 			</tr>
 		</thead>
 		<tbody>
-			{% for monitor in monitores %}
 				<tr>
 					<td>
 						<select name="assistants[]" class="sharif_input">
@@ -127,7 +124,6 @@
 					</td>
 					<td><i class="fa fa-times-circle fa-lg color1 delete_assistant pointer"></i></td>
 				</tr>
-			{% endfor %}
 		</tbody>
 	</table>
 	</p>
