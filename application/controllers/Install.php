@@ -81,7 +81,6 @@ class Install extends CI_Controller
 				'file_name'     => array('type' => 'VARCHAR', 'constraint' => 30),
 				'main_file_name'=> array('type' => 'VARCHAR', 'constraint' => 30),
 				'file_type'     => array('type' => 'VARCHAR', 'constraint' => 6),
-				'weight'        => array('type' => 'INT'),
 			);
 			$this->dbforge->add_field($fields);
 			$this->dbforge->add_key(array('assignment', 'submit_id'));
