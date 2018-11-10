@@ -5,8 +5,6 @@
  * @author Mohammad Javad Naderi <mjnaderi@gmail.com>
  */
 
-// Check for weight == 0
-
 
 
 
@@ -346,16 +344,16 @@ class Submissions extends CI_Controller
 
 		$names = $this->user_model->get_names();
 
-		$weight = 0;
-		foreach ($this->problems as $problem) {
-			$weight = $weight + $problem['weight'];
-		}
-		$sum = 0;
 		$final_grade = array();
 		$number_of_sub = array();
 
 		foreach ($submissions as &$item)
 		{
+			// Getting the problem info
+			$problem = $this->assignment_model->problem_info($item['assignment'], $item['problem']);
+			// adding the weight to the submission
+			$item['weight'] = $problem['weight'];
+
 			$item['name'] = $names[$item['username']];
 			$item['fullmark'] = ($item['pre_score'] == 10000);
 			$item['pre_score'] = ceil($item['pre_score']*$this->problems[$item['problem']]['score']/10000);
@@ -366,10 +364,11 @@ class Submissions extends CI_Controller
 			else
 				$item['final_score'] = ceil($item['pre_score']*$item['coefficient']/100);
 
+			// adding the weights based on the problem
 			if (isset($final_grade[$item['username']]))
-				$final_grade[$item['username']] = $final_grade[$item['username']] + ($item['final_score']*$item['weight']/100);
+				$final_grade[$item['username']] = $final_grade[$item['username']] + ($item['final_score']*$problem['weight']/100);
 			else
-				$final_grade[$item['username']] = ($item['final_score']*$item['weight']/100);
+				$final_grade[$item['username']] = ($item['final_score']*$problem['weight']/100);
 
 			if (isset($number_of_sub[$item['username']])) {
 				$number_of_sub[$item['username']] = $number_of_sub[$item['username']] + 1;
@@ -407,8 +406,6 @@ class Submissions extends CI_Controller
 		} else{
 			$data['all_assignments'] = $this->assignment_model->all_assignments();
 		}
-
-
 		$this->twig->display('pages/submissions.twig', $data);
 	}
 
