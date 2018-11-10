@@ -360,7 +360,7 @@ class Problems extends CI_Controller
 
 		$user_dir = rtrim($this->assignment_root, '/').'/assignment_'.$this->user->selected_assignment['id'].'/p'.$this->problem['id'].'/'.$this->user->username;
 		if ( ! file_exists($user_dir))
-			mkdir($user_dir, 0700);
+			mkdir($user_dir, 0700, true);
 
 		$config['upload_path'] = $user_dir;
 		$config['allowed_types'] = '*';
@@ -380,7 +380,6 @@ class Problems extends CI_Controller
 				'username' => $this->user->username,
 				'assignment' => $this->user->selected_assignment['id'],
 				'problem' => $this->problem['id'],
-				'weight'  => $this->problem['weight'],
 				'file_name' => $result['raw_name'],
 				'main_file_name' => $this->file_name,
 				'file_type' => $this->filetype,
