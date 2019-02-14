@@ -140,6 +140,7 @@ class Install extends CI_Controller
 				'allowed_languages' => array('type' => 'TEXT', 'default' => ''),
 				'diff_cmd'          => array('type' => 'VARCHAR', 'constraint' => 20, 'default' => 'diff'),
 				'diff_arg'          => array('type' => 'VARCHAR', 'constraint' => 20, 'default' => '-bB'),
+				'weight' => array('type' => 'INT'),
 			);
 			$this->dbforge->add_field($fields);
 			$this->dbforge->add_key(array('assignment', 'id'));
@@ -205,11 +206,13 @@ class Install extends CI_Controller
 				array('shj_key' => 'enable_easysandbox',     'shj_value' => '1'),
 				array('shj_key' => 'enable_c_shield',        'shj_value' => '1'),
 				array('shj_key' => 'enable_cpp_shield',      'shj_value' => '1'),
+				array('shj_key' => 'enable_scoreboard',      'shj_value' => '1'),
 				array('shj_key' => 'enable_py2_shield',      'shj_value' => '1'),
 				array('shj_key' => 'enable_py3_shield',      'shj_value' => '1'),
 				array('shj_key' => 'enable_java_policy',     'shj_value' => '1'),
 				array('shj_key' => 'enable_log',             'shj_value' => '1'),
 				array('shj_key' => 'submit_penalty',         'shj_value' => '300'),
+				array('shj_key' => 'final_grade',            'shj_value' => '1'),
 				array('shj_key' => 'enable_registration',    'shj_value' => '0'),
 				array('shj_key' => 'registration_code',      'shj_value' => '0'),
 				array('shj_key' => 'mail_from',              'shj_value' => 'shj@example.com'),
@@ -247,7 +250,73 @@ class Install extends CI_Controller
 			if ( ! $this->dbforge->create_table('users', TRUE))
 				show_error("Error creating database table ".$this->db->dbprefix('users'));
 
+			//create table 'classes'
+			$fields = array(
+				'id' => array('type' => 'INT', 'constraint' => 11, 'unsigned' => TRUE, 'auto_increment' => TRUE),
+				'time_start' => array('type' => 'VARCHAR', 'constraint' => 5),
+				'time_end' => array('type' => 'VARCHAR', 'constraint' => 5),
+				'day' => array('type' => 'INT'),
+				'classroom' => array('type' => 'VARCHAR', 'constraint' => 20),
+				'class_name' => array('type' => 'VARCHAR', 'constraint' => 20),
+			);
+			$this->dbforge->add_field($fields);
+			$this->dbforge->add_key('id', TRUE); // PRIMARY KEY
+			if ( ! $this->dbforge->create_table('classes', TRUE))
+				show_error("Error creating database table ".$this->db->dbprefix('classes'));
 
+			//create table 'users_classes'
+			$fields = array(
+				'user_id' => array('type' => 'INT', 'constraint' => 11),
+				'class_id' => array('type' => 'INT', 'constraint' => 11),
+				'responsible' => array('type' => 'INT'),
+			);
+			$this->dbforge->add_field($fields);
+			$this->dbforge->add_key('user_id', TRUE);
+			$this->dbforge->add_key('class_id', TRUE);
+			if ( ! $this->dbforge->create_table('users_classes', TRUE)) {
+				show_error("Error creating database table ".$this->db->dbprefix('users_classes'));
+			}
+
+
+			$this->db->query(
+				"ALTER TABLE {$this->db->dbprefix('users_classes')}
+				 ADD CONSTRAINT {$this->db->dbprefix('user_classes_fkey')} FOREIGN KEY(user_id) REFERENCES {$this->db->dbprefix('users')}(id) ON DELETE CASCADE;"
+			);
+
+
+
+			$this->db->query(
+				"ALTER TABLE {$this->db->dbprefix('users_classes')}
+				 ADD CONSTRAINT {$this->db->dbprefix('classes_fkey')} FOREIGN KEY(class_id) REFERENCES {$this->db->dbprefix('classes')}(id) ON DELETE CASCADE;"
+			);
+
+
+			/*
+			$this->db->query("ALTER TABLE 'users_classes' ADD FOREIGN KEY('class_id') REFERENCES 'classes'('id') ON DELETE CASCADE;");
+			 */
+
+			//create table 'assignments_classes'
+			$fields = array(
+				'assignment_id' => array('type' => 'INT', 'constraint' => 11),
+				'class_id' => array('type' => 'INT', 'constraint' => 11, 'null' => TRUE),
+			);
+			$this->dbforge->add_field($fields);
+			$this->dbforge->add_key('assignment_id');
+			$this->dbforge->add_key('class_id');
+			if ( ! $this->dbforge->create_table('assignments_classes', TRUE))
+				show_error("Error creating database table ".$this->db->dbprefix('assignments_classes'));
+
+
+			$this->db->query(
+				"ALTER TABLE {$this->db->dbprefix('assignments_classes')}
+				 ADD CONSTRAINT {$this->db->dbprefix('assignment_fkey')} FOREIGN KEY(assignment_id) REFERENCES {$this->db->dbprefix('assignments')}(id) ON DELETE CASCADE;"
+			);
+
+
+			$this->db->query(
+				"ALTER TABLE {$this->db->dbprefix('assignments_classes')}
+				 ADD CONSTRAINT {$this->db->dbprefix('class_fkey')} FOREIGN KEY(class_id) REFERENCES {$this->db->dbprefix('classes')}(id) ON DELETE CASCADE;"
+			);
 
 			// add admin user
 			$this->user_model->add_user(
@@ -271,7 +340,6 @@ class Install extends CI_Controller
 			$data['enc_key'] = $this->config->item('encryption_key');
 			$data['random_key'] = random_string('alnum', 32);
 		}
-
 
 		$this->twig->display('pages/admin/install.twig', $data);
 

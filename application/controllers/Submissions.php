@@ -4,16 +4,20 @@
  * @file Submissions.php
  * @author Mohammad Javad Naderi <mjnaderi@gmail.com>
  */
+
+
+
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Submissions extends CI_Controller
 {
 
 	private $problems;
-
 	private $filter_user;
 	private $filter_problem;
 	private $page_number;
+	private $submission_selection;
 
 	// ------------------------------------------------------------------------
 
@@ -37,6 +41,9 @@ class Submissions extends CI_Controller
 		if (array_key_exists('page', $input) && $input['page'])
 			$this->page_number = is_numeric($input['page'])?$input['page']:1;
 
+		$this->load->model('settings_model');
+		$this->show_final_grade = $this->settings_model->get_setting('final_grade');
+
 	}
 
 
@@ -48,11 +55,11 @@ class Submissions extends CI_Controller
 	/**
 	 * Uses PHPExcel library to generate excel file of submissions
 	 */
-	private function _download_excel($view)
+	private function _download_excel($view, $submission_selection)
 	{
 		if ( ! in_array($view, array('all', 'final')))
 			exit;
-
+		$this->load->model('class_model');
 		$now = shj_now_str(); // current time
 
 		// Load PHPExcel library
@@ -112,7 +119,20 @@ class Submissions extends CI_Controller
 		/*if ($view === 'final')
 			$items = $this->submit_model->get_final_submissions($this->user->selected_assignment['id'], $this->user->level, $this->user->username, NULL, $this->filter_user, $this->filter_problem);
 		else*/
-		$itemsOld = $this->submit_model->get_all_submissions($this->user->selected_assignment['id'], $this->user->level, $this->user->username, NULL, $this->filter_user, $this->filter_problem);
+
+		//Select submissions by classes:
+		$class_id = $submission_selection;
+		if($class_id != 0){
+			$class = $this->class_model->getClass($class_id);
+			$students_usernames = array();
+			foreach($class->new_students as $student){
+				array_push($students_usernames, $student->username);
+			}
+		}else{
+			$students_usernames = NULL;
+		}
+
+		$itemsOld = $this->submit_model->get_all_submissions($this->user->selected_assignment['id'], $this->user->level, $this->user->username, NULL, $this->filter_user, $this->filter_problem, $students_usernames);
 		$items = array_reverse($itemsOld);
 		$names = $this->user_model->get_names();
 
@@ -262,16 +282,16 @@ class Submissions extends CI_Controller
 
 
 
-	public function final_excel()
+	public function final_excel($submission_selection = 0)
 	{
-		$this->_download_excel('final');
+		$this->_download_excel('final', $submission_selection);
 	}
 
 
 
-	public function all_excel()
+	public function all_excel($submission_selection = 0)
 	{
-		$this->_download_excel('all');
+		$this->_download_excel('all', $submission_selection);
 	}
 
 
@@ -291,6 +311,9 @@ class Submissions extends CI_Controller
 		if ($this->page_number<1)
 			show_404();
 
+		$this->load->model('class_model');
+		$user_id = $this->user_model->username_to_user_id($this->user->username);
+	
 		$config = array(
 			'base_url' => site_url('submissions/final'.($this->filter_user?'/user/'.$this->filter_user:'').($this->filter_problem?'/problem/'.$this->filter_problem:'')),
 			'cur_page' => $this->page_number,
@@ -304,12 +327,33 @@ class Submissions extends CI_Controller
 			$config['per_page'] = $config['total_rows'];
 		$this->load->library('shj_pagination', $config);
 
-		$submissions = $this->submit_model->get_final_submissions($this->user->selected_assignment['id'], $this->user->level, $this->user->username, $this->page_number, $this->filter_user, $this->filter_problem);
+		//Select submissions by classes:
+		$this->submission_selection = $this->input->post('submission_selection');
+		$class_id = $this->submission_selection;
+		if($class_id != 0){
+			$class = $this->class_model->getClass($class_id);
+			$students_usernames = array();
+			foreach($class->new_students as $student){
+				array_push($students_usernames, $student->username);
+			}
+		}else{
+			$students_usernames = NULL;
+		}
+
+		$submissions = $this->submit_model->get_final_submissions($this->user->selected_assignment['id'], $this->user->level, $this->user->username, $this->page_number, $this->filter_user, $this->filter_problem, $students_usernames);
 
 		$names = $this->user_model->get_names();
 
+		$final_grade = array();
+		$number_of_sub = array();
+
 		foreach ($submissions as &$item)
 		{
+			// Getting the problem info
+			$problem = $this->assignment_model->problem_info($item['assignment'], $item['problem']);
+			// adding the weight to the submission
+			$item['weight'] = $problem['weight'];
+
 			$item['name'] = $names[$item['username']];
 			$item['fullmark'] = ($item['pre_score'] == 10000);
 			$item['pre_score'] = ceil($item['pre_score']*$this->problems[$item['problem']]['score']/10000);
@@ -319,12 +363,22 @@ class Submissions extends CI_Controller
 				$item['final_score'] = 0;
 			else
 				$item['final_score'] = ceil($item['pre_score']*$item['coefficient']/100);
-		}
 
+			// adding the weights based on the problem
+			if (isset($final_grade[$item['username']]))
+				$final_grade[$item['username']] = $final_grade[$item['username']] + ($item['final_score']*$problem['weight']/100);
+			else
+				$final_grade[$item['username']] = ($item['final_score']*$problem['weight']/100);
+
+			if (isset($number_of_sub[$item['username']])) {
+				$number_of_sub[$item['username']] = $number_of_sub[$item['username']] + 1;
+			}
+			else
+				$number_of_sub[$item['username']] = 1;
+		}
 
 		$data = array(
 			'view' => 'final',
-			'all_assignments' => $this->assignment_model->all_assignments(),
 			'problems' => $this->problems,
 			'submissions' => $submissions,
 			'excel_link' => site_url('submissions/final_excel'.($this->filter_user?'/user/'.$this->filter_user:'').($this->filter_problem?'/problem/'.$this->filter_problem:'')),
@@ -333,8 +387,25 @@ class Submissions extends CI_Controller
 			'pagination' => $this->shj_pagination->create_links(),
 			'page_number' => $this->page_number,
 			'per_page' => $config['per_page'],
+			'show_final_grade'=> $this->show_final_grade,
+			'final_grade' => $final_grade,
+			'numberOfSub' => $number_of_sub,
+			'user_classes' => $this->class_model->get_parameters_Classes_user($user_id),
+			'submission_selection' => $this->input->post('submission_selection')
 		);
 
+		//Obtendo todos os assignments para top-bar:
+		$this->load->model('class_model');
+		$user_id = $this->user_model->username_to_user_id($this->user->username);
+		if ($this->user->level == 0){//Estudantes veem apenas os assignments de sua própria classe
+			$classes_id = array();
+			foreach ($this->class_model->get_parameters_Classes_user($user_id) as $class){
+				array_push($classes_id, $class->class_id);
+			}
+			$data['all_assignments'] = $this->assignment_model->all_assignments_classes($classes_id);
+		} else{
+			$data['all_assignments'] = $this->assignment_model->all_assignments();
+		}
 		$this->twig->display('pages/submissions.twig', $data);
 	}
 
@@ -355,6 +426,9 @@ class Submissions extends CI_Controller
 		if ($this->page_number < 1)
 			show_404();
 
+		$this->load->model('class_model');
+		$user_id = $this->user_model->username_to_user_id($this->user->username);
+
 		$config = array(
 			'base_url' => site_url('submissions/all'.($this->filter_user?'/user/'.$this->filter_user:'').($this->filter_problem?'/problem/'.$this->filter_problem:'')),
 			'cur_page' => $this->page_number,
@@ -368,7 +442,20 @@ class Submissions extends CI_Controller
 			$config['per_page'] = $config['total_rows'];
 		$this->load->library('shj_pagination', $config);
 
-		$submissions = $this->submit_model->get_all_submissions($this->user->selected_assignment['id'], $this->user->level, $this->user->username, $this->page_number, $this->filter_user, $this->filter_problem);
+		//Select submissions by classes:
+		$this->submission_selection = $this->input->post('submission_selection');
+		$class_id = $this->submission_selection;
+		if($class_id != 0){
+			$class = $this->class_model->getClass($class_id);
+			$students_usernames = array();
+			foreach($class->new_students as $student){
+				array_push($students_usernames, $student->username);
+			}
+		}else{
+			$students_usernames = NULL;
+		}
+
+		$submissions = $this->submit_model->get_all_submissions($this->user->selected_assignment['id'], $this->user->level, $this->user->username, $this->page_number, $this->filter_user, $this->filter_problem, $students_usernames);
 
 		$names = $this->user_model->get_names();
 
@@ -387,14 +474,28 @@ class Submissions extends CI_Controller
 
 		$data = array(
 			'view' => 'all',
-			'all_assignments' => $this->assignment_model->all_assignments(),
 			'problems' => $this->problems,
 			'submissions' => $submissions,
 			'excel_link' => site_url('submissions/all_excel'.($this->filter_user?'/user/'.$this->filter_user:'').($this->filter_problem?'/problem/'.$this->filter_problem:'')),
 			'filter_user' => $this->filter_user,
 			'filter_problem' => $this->filter_problem,
 			'pagination' => $this->shj_pagination->create_links(),
+			'user_classes' => $this->class_model->get_parameters_Classes_user($user_id),
+			'submission_selection' => $this->input->post('submission_selection')
 		);
+
+		//Obtendo todos os assignments para top-bar:
+		$this->load->model('class_model');
+		$user_id = $this->user_model->username_to_user_id($this->user->username);
+		if ($this->user->level == 0){//Estudantes veem apenas os assignments de sua própria classe
+			$classes_id = array();
+			foreach ($this->class_model->get_parameters_Classes_user($user_id) as $class){
+				array_push($classes_id, $class->class_id);
+			}
+			$data['all_assignments'] = $this->assignment_model->all_assignments_classes($classes_id);
+		} else{
+			$data['all_assignments'] = $this->assignment_model->all_assignments();
+		}
 
 		$this->twig->display('pages/submissions.twig', $data);
 	}
@@ -460,6 +561,19 @@ class Submissions extends CI_Controller
 		$this->output->set_header('Content-Type: application/json; charset=utf-8');
 		echo json_encode($json_result);
 	}
+
+	public function update_row() {
+		if ( ! $this->input->is_ajax_request() )
+			show_404();
+		$username = $this->input->post('username');
+		$assignment = $this->input->post('assignment');
+		$problem = $this->input->post('problem');
+		$submit_id = $this->input->post('sub_id');
+		$res = $this->submit_model->get_submission($username, $assignment, $problem, $submit_id);	
+		echo json_encode($res);
+
+	}
+
 
 
 
@@ -574,4 +688,5 @@ class Submissions extends CI_Controller
 	}
 
 
+	// ------------------------------------------------------------------------
 }

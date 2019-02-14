@@ -14,11 +14,9 @@
 {% block title_menu %}
 {% if user.level >= 2 %}
 <span class="title_menu_item"><a href="{{ site_url('assignments/add') }}"><i class="fa fa-plus color8"></i> Add</a></span>
+<span class="title_menu_item"><a href="{{ site_url('assignments/download_all_submissions') }}"><i class="fa fa-cloud-download color11"></i> Backup all assignments and submissions</a></span>
 {% endif %}
 {% endblock %}
-
-
-
 {% block main_content %}
 {% set msgclasses = {'success': 'shj_g', 'notice': 'shj_o', 'error': 'shj_r'} %}
 {% for message in messages %}
@@ -28,7 +26,21 @@
 {% if all_assignments|length == 0 %}
 	<p style="text-align: center;">Nothing to show...</p>
 {% else %}
-<br/>
+{% if user.level > 0 %}
+{# Botão para seleção de assignments de acordo com o usuário#}
+{{ form_open('assignments/selection') }}
+		<p class="input_p">
+				<select onchange="this.form.submit()" id="assignment_selection" name="assignment_selection" class="sharif_input">
+					<option id="all_assignments" {{ assignment_selection == 0 ? 'selected="selected"' }} value="0">
+					All classes</option>
+					{% for class in user_classes %}
+						<option {{ (assignment_selection == class.class_id) ? 'selected="selected"' }} value="{{class.class_id}}">
+						{{class.class_name}}</option>
+					{% endfor %}
+				</select>
+		</p><br>
+</form>
+{% endif %}
 <table class="sharif_table">
 <thead>
 <tr>

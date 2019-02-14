@@ -2,6 +2,8 @@
 
 .git
 .idea
+application/config/config.php
+application/config/database.php
 
 # Ignore Twig Cache Files
 application/cache/Twig/*/

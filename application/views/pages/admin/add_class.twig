@@ -1,0 +1,178 @@
+{#
+ # Sharif Judge
+ # file: add_class.twig
+ # author: Pedro Viganó da Silva Santos <pedro.vigano.santos@usp.br>
+ #}
+{% set selected = 'classes' %}
+{% extends 'templates/base.twig' %}
+{% block icon %}fa-plus{% endblock %}
+{% block title %}
+	Create Class
+{% endblock %}
+{% block head_title %}
+	Create Class
+{% endblock %}
+
+{% block title_menu %}
+	<span class="title_menu_item"><a href="https://github.com/mjnaderi/Sharif-Judge/blob/docs/v1.4/users.md#add-users" target="_blank"><i class="fa fa-question-circle color6"></i> Help</a></span>
+{% endblock %}
+
+
+
+{% block other_assets %}
+
+<script type="text/javascript" src="{{ base_url('assets/js/jquery-ui-timepicker-addon.js') }}"></script>
+<script>
+	shj.num_of_teachers={{ teachers|length }};
+	shj.row_teacher='<tr><td>\
+					<select name="teachers[]" class="sharif_input">\
+						{% for teacher in teachers %}\
+							<option value="{{teacher.username}}">{{teacher.username}}</option>\
+						{% endfor %}\
+					</select>\
+				</td>\
+				<td><i class="fa fa-times-circle fa-lg color1 delete_teacher pointer"></i></td>\
+			</tr>';
+
+	shj.num_of_assistants={{ monitores|length }};
+	shj.row_assistant='<tr><td>\
+					<select name="assistants[]" class="sharif_input">\
+						{% for assistant in assistants %}\
+							<option value="{{assistant.username}}">{{assistant.username}}</option>\
+						{% endfor %}\
+					</select>\
+				</td>\
+				<td><i class="fa fa-times-circle fa-lg color1 delete_assistant pointer"></i></td>\
+			</tr>';
+
+	$(document).ready(function(){
+		$("#add_t").click(function(){
+			$('#teachers_table>tbody').append(shj.row_teacher);
+			shj.num_of_teachers++;
+		});
+		$(document).on('click', '.delete_teacher', function(){
+			if (shj.num_of_teachers==1) return;
+			var row = $(this).parents('tr');
+			row.remove();
+			shj.num_of_teachers--;
+		});
+		$("#add_a").click(function(){
+			$('#assistants_table>tbody').append(shj.row_assistant);
+			shj.num_of_assistants++;
+		});
+		$(document).on('click', '.delete_assistant', function(){
+			if (shj.num_of_assistants==0) return;
+			var row = $(this).parents('tr');
+			row.remove();
+			shj.num_of_assistants--;
+		});
+	});
+</script>
+
+{% endblock %}
+
+{% block main_content %}
+
+<?php echo validation_errors();?>
+
+	{{ form_open('classes/add') }}
+
+	<p class="input_p">
+		<label for="class_name">Class Name</label>
+		<input id="class_name" type="text" name="class_name" class="sharif_input medium" value="{{ class.class_name }}"/>
+	</p>
+
+	<p class="input_p" id="add_teachers"><b>Teachers</b> <i class="fa fa-plus-circle fa-lg color11 pointer" id="add_t"></i>
+	<table id="teachers_table">
+		<thead>
+			<tr>
+				<th rowspan="2"></th>
+				<th rowspan="2"></th>
+			</tr>
+		</thead>
+		<tbody>
+				<tr>
+					<td>
+						<select name="teachers[]" class="sharif_input">
+							{% for teacher in teachers %}
+								<option value="{{teacher.username}}">{{teacher.username}}</option>
+							{% endfor %}
+						</select>
+					</td>
+					<td><i class="fa fa-times-circle fa-lg color1 delete_teacher pointer"></i></td>
+				</tr>
+		</tbody>
+	</table>
+	</p>
+
+	<p class="input_p" id="add_assistants"><b>Assistants</b> <i class="fa fa-plus-circle fa-lg color11 pointer" id="add_a"></i>
+	<table id="assistants_table">
+		<thead>
+			<tr>
+				<th rowspan="2"></th>
+				<th rowspan="2"></th>
+			</tr>
+		</thead>
+		<tbody>
+				<tr>
+					<td>
+						<select name="assistants[]" class="sharif_input">
+							{% for assistant in assistants %}
+								<option value="{{assistant.username}}">{{assistant.username}}</option>
+							{% endfor %}
+						</select>
+					</td>
+					<td><i class="fa fa-times-circle fa-lg color1 delete_assistant pointer"></i></td>
+				</tr>
+		</tbody>
+	</table>
+	</p>
+
+	<p class="input_p">
+		<label for="day">Day</label>
+		<select id="day" name="day" class="sharif_input">
+			<option value="1" {{ week_start == 1 ? 'selected="selected"' }}>Sunday</option>
+			<option value="2" {{ week_start == 2 ? 'selected="selected"' }}>Monday</option>
+			<option value="3" {{ week_start == 3 ? 'selected="selected"' }}>Tuesday</option>
+			<option value="4" {{ week_start == 4 ? 'selected="selected"' }}>Wednesday</option>
+			<option value="5" {{ week_start == 5 ? 'selected="selected"' }}>Thursday</option>
+			<option value="6" {{ week_start == 6 ? 'selected="selected"' }}>Friday</option>
+			<option value="7" {{ week_start == 7 ? 'selected="selected"' }}>Saturday</option>
+		</select>
+	</p>
+
+	<p class="input_p">
+		<label for="time_start">Starting Time</label>
+		<input id="time_start" type="time" name="time_start" class="sharif_input medium" value="{{ class.time_start }}"/>
+	</p>
+
+	<p class="input_p">
+		<label for="time_end">Ending Time</label>
+		<input id="time_end" type="time" name="time_end" class="sharif_input medium" value="{{ class.time_end }}"/>
+	</p>
+
+	<p class="input_p">
+		<label for="classroom">Classroom</label>
+		<input id="classroom" type="text" name="classroom" class="sharif_input medium" value="{{ class.classroom }}"/>
+	</p>
+
+	<p class="input_p">
+		<label for="new_students">Add students</label>
+		<span class="form_comment">You can use this field to add multiple students in to a class at the same time</span><br>
+		<textarea id="new_students" name="new_students" rows="15" class="sharif_input add_text clear">
+#Lines starting with a # sign are comments.
+# Each line (except comments) represents a student.
+# The syntax of each line is:
+		
+# STUDENT_USERNAME 
+#
+#
+		</textarea>
+	</p>
+
+	<p class="input_p">
+		<br>
+		<input type="submit" value="Create Class" class="sharif_input"/>
+	</p>
+</form>
+{% endblock %}  {# main_content #}

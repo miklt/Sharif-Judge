@@ -35,11 +35,23 @@ class Moss extends CI_Controller
 			$this->_detect($assignment_id);
 		}
 		$data = array(
-			'all_assignments' => $this->assignment_model->all_assignments(),
 			'moss_userid' => $this->settings_model->get_setting('moss_userid'),
 			'moss_assignment' => $this->assignment_model->assignment_info($assignment_id),
 			'update_time' => $this->assignment_model->get_moss_time($assignment_id)
 		);
+
+		//Obtendo todos os assignments para top-bar:
+		$this->load->model('class_model');
+		$user_id = $this->user_model->username_to_user_id($this->user->username);
+		if ($this->user->level == 0){//Estudantes veem apenas os assignments de sua própria classe
+			$classes_id = array();
+			foreach ($this->class_model->get_parameters_Classes_user($user_id) as $class){
+				array_push($classes_id, $class->class_id);
+			}
+			$data['all_assignments'] = $this->assignment_model->all_assignments_classes($classes_id);
+		} else{
+			$data['all_assignments'] = $this->assignment_model->all_assignments();
+		}
 
 		$data['moss_problems'] = array();
 		$assignments_path = rtrim($this->settings_model->get_setting('assignments_root'), '/');

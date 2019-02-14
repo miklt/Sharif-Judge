@@ -33,14 +33,31 @@ class Assignments extends CI_Controller
 
 
 	public function index()
-	{
-		$data = array(
-			'all_assignments' => $this->assignment_model->all_assignments(),
-			'messages' => $this->messages,
-		);
+	{	
 
-		foreach ($data['all_assignments'] as &$item)
-		{
+		$this->load->model('class_model');
+		$user_id = $this->user_model->username_to_user_id($this->user->username);
+		
+		if ($this->user->level == 0){//Estudantes veem apenas sua própria classe
+			$classes_id = array();
+			foreach ($this->class_model->get_parameters_Classes_user($user_id) as $class){
+				array_push($classes_id, $class->class_id);
+			}
+			$data = array(
+				'all_assignments' => $this->assignment_model->all_assignments_classes($classes_id),
+				'messages' => $this->messages
+			);
+		}
+		else{
+			$data = array(
+				'all_assignments' => $this->assignment_model->all_assignments(),
+				'messages' => $this->messages,
+				'user_classes' => $this->class_model->get_parameters_Classes_user($user_id)
+			);
+		}
+		if ($data['all_assignments'] != []) {
+			foreach ($data['all_assignments'] as &$item)
+			{
 			$extra_time = $item['extra_time'];
 			$delay = shj_now()-strtotime($item['finish_time']);;
 			ob_start();
@@ -51,10 +68,9 @@ class Assignments extends CI_Controller
 			ob_end_clean();
 			$item['coefficient'] = $coefficient;
 			$item['finished'] = ($delay > $extra_time);
+			}
 		}
-
-		$this->twig->display('pages/assignments.twig', $data);
-
+		$this->twig->display('pages/assignments.twig', $data);	
 	}
 
 
@@ -89,10 +105,52 @@ class Assignments extends CI_Controller
 	}
 
 
-
 	// ------------------------------------------------------------------------
+	/**
+	 * Select assignments of all classes/my classes
+	 */
+	public function selection(){
 
+		if ( $this->user->level == 0) // Estudantes não podem ver esta página.
+			show_404();
+			
+		$this->load->model('class_model');
+		$user_id = $this->user_model->username_to_user_id($this->user->username);
+		if($this->input->post('assignment_selection') == "0"){
+			$data = array(
+				'all_assignments' => $this->assignment_model->all_assignments(),
+				'messages' => $this->messages,
+				'assignment_selection' => $this->input->post('assignment_selection'),
+				'user_classes' => $this->class_model->get_parameters_Classes_user($user_id)
 
+			);
+		} 
+		else{
+			$data = array(
+				'all_assignments' => $this->assignment_model->all_assignments_classes($this->input->post('assignment_selection')),
+				'messages' => $this->messages,
+				'assignment_selection' => $this->input->post('assignment_selection'),
+				'user_classes' => $this->class_model->get_parameters_Classes_user($user_id)
+			);
+
+		}
+		foreach ($data['all_assignments'] as &$item)
+		{
+			$extra_time = $item['extra_time'];
+			$delay = shj_now()-strtotime($item['finish_time']);;
+			ob_start();
+			if ( eval($item['late_rule']) === FALSE )
+				$coefficient = "error";
+			if (!isset($coefficient))
+				$coefficient = "error";
+			ob_end_clean();
+			$item['coefficient'] = $coefficient;
+			$item['finished'] = ($delay > $extra_time);
+		}
+		$this->twig->display('pages/assignments.twig', $data); 
+		
+	}
+	// ------------------------------------------------------------------------
 
 	/**
 	 * Download pdf file of an assignment (or problem) to browser
@@ -223,6 +281,27 @@ class Assignments extends CI_Controller
 
 
 	/**
+	 * Compressing and downloading final codes of all assignments to the browser
+	 */
+	public function download_all_submissions()
+	{
+		if ( $this->user->level == 0) // permission denied
+			show_404();
+
+		$this->load->library('zip');
+
+		$assignments_root = $this->settings_model->get_setting('assignments_root');
+
+		$this->zip->read_dir($assignments_root, FALSE);
+
+		$this->zip->download('assignments_backup.zip');
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
 	 * Delete assignment
 	 */
 	public function delete($assignment_id = FALSE)
@@ -268,6 +347,8 @@ class Assignments extends CI_Controller
 			show_404();
 
 		$this->load->library('upload');
+		$this->load->model('class_model');
+		$user_id = $this->user_model->username_to_user_id($this->user->username);
 
 		if ( ! empty($_POST) )
 			if ($this->_add()) // add/edit assignment
@@ -285,6 +366,7 @@ class Assignments extends CI_Controller
 			'messages' => $this->messages,
 			'edit' => $this->edit,
 			'default_late_rule' => $this->settings_model->get_setting('default_late_rule'),
+			'classes' => $this->class_model->get_parameters_Classes(),
 		);
 
 		if ($this->edit)
@@ -301,7 +383,7 @@ class Assignments extends CI_Controller
 				$data['problems'] = array(
 					array(
 						'id' => 1,
-						'name' => 'Exerc�cio ',
+						'name' => 'Exercício ',
 						'score' => 100,
 						'c_time_limit' => 500,
 						'python_time_limit' => 1500,
@@ -325,6 +407,7 @@ class Assignments extends CI_Controller
 				$ft = $this->input->post('languages');
 				$dc = $this->input->post('diff_cmd');
 				$da = $this->input->post('diff_arg');
+				$weight = $this->input->post('weight');
 				$data['problems'] = array();
 				$uo = $this->input->post('is_upload_only');
 				if ($uo === NULL)
@@ -342,6 +425,7 @@ class Assignments extends CI_Controller
 						'diff_cmd' => $dc[$i],
 						'diff_arg' => $da[$i],
 						'is_upload_only' => in_array($i+1,$uo)?1:0,
+						'weight' => $weight[$i],
 					));
 				}
 			}
@@ -359,7 +443,6 @@ class Assignments extends CI_Controller
 	 */
 	private function _add()
 	{
-
 		// Check permission
 
 		if ($this->user->level <= 1) // permission denied
@@ -380,6 +463,21 @@ class Assignments extends CI_Controller
 		$this->form_validation->set_rules('languages[]', 'languages', 'required');
 		$this->form_validation->set_rules('diff_cmd[]', 'diff command', 'required');
 		$this->form_validation->set_rules('diff_arg[]', 'diff argument', 'required');
+		$this->form_validation->set_rules('weight[]', 'weight', 'required|integer');
+
+		$sum = 0;
+		for ($i=0; $i < $this->input->post('number_of_problems'); $i++) {
+			$sum = $sum + $this->input->post('weight')[$i];
+		}
+		if ($sum != 100) {
+			$this->messages[] = array(
+				'type' => 'error',
+				'text' => 'Error: Sum of weights must be 100. '
+			);
+			return FALSE;
+
+		}
+
 
 		// Validate input data
 
@@ -389,10 +487,14 @@ class Assignments extends CI_Controller
 
 		// Preparing variables
 
-		if ($this->edit)
+		if ($this->edit){
 			$the_id = $this->edit_assignment;
-		else
+			//Deletando as linhas da tabela assignments_classes para que sejam readicionadas durante a edição
+			$this->assignment_model->delete_assignments_classes_rows($the_id);
+		}
+		else{
 			$the_id = $this->assignment_model->new_assignment_id();
+		}
 
 		$assignments_root = rtrim($this->settings_model->get_setting('assignments_root'), '/');
 		$assignment_dir = "$assignments_root/assignment_{$the_id}";
@@ -566,5 +668,5 @@ class Assignments extends CI_Controller
 	}
 
 
-
+	// ------------------------------------------------------------------------
 }

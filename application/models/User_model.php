@@ -46,7 +46,7 @@ class User_model extends CI_Model
 	 * Converts user id to username (returns FALSE if user does not exist)
 	 *
 	 * @param $user_id
-	 * @return bool
+	 * @return string
 	 */
 	public function user_id_to_username($user_id)
 	{
@@ -58,6 +58,26 @@ class User_model extends CI_Model
 		return $query->row()->username;
 	}
 
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * User ID to name
+	 *
+	 * Converts user id to name (returns FALSE if user does not exist)
+	 *
+	 * @param $user_id
+	 * @return bool
+	 */
+	public function user_id_to_name($user_id)
+	{
+		if( ! is_numeric($user_id))
+			return FALSE;
+		$query = $this->db->select('display_name')->get_where('users', array('id'=>$user_id));
+		if ($query->num_rows() == 0)
+			return FALSE;
+		return $query->row()->display_name;
+	}
 
 	// ------------------------------------------------------------------------
 
@@ -77,6 +97,28 @@ class User_model extends CI_Model
 			return FALSE;
 		return $query->row()->id;
 	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Name to User ID
+	 *
+	 * Converts name to user id (returns FALSE if user does not exist)
+	 *
+	 * @param $name
+	 * @return bool
+	 */
+	public function name_to_user_id($name)
+	{
+		$query = $this->db->select('id')->get_where('users', array('display_name'=>$name));
+		if ($query->num_rows() == 0)
+			return FALSE;
+		return $query->row()->id;
+	}
+
+
 
 
 	// ------------------------------------------------------------------------
@@ -315,6 +357,26 @@ class User_model extends CI_Model
 
 		return FALSE; // failure
 	}
+
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 *  Delete all students in class and their submissions	
+	 */
+	public function delete_all_students()
+	{
+		$all_students_id = $this->user_model->get_all_students_id();
+		
+		foreach ($all_students_id as $student_id)
+		{
+			$this->user_model->delete_user($student_id->id);
+		}
+		return TRUE;
+	}
+
 
 
 	// ------------------------------------------------------------------------
@@ -563,6 +625,99 @@ class User_model extends CI_Model
 			return FALSE;
 		return $query->row();
 	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Get All Students ID
+	 *
+	 * Returns id row for all students
+	 *
+	 * @return array of integers
+	 */
+	public function get_all_students_id()
+	{
+		$query = $this->db->select('id')->get_where('users', array('role'=>'student'));
+		if ($query->num_rows() <= 0)
+			return FALSE;
+		return $query->result();
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Get All Teachers
+	 *
+	 * Returns all teachers
+	 *
+	 * @return array of users
+	 */
+	public function get_all_teachers()
+	{
+		$query = $this->db->get_where('users', array('role'=>'admin'));
+		if ($query->num_rows() <= 0)
+			return FALSE;
+		$teachers = array(); 
+		foreach ($query->result() as $user_data)
+		{	
+    		$user_params = array(
+        		"id" => $user_data->id,
+        		"username" => $user_data->username,
+        		"display_name" => $user_data->display_name,
+        		"email" => $user_data->email,
+        		"role" => $user_data->role,
+        		"first_login_time" => $user_data->first_login_time,
+        		"last_login_time" => $user_data->last_login_time
+    		);
+        	$this->load->library('userObject', $user_params);
+        	$userObject = new userObject($user_params);
+        	array_push($teachers, $userObject);
+		}
+		return $teachers;
+	}
+
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Get All Assistants, 'head_instructors' or 'instructors'
+	 *
+	 * Returns all assistants
+	 *
+	 * @return array of users
+	 */
+	public function get_all_assistants()
+	{
+		$roles = array('instructor', 'head_instructor', 'admin');
+		$this->db->where_in('role', $roles);
+		$query = $this->db->get('users');
+		if ($query->num_rows() <= 0)
+			return FALSE;
+		$assistants = array(); 
+		foreach ($query->result() as $user_data)
+		{	
+    		$user_params = array(
+        		"id" => $user_data->id,
+        		"username" => $user_data->username,
+        		"display_name" => $user_data->display_name,
+        		"email" => $user_data->email,
+        		"role" => $user_data->role,
+        		"first_login_time" => $user_data->first_login_time,
+        		"last_login_time" => $user_data->last_login_time
+    		);
+        	$this->load->library('userObject', $user_params);
+        	$userObject = new userObject($user_params);
+        	array_push($assistants, $userObject);
+		}
+		return $assistants;
+	}
+
 
 
 	// ------------------------------------------------------------------------

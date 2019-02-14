@@ -39,7 +39,7 @@ class Submit_model extends CI_Model {
 	// ------------------------------------------------------------------------
 
 
-	public function get_final_submissions($assignment_id, $user_level, $username, $page_number = NULL, $filter_user = NULL, $filter_problem = NULL)
+	public function get_final_submissions($assignment_id, $user_level, $username, $page_number = NULL, $filter_user = NULL, $filter_problem = NULL, $classes_usernames)
 	{
 		$arr['assignment'] = $assignment_id;
 		$arr['is_final'] = 1;
@@ -49,15 +49,27 @@ class Submit_model extends CI_Model {
 			$arr['username'] = $filter_user;
 		if ($filter_problem !== NULL)
 			$arr['problem'] = $filter_problem;
-		if ($page_number === NULL)
+		if ($page_number === NULL){
+			if($classes_usernames !== NULL){
+				$this->db->where_in('username', $classes_usernames);
+			}
 			return $this->db->order_by('username asc, problem asc')->get_where('submissions', $arr)->result_array();
+		}
 		else
 		{
 			$per_page = $this->settings_model->get_setting('results_per_page_final');
-			if ($per_page == 0)
+			if ($per_page == 0){
+				if($classes_usernames !== NULL){
+					$this->db->where_in('username', $classes_usernames);
+				}
 				return $this->db->order_by('username asc, problem asc')->get_where('submissions', $arr)->result_array();
-			else
+
+			}else{
+				if($classes_usernames !== NULL){
+					$this->db->where_in('username', $classes_usernames);
+				}
 				return $this->db->order_by('username asc, problem asc')->limit($per_page,($page_number-1)*$per_page)->get_where('submissions', $arr)->result_array();
+			}
 		}
 
 	}
@@ -66,24 +78,36 @@ class Submit_model extends CI_Model {
 	// ------------------------------------------------------------------------
 
 
-	public function get_all_submissions($assignment_id, $user_level, $username, $page_number = NULL, $filter_user = NULL, $filter_problem = NULL)
+	public function get_all_submissions($assignment_id, $user_level, $username, $page_number = NULL, $filter_user = NULL, $filter_problem = NULL, $classes_usernames)
 	{
 		$arr['assignment']=$assignment_id;
 		if ($user_level === 0)
 			$arr['username']=$username;
-		elseif ($filter_user !== NULL)
+		elseif ($filter_user !== NULL){
 			$arr['username'] = $filter_user;
+		}
 		if ($filter_problem !== NULL)
 			$arr['problem'] = $filter_problem;
-		if ($page_number === NULL)
+		if ($page_number === NULL){
+			if($classes_usernames !== NULL){
+				$this->db->where_in('username', $classes_usernames);
+			}	
 			return $this->db->order_by('submit_id','desc')->get_where('submissions', $arr)->result_array();
+		}
 		else
 		{
 			$per_page = $this->settings_model->get_setting('results_per_page_all');
-			if ($per_page == 0)
+			if ($per_page == 0){
+				if($classes_usernames !== NULL){
+					$this->db->where_in('username', $classes_usernames);
+				}
 				return $this->db->order_by('submit_id','desc')->get_where('submissions', $arr)->result_array();
-			else
+			}else{
+				if($classes_usernames !== NULL){
+					$this->db->where_in('username', $classes_usernames);
+				}
 				return $this->db->order_by('submit_id','desc')->limit($per_page,($page_number-1)*$per_page)->get_where('submissions', $arr)->result_array();
+			}
 		}
 	}
 
@@ -167,6 +191,23 @@ class Submit_model extends CI_Model {
 		$this->db->insert('submissions', $submit_info);
 
 	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+		 * Export submissions as a CSV file 
+		 *
+		 *
+		 * @return $mixed
+		 */
+		public function exportSubmissions_csv()
+		{
+			$this->load->dbutil();
+			$querySubmissions = $this->db->query("SELECT * FROM shj_submissions");
+			return $this->dbutil->csv_from_result($querySubmissions);
+		}
 
 
 }

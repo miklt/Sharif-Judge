@@ -1,0 +1,311 @@
+{#
+ # Sharif Judge
+ # file: class.twig
+ # author Pedro Viganó da Silva Santos <pedro.vigano.santos@usp.br> #}
+
+{% set selected = 'class' %}
+{% extends 'templates/base.twig' %}
+{% block icon %}fa-users{% endblock %}
+
+{% block title %}
+	{% if edit == 0 %}
+		{{ class.class_name }}
+	{% elseif edit == 1 %}
+		Edit {{ class.class_name }}
+	{% endif %}
+{% endblock %}
+
+{% block head_title %}
+	{% if edit == 0 %}
+		{{ class.class_name }}
+	{% elseif edit == 1 %}
+		Edit {{ class.class_name }}
+	{% endif %}
+{% endblock %}
+
+{% block title_menu %}
+	<span class="title_menu_item"><a href="https://github.com/mjnaderi/Sharif-Judge/blob/docs/v1.4/users.md" target="_blank"><i class="fa fa-question-circle color6"></i> Help</a></span>
+	{% if user.level >= 2 %}
+		<span class="title_menu_item"><a href="{{ site_url('classes/edit/'~class.class_id) }}"><i class="fa fa-pencil color11"></i> Edit Class</a></span>
+	{% endif %}
+{% endblock %}
+
+{% block main_content %}
+
+<h3>Informations of {{ class.class_name }}:</h3><br>
+
+{% if edit == 0 %}{#Apenas visualização#}
+
+	<table class="sharif_table">
+	<thead>
+		<tr>
+			<th>Day</th>
+			<th>Starting Time</th>
+			<th>Ending Time</th>
+			<th>Classroom</th>
+		</tr>
+	</thead>
+		<tr>
+			<td>
+				{% if class.day == '1' %} Sunday
+				{% elseif class.day == '2' %} Monday
+				{% elseif class.day == '3' %} Tuesday
+				{% elseif class.day == '4' %} Wednesday
+				{% elseif class.day == '5' %} Thursday
+				{% elseif class.day == '6' %} Friday
+				{% elseif class.day == '7' %} Saturday
+				{% endif %}
+			</td>
+			<td>{{ class.time_start }}</td>
+			<td>{{ class.time_end }}</td>
+			<td>{{ class.classroom }}</td>
+		</tr>
+	</table><br>
+
+{% elseif edit == 1 %}{#Edição da classe#}
+	{{ form_open('classes/edit/'~class.class_id) }}
+		<p class="input_p">
+			<label for="class_name">Class Name</label>
+			<input id="class_name" type="text" name="class_name" class="sharif_input medium" value="{{ class.class_name }}"/>
+		</p>
+
+		<p class="input_p">
+			<label for="day">Day</label>
+			<select id="day" name="day" class="sharif_input">
+				<option value="1" {{ class.day == 1 ? 'selected="selected"' }}>Sunday</option>
+				<option value="2" {{ class.day == 2 ? 'selected="selected"' }}>Monday</option>
+				<option value="3" {{ class.day == 3 ? 'selected="selected"' }}>Tuesday</option>
+				<option value="4" {{ class.day == 4 ? 'selected="selected"' }}>Wednesday</option>
+				<option value="5" {{ class.day == 5 ? 'selected="selected"' }}>Thursday</option>
+				<option value="6" {{ class.day == 6 ? 'selected="selected"' }}>Friday</option>
+				<option value="7" {{ class.day == 7 ? 'selected="selected"' }}>Saturday</option>
+			</select>
+		</p>
+
+		<p class="input_p">
+			<label for="time_start">Starting Time</label>
+			<input id="time_start" type="time" name="time_start" class="sharif_input medium" value="{{ class.time_start }}"/>
+		</p>
+
+		<p class="input_p">
+			<label for="time_end">Ending Time</label>
+			<input id="time_end" type="time" name="time_end" class="sharif_input medium" value="{{ class.time_end }}"/>
+		</p>
+
+		<p class="input_p">
+			<label for="classroom">Classroom</label>
+			<input id="classroom" type="text" name="classroom" class="sharif_input medium" value="{{ class.classroom }}"/>
+		</p>
+
+		<p class="input_p">
+			<input type="submit" value="Save Changes" class="sharif_input"/>
+		</p><br>
+	</form>
+{% endif %}
+
+<h3>Participants:</h3>
+
+<div style="height:15px"></div>
+
+{#Table of Teachers#}
+<h4>Teachers:</h4>
+
+{% if edit == 1 %}
+
+	{{ form_open('classes/add_user/' ~ class.class_id ~ '/' ~ '2') }}
+		<p class="input_p">
+			<select id="teacher" name="teacher" class="sharif_input">
+				{% for teacher in teachers %}
+					{% set already = 0 %}
+					{% for assigned_teacher in class.teachers %}
+						{% if assigned_teacher.id == teacher.id %}
+							{% set already = 1 %}
+						{% endif %}
+					{% endfor %}
+					{% if already == 0 %}
+						<option value="{{teacher.username}}">{{teacher.username}}</option>
+					{% endif %}
+				{% endfor %}
+			</select>
+		</p>
+		<p class="input_p">
+			<input type="submit" value="Add teacher" class="sharif_input"/>
+		</p><br>
+	</form>
+
+{% endif %}
+
+<br>
+
+<table class="sharif_table">
+	<thead>
+		<tr>
+			<th>#</th>
+			<th>User ID</th>
+			<th>Username</th>
+			<th>Display Name</th>
+			<th>Email</th>
+			{% if user.level == 3 %}
+				<th>Role</th>
+				<th>First Login</th>
+				<th>Last Login</th>
+			{% endif %}
+			{% if edit == 1 %}
+				<th>Actions</th>
+			{% endif %}
+		</tr>
+	</thead>
+	{# Conteúdo da linha do usuário #}
+	{% for teacher in class.teachers %}
+		<tr data-id="{{ teacher.id }}">
+			<td>{{ loop.index }}</td>
+			<td>{{ teacher.id }}</td>
+			<td id="un">{{ teacher.username }}</td>
+			<td dir="auto">{{ teacher.display_name }}</td>
+			<td>{{ teacher.email }}</td>
+			{% if user.level == 3 %}
+				<td>{{ teacher.role }}</td>
+				<td>{{ teacher.first_login_time ? teacher.first_login_time : 'Never' }}</td>
+				<td>{{ teacher.last_login_time ? teacher.last_login_time : 'Never' }}</td>
+			{% endif %}
+			{% if edit == 1 %}<td> {# Actions realizadas sobre o usuário #}
+					<a title="Remove Teacher" href="{{site_url('classes/remove_user')}}/{{class.class_id}}/{{teacher.id}}/2"><i title="Remove Teacher" class="fa fa-times fa-lg color2"></i></a>
+			</td>{% endif %}
+		</tr>
+	{% endfor %}
+</table><br>
+
+{#Table of assistants#}
+<h4>Assistants:</h4>
+
+{% if edit == 1 %}
+	{{ form_open('classes/add_user/' ~ class.class_id ~ '/' ~ '1') }}
+		<p class="input_p">
+			<select id="assistant" name="assistant" class="sharif_input">
+				{% for assistant in assistants %}
+					{% set already = 0 %}
+					{% for assigned_assistant in class.assistants %}
+						{% if assigned_assistant.id == assistant.id %}
+							{% set already = 1 %}
+						{% endif %}
+					{% endfor %}
+					{% if already == 0 %}
+						<option value="{{assistant.username}}">{{assistant.username}}</option>
+					{% endif %}
+					{#{% if assistant not in class.assistants %}
+						<option value="{{assistant.username}}">{{assistant.username}}</option>
+					{% endif %}#}
+				{% endfor %}
+			</select>
+		</p>
+		<p class="input_p">
+			<input type="submit" value="Add assistant" class="sharif_input"/>
+		</p><br>
+	</form>
+{% endif %}
+
+<br>
+
+<table class="sharif_table">
+	<thead>
+		<tr>
+			<th>#</th>
+			<th>User ID</th>
+			<th>Username</th>
+			<th>Display Name</th>
+			<th>Email</th>
+			{% if user.level == 3 %}
+				<th>Role</th>
+				<th>First Login</th>
+				<th>Last Login</th>
+			{% endif %}
+			{% if edit == 1 %}
+				<th>Actions</th>
+			{% endif %}
+		</tr>
+	</thead>
+	{# Conteúdo da linha do usuário #}
+	{% for assistant in class.assistants %}
+		<tr data-id="{{ assistant.id }}">
+			<td>{{ loop.index }}</td>
+			<td>{{ assistant.id }}</td>
+			<td id="un">{{ assistant.username }}</td>
+			<td dir="auto">{{ assistant.display_name }}</td>
+			<td>{{ assistant.email }}</td>
+			{% if user.level == 3 %}
+				<td>{{ assistant.role }}</td>
+				<td>{{ assistant.first_login_time ? assistant.first_login_time : 'Never' }}</td>
+				<td>{{ assistant.last_login_time ? assistant.last_login_time : 'Never' }}</td>
+			{% endif %}
+			{% if edit == 1 %}<td> {# Actions realizadas sobre o usuário #}
+					<a title="Remove Assistant" href="{{site_url('classes/remove_user')}}/{{class.class_id}}/{{assistant.id}}/1"><i title="Remove Assistant" class="fa fa-times fa-lg color2"></i></a>		
+			</td>{% endif %}
+		</tr>
+	{% endfor %}
+</table><br>
+
+{#Table of Students#}
+<h4>Students:</h4>
+
+{% if edit == 1 %}
+	{{ form_open('classes/add_user/' ~ class.class_id ~ '/' ~ '0') }}
+		<p class="input_p">
+			<span class="form_comment">You can use this field to add multiple students in to a class at the same time</span><br>
+			<textarea id="new_students" name="new_students" rows="15" class="sharif_input add_text clear">
+#Lines starting with a # sign are comments.
+# Each line (except comments) represents a student.
+# The syntax of each line is:
+		
+# STUDENT_USERNAME 
+#
+#
+			</textarea>
+		</p>
+
+		<p class="input_p">
+			<input type="submit" value="Add Students" class="sharif_input"/>
+		</p><br>
+	</form>
+{% endif %}
+
+<table class="sharif_table">
+	<thead>
+		<tr>
+			<th>#</th>
+			<th>User ID</th>
+			<th>Username</th>
+			<th>Display Name</th>
+			<th>Email</th>
+			{% if user.level == 3 %}
+				<th>Role</th>
+				<th>First Login</th>
+				<th>Last Login</th>
+			{% endif %}
+			{% if edit == 1 %}
+				<th>Actions</th>
+			{% endif %}
+		</tr>
+	</thead>
+	{# Conteúdo da linha do usuário #}
+	{% for student in class.new_students %}
+		<tr data-id="{{ student.id }}">
+			<td>{{ loop.index }}</td>
+			<td>{{ student.id }}</td>
+			<td id="un">{{ student.username }}</td>
+			<td dir="auto">{{ student.display_name }}</td>
+			<td>{{ student.email }}</td>
+			{% if user.level == 3 %}
+				<td>{{ student.role }}</td>
+				<td>{{ student.first_login_time ? student.first_login_time : 'Never' }}</td>
+				<td>{{ student.last_login_time ? student.last_login_time : 'Never' }}</td>
+			{% endif %}
+			{% if edit == 1 %}<td> {# Actions realizadas sobre o usuário #}
+					<a title="Remove Student" href="{{site_url('classes/remove_user')}}/{{class.class_id}}/{{student.id}}/0"><i title="Remove Student" class="fa fa-times fa-lg color2"></i></a>
+					<a title="Submissions" href="{{ site_url('submissions/all/user/'~student.username) }}"><i class="fa fa-bars fa-lg color12"></i></a>
+			</td>{% endif %}
+		</tr>
+	{% endfor %}
+</table><br>
+
+{% endblock %}  {# main_content #}
+
