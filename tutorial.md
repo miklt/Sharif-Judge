@@ -33,9 +33,9 @@ var/www/html
 
 
 ### Part 3 - Setting up a database
-<!--- Access mysql's shell by typing (where **** is your password defined at the mysql's installation process)
+Access postgres's shell by typing (where **** is your password defined at the postgres's installation process)
 ```sh
-$ mysql -uroot -p**** 
+$ sudo -u postgres psql
 ```
 - Create a database for the Judge typing 
 ```sh
@@ -44,7 +44,7 @@ $ create database Judge;
 - Exit the shell by typing 
 ```sh
 $ exit
-```-->
+```
 
 
 
