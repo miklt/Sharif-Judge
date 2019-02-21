@@ -5,7 +5,7 @@
 
 ### Part 1 - Setting up your environment
 - Install a Linux distro
-- Install the LAMP package - Apache2, PHP5 (PHP7 does not work with PHPExcel) and MySql. Make sure that your current version is PHP5 typing:
+- Install the LAMP package - Apache2, PHP7 and Postgres. Make sure that your current version is PHP7 typing:
 ```sh
 $ php -v
 ```
@@ -33,18 +33,18 @@ var/www/html
 
 
 ### Part 3 - Setting up a database
-- Access mysql's shell by typing (where **** is your password defined at the mysql's installation process)
-```sh
-$ mysql -uroot -p**** 
-```
-- Create a database for the Judge typing 
-```sh
-$ create database Judge;
-```
-- Exit the shell by typing 
-```sh
-$ exit
-```
+%- Access mysql's shell by typing (where **** is your password defined at the mysql's installation process)
+%```sh
+%$ mysql -uroot -p**** 
+%```
+%- Create a database for the Judge typing 
+%```sh
+%$ create database Judge;
+%```
+%- Exit the shell by typing 
+%```sh
+%$ exit
+%```
 
 
 
