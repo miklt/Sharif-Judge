@@ -507,10 +507,10 @@ class Assignments extends CI_Controller
 
 		if ($this->user->level <= 1) // permission denied
 			show_404();
-		$this->form_validation->set_rules('assignment_name', 'assignment name', 'required|max_length[50]'); //easy to do so, would have to change the whole test
+		$this->form_validation->set_rules('assignment_name', 'assignment name', 'required|max_length[50]'); 
 		$this->form_validation->set_rules('start_time', 'start time', 'required');
 		$this->form_validation->set_rules('finish_time', 'finish time', 'required');
-		$this->form_validation->set_rules('extra_time', 'extra time', 'required');//echo set_value("extra_time", 0)');
+		$this->form_validation->set_rules('extra_time', 'extra time', 'required');
 		$this->form_validation->set_rules('participants', 'participants', '');
 		$this->form_validation->set_rules('late_rule', 'coefficient rule', 'required');
 		$this->form_validation->set_rules('name[]', 'problem name', 'required|max_length[50]');
@@ -707,7 +707,7 @@ class Assignments extends CI_Controller
 				{
 					if(strpos($doc, ".cpp") !== FALSE) 
 					{
-						$number_of_test_cases = $this->file_adding($assignment_dir,$i,$doc,$number_of_test_cases); // ficou porco mas nao consegui resolver, brisar depois
+						$number_of_test_cases = $this->file_adding($assignment_dir,$i,$doc,$number_of_test_cases); 
 					}
 					if(strpos($doc, ".cpp") !== FALSE or strpos($doc, ".txt") !== FALSE or strpos($doc, ".h") !== FALSE or strpos($doc, ".hpp") !== FALSE) // places files on inject folder
 					{
