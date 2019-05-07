@@ -1,9 +1,9 @@
 Tests Structure
 ===============
 
-When adding assignments, you must provide a zip file containing test cases. This zip file should contain a folder for each problem (Upload-Only problems don't need any folder). Folder names should be `p1`, `p2`, `p3`, …
+When adding assignments, you must provide a zip file containing test cases. This zip file should contain a folder for each problem (Upload-Only problems don't need any folder). Folder names should be `p1`, `p2`, `p3`, `p4`, …
 
-There are two methods of checking output for each problem: “Input/Output Comparison” method and “Tester” method:
+There are three methods of checking output for each problem: “Input/Output Comparison” method, “Tester” method and “Unit Test”  :
 
 Input/Output Comparison method
 ------------------------------
@@ -40,6 +40,31 @@ int main(int argc, char const *argv[])
  
 }
 ```
+Unit test method
+-------------
+
+In this method you must only provide the desc.md and test case files in the problem’s folder. The test case files contains a .cpp with test cases, as exemplified below, in which a unit test is performed and returns true if it is successful and false if it is not. While using this method it is not necessary provide a tester.cpp or a main.cpp (these files are  automatically uploaded in this method).
+Along with .cpp files containing the unit tests, .h, .txt and .hpp files can also be uploaded if necessary for the unit test (files with other extensions are not copied to the folder).
+
+Example of `test_case_file.cpp` file to be uploaded:
+```cpp
+#include "Test.h"
+
+int function (double x, double y);
+
+TEST_CASE (Name_of_Test_Case) {
+    return (function(1.0, 1.0) == 1);
+}
+
+TEST_CASE (Name_of_Test_Case2) {
+    return (function(2.0, 3.0) == 1);
+}
+```
+
+The name of the test case (Name_of_Test_Case in the example) is used as the test description. To make the description easier to read, “_” is translated to a space (“ “)  and “$” is translated to “:”.
+
+To help developing the tests, there is a folder called unittest (put link to the folder) available with a main and the needed Test.h and Test.cpp along with the Tester.cpp.
+
 
 Sample File
 -----------
@@ -65,29 +90,31 @@ The tree of this file is:
 │   ├── out
 │   │   └── output1.txt
 │   └── tester.cpp
-└── p2
-    ├── in
-    │   ├── input1.txt
-    │   ├── input2.txt
-    │   ├── input3.txt
-    │   ├── input4.txt
-    │   ├── input5.txt
-    │   ├── input6.txt
-    │   ├── input7.txt
-    │   ├── input8.txt
-    │   ├── input9.txt
-    │   └── input10.txt
-    └── out
-        ├── output1.txt
-        ├── output2.txt
-        ├── output3.txt
-        ├── output4.txt
-        ├── output5.txt
-        ├── output6.txt
-        ├── output7.txt
-        ├── output8.txt
-        ├── output9.txt
-        └── output10.txt
+|── p2
+|   ├── in
+|   │   ├── input1.txt
+|   │   ├── input2.txt
+|   │   ├── input3.txt
+|   │   ├── input4.txt
+|   │   ├── input5.txt
+|   │   ├── input6.txt
+|   │   ├── input7.txt
+|   │   ├── input8.txt
+|   │   ├── input9.txt
+|   │   └── input10.txt
+|   └── out
+|       ├── output1.txt
+|       ├── output2.txt
+|       ├── output3.txt
+|       ├── output4.txt
+|       ├── output5.txt
+|       ├── output6.txt
+|       ├── output7.txt
+|       ├── output8.txt
+|       ├── output9.txt
+|       └── output10.txt
+└──p4
+   └── test_case_file.cpp
 ```
 
 Problem 1 uses “Tester” method for checking output. So it has a file `tester.cpp` (the tester code)
@@ -143,3 +170,5 @@ int main(int argc, char const *argv[])
 Problem 2 uses “Input/Output Comparison” method for checking output. So it has two folders `in` and `out` containing test cases.
 
 Problem 3 is an “upload only” problem. So it has not any folder.
+
+Problem 4 is an "Unit test" method, so it only has a test_case_file.cpp
