@@ -1,4 +1,4 @@
-# Sharif Judge v1.4 Documentation
+# PCS Judge v1.5 Documentation
 
 Table of contents:
 
