@@ -1,7 +1,7 @@
-Sharif Judge
+PCS Sharif Judge
 ============
 
-[Sharif Judge](https://github.com/mjnaderi/Sharif-Judge) is a free and open source online judge for C, C++, Java and Python programming courses.
+[PCS Sharif Judge](https://github.com/PCS-Poli-USP/Sharif-Judge/) is a free and open source online judge for C, C++, Java and Python programming courses. It is a fork of [Sharif Judge](https://github.com/mjnaderi/Sharif-Judge/).
 
 The web interface is written in PHP (CodeIgniter framework) and the main backend is written in BASH.
 
@@ -10,4 +10,4 @@ Python in Sharif Judge is not sandboxed yet. Just a simple (low) level of securi
 Documentation
 ===============
 
-  * [Sharif Judge v1.4 Documentation](v1.4)
+  * [Sharif Judge v1.5 Documentation](v1.5)
