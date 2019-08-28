@@ -98,7 +98,7 @@ def main():
 
     ignoreFilesList = [x.strip() for x in ignoreFilesList] 
 
-    with open(pathResult + "/output.txt", "w") as outputFile:
+    with open(pathResult + "/static-errors", "w") as outputFile:
     
         pathCode = pathCodes 
 
@@ -116,7 +116,7 @@ def main():
         camelCaseAllClass = list()
 
         # Log Outputs --------------------------------------------------------------
-        with open("{0}/{1}.log".format(pathResult,pathCode), "w") as logFile:
+        with open("{0}/static-result.html".format(pathResult), "w") as logFile:
 
             logFile.write("\n\n<span class=\"shj_b\">STATIC ANALYSIS:\n")
             logFile.write("\n<span class=\"shj_b\">Extra public members\n")
