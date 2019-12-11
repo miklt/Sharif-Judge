@@ -133,6 +133,7 @@ class Install extends CI_Controller
 				'name'              => array('type' => 'VARCHAR', 'constraint' => 50, 'default' => ''),
 				'score'             => array('type' => 'INT', 'constraint' => 11),
 				'is_upload_only'    => array('type' => 'TINYINT', 'constraint' => 1, 'default' => '0'),
+				'has_script'        => array('type' => 'TINYINT', 'constraint' => 1, 'default' => '0'),
 				'c_time_limit'      => array('type' => 'INT', 'constraint' => 11, 'unsigned' => TRUE, 'default' => 500),
 				'python_time_limit' => array('type' => 'INT', 'constraint' => 11, 'unsigned' => TRUE, 'default' => 1500),
 				'java_time_limit'   => array('type' => 'INT', 'constraint' => 11, 'unsigned' => TRUE, 'default' => 2000),

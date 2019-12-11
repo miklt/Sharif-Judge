@@ -86,6 +86,7 @@ class Queueprocess extends CI_Controller
 				$op4 = $this->settings_model->get_setting('enable_py3_shield');
 			$op5 = $this->settings_model->get_setting('enable_java_policy');
 			$op6 = $assignment_info['javaexceptions'];
+			$op7 = $problem['has_script'];
 
 			if ($file_type === 'c' OR $file_type === 'cpp')
 				$time_limit = $problem['c_time_limit']/1000;
@@ -101,7 +102,7 @@ class Queueprocess extends CI_Controller
 			$diff_arg = $problem['diff_arg'];
 			$output_size_limit = $this->settings_model->get_setting('output_size_limit') * 1024;
 
-			$cmd = "cd $tester_path;\n./tester.sh $problemdir ".escapeshellarg($username).' '.escapeshellarg($main_filename).' '.escapeshellarg($raw_filename)." $file_type $time_limit $time_limit_int $memory_limit $output_size_limit $diff_cmd $diff_arg $op1 $op2 $op3 $op4 $op5 $op6";
+			$cmd = "cd $tester_path;\n./tester.sh $problemdir ".escapeshellarg($username).' '.escapeshellarg($main_filename).' '.escapeshellarg($raw_filename)." $file_type $time_limit $time_limit_int $memory_limit $output_size_limit $diff_cmd $diff_arg $op1 $op2 $op3 $op4 $op5 $op6 $op7";
 
 			file_put_contents($userdir.'/log', $cmd);
 
@@ -116,7 +117,7 @@ class Queueprocess extends CI_Controller
 			shell_exec("cd $tester_path; rm -rf jail*");
 
 			// Saving judge result
-			if ( is_numeric($output) || $output === 'Compilation Error' || $output === 'Syntax Error' )
+			if ( is_numeric($output) || $output === 'Compilation Error' || $output === 'Syntax Error' || $output === 'Resultado')
 			{
 				shell_exec("mv $userdir/result.html $userdir/result-{$submit_id}.html");
 				shell_exec("mv $userdir/log $userdir/log-{$submit_id}");

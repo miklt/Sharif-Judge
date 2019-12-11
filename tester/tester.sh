@@ -119,6 +119,12 @@ else
 	DISPLAY_JAVA_EXCEPTION_ON=false
 fi
 
+if [ ${18} = "1" ]; then
+	TEST_SCRIPT=true
+else
+	TEST_SCRIPT=false
+fi
+
 # DIFFOPTION can also be "ignore" or "exact".
 # ignore: In this case, before diff command, all newlines and whitespaces will be removed from both files
 # identical: diff will compare files without ignoring anything. files must be identical to be accepted
@@ -191,6 +197,25 @@ fi
 
 
 COMPILE_BEGIN_TIME=$(($(date +%s%N)/1000000));
+
+########################################################################################################
+############################################ TEST SCRIPT ############################################
+########################################################################################################
+
+if $TEST_SCRIPT; then
+	shj_log "Iniciando Test script"
+	echo "Iniciando Test script" >> $PROBLEMPATH/$UN/result.html
+
+        cp -r $PROBLEMPATH/script/ script/
+        cd script/
+	chmod +x script.sh
+	cp $PROBLEMPATH/$UN/$FILENAME.zip $FILENAME.zip
+	unzip $FILENAME.zip > /dev/null 2>&1
+	./script.sh >> $PROBLEMPATH/$UN/result.html
+
+    #((SCORE=10000))
+	shj_finish "Resultado"
+fi
 
 ########################################################################################################
 ############################################ COMPILING JAVA ############################################

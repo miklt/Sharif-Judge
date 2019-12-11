@@ -387,14 +387,14 @@ class Problems extends CI_Controller
 				'pre_score' => 0,
 				'time' => shj_now_str(),
 			);
-			if ($this->problem['is_upload_only'] == 0)
+			if ($this->problem['is_upload_only'] == 1 && $this->problem['has_script'] == 0)
 			{
-				$this->queue_model->add_to_queue($submit_info);
-				process_the_queue();
+				$this->submit_model->add_upload_only($submit_info);
 			}
 			else
 			{
-				$this->submit_model->add_upload_only($submit_info);
+				$this->queue_model->add_to_queue($submit_info);
+				process_the_queue();
 			}
 
 			return TRUE;

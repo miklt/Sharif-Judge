@@ -393,7 +393,8 @@ class Assignments extends CI_Controller
             'allowed_languages' => 'C++',
 						'diff_cmd' => 'diff',
 						'diff_arg' => '-bB',
-						'is_upload_only' => 0
+						'is_upload_only' => 0,
+						'has_script' => 0
 					)
 				);
 			else
@@ -410,6 +411,7 @@ class Assignments extends CI_Controller
 				$weight = $this->input->post('weight');
 				$data['problems'] = array();
 				$uo = $this->input->post('is_upload_only');
+				$hs = $this->input->post('has_script');
 				if ($uo === NULL)
 					$uo = array();
 				for ($i=0; $i<count($names); $i++){
@@ -425,6 +427,7 @@ class Assignments extends CI_Controller
 						'diff_cmd' => $dc[$i],
 						'diff_arg' => $da[$i],
 						'is_upload_only' => in_array($i+1,$uo)?1:0,
+						'has_script' => in_array($i+1,$hs)?1:0,
 						'weight' => $weight[$i],
 					));
 				}
@@ -593,7 +596,7 @@ class Assignments extends CI_Controller
 
 			// Extract new test cases and descriptions in temp directory
 			$this->load->library('unzip');
-			$this->unzip->allow(array('txt', 'h', 'hpp', 'cpp', 'html', 'md', 'pdf'));
+			//$this->unzip->allow(array('txt', 'h', 'hpp', 'cpp', 'html', 'md', 'pdf'));
 			$extract_result = $this->unzip->extract($u_data['full_path'], $tmp_dir);
 
 			// Remove the zip file

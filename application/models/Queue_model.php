@@ -83,7 +83,7 @@ class Queue_model extends CI_Model
 	public function rejudge($assignment_id, $problem_id)
 	{
 		$problem = $this->assignment_model->problem_info($assignment_id, $problem_id);
-		if ($problem['is_upload_only'])
+		if ($problem['is_upload_only'] && !$problem['has_script'])
 			return;
 
 		// Changing the status of all submissions of selected problem to PENDING
@@ -128,7 +128,7 @@ class Queue_model extends CI_Model
 	public function rejudge_single($submission)
 	{
 		$problem = $this->assignment_model->problem_info($submission['assignment'], $submission['problem']);
-		if ($problem['is_upload_only'])
+		if ($problem['is_upload_only'] && !$problem['has_script'])
 			return;
 
 		// Changing the status of submission to PENDING

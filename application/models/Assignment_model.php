@@ -99,6 +99,7 @@ class Assignment_model extends CI_Model
 		$dc = $this->input->post('diff_cmd');
 		$da = $this->input->post('diff_arg');
 		$uo = $this->input->post('is_upload_only');
+		$hs = $this->input->post('has_script');
 		$weight = $this->input->post('weight');
 		if ($uo === NULL)
 			$uo = array();
@@ -131,6 +132,7 @@ class Assignment_model extends CI_Model
 				'name' => $names[$i-1],
 				'score' => $scores[$i-1],
 				'is_upload_only' => in_array($i,$uo)?1:0,
+				'has_script' => in_array($i,$hs)?1:0,
 				'c_time_limit' => $c_tl[$i-1],
 				'python_time_limit' => $py_tl[$i-1],
 				'java_time_limit' => $java_tl[$i-1],

@@ -33,6 +33,7 @@
 	<td><input type="text" name="diff_cmd[]" class="sharif_input tiny" value="diff"/></td>\
 	<td><input type="text" name="diff_arg[]" class="sharif_input tiny" value="-bB"/></td>\
 	<td><input type="checkbox" name="is_upload_only[]" class="check" value="PID"/><td><i class="fa fa-times-circle fa-lg color1 delete_problem pointer"></i></td></td>\
+	<td><input type="checkbox" name="has_script[]" class="check" value="PID"/><td><i class="fa fa-times-circle fa-lg color1 delete_problem pointer"></i></td></td>\
 </tr>';
 	$(document).ready(function(){
 		$("#add").click(function(){
@@ -198,6 +199,7 @@
 		<th rowspan="2">Diff<br>Command (<a target="_blank" href="https://github.com/mjnaderi/Sharif-Judge/blob/docs/v1.4/add_assignment.md#diff-command">?</a>)</th>
 		<th rowspan="2">Diff<br>Argument (<a target="_blank" href="https://github.com/mjnaderi/Sharif-Judge/blob/docs/v1.4/add_assignment.md#diff-arguments">?</a>)</th>
 		<th rowspan="2">Upload<br>Only (<a target="_blank" href="https://github.com/mjnaderi/Sharif-Judge/blob/docs/v1.4/add_assignment.md#upload-only">?</a>)</th>
+		<th rowspan="2">Has<br>Script</th>
 		<th rowspan="2"></th>
 	</tr>
 	<tr>
@@ -219,6 +221,7 @@
 			<td><input type="text" name="diff_cmd[]" class="sharif_input tiny" value="{{ problem.diff_cmd }}"/></td>
 			<td><input type="text" name="diff_arg[]" class="sharif_input tiny" value="{{ problem.diff_arg }}"/></td>
 			<td><input type="checkbox" name="is_upload_only[]" class="check" value="{{ problem.id }}" {{ problem.is_upload_only ? 'checked' }}/></td>
+			<td><input type="checkbox" name="has_script[]" class="check" value="{{ problem.id }}" {{ problem.has_script ? 'checked' }}/></td>
 			<td><i class="fa fa-times-circle fa-lg color1 delete_problem pointer"></i></td>
 		</tr>
 	{% endfor %}
