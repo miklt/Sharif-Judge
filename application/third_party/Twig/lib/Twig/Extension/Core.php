@@ -1277,7 +1277,8 @@ else {
      */
     function twig_length_filter(Twig_Environment $env, $thing)
     {
-        return is_scalar($thing) ? strlen($thing) : count($thing);
+        $thingcount = (is_array($thing) ? count($thing) : 0);
+        return is_scalar($thing) ? strlen($thing) : $thingcount;
     }
 
     /**
