@@ -325,7 +325,7 @@ $(document).ready(function() {
               .find("td.status")
               .children("div.btn");
             button.addClass("shj-blue");
-            button.text("Compilation Error");
+            button.text(result.status);
             var position_in_queue = $(
               "tr[data-u='" +
                 result.username +
