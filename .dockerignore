@@ -1,0 +1,16 @@
+# ignore .git and .cache folders
+.git
+.cache
+**/*.class
+.DS_Store
+.vscode/
+.idea/
+.git/
+tests/
+fixtures/
+coverage/
+coverage.xml
+images/
+node_modules/
+.docker/Dockerfile
+.docker/docker-compose*

@@ -1,0 +1,14 @@
+version: ‘3’
+
+services:
+
+  judge:
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile
+    image: 
+
+    ports:
+      - 80:80
+    volumes:
+      - .:/app 

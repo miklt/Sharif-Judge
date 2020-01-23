@@ -39,7 +39,7 @@
 | path to your installation.
 |
 */
-$config['base_url'] = 'http://localhost/Sharif-Judge/';
+$config['base_url'] = 'http://localhost/';
 
 /*
 |--------------------------------------------------------------------------
@@ -296,7 +296,7 @@ $config['encryption_key'] = 'ml9EWcLv4ZfDFzN35g6MVhb2jQSyXtAB';
 |
 */
 $config['sess_driver']			= 'files';
-//$config['sess_save_path']       = s
+$config['sess_save_path'] = sys_get_temp_dir();
 $config['sess_valid_drivers']	= array();
 $config['sess_cookie_name']		= 'shjsession';
 $config['sess_expiration']		= 7200;

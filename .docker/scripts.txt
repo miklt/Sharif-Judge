@@ -1,0 +1,3 @@
+ 
+ docker rm judge && docker build -f .docker/Dockerfile -t judge-pcs3616 . && docker run --name judge -p 8080:80 judge-pcs3616
+ docker exec -i -t nginx-container /bin/bash
