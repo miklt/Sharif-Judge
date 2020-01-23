@@ -33,10 +33,8 @@ class Password_hash
 	var $portable_hashes;
 	var $random_state;
 
-	function Password_hash($input)
+	function __construct($iteration_count_log2, $portable_hashes)
 	{
-		list($iteration_count_log2, $portable_hashes) = $input;
-
 		$this->itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 
 		if ($iteration_count_log2 < 4 || $iteration_count_log2 > 31)
@@ -48,6 +46,11 @@ class Password_hash
 		$this->random_state = microtime();
 		if (function_exists('getmypid'))
 			$this->random_state .= getmypid();
+	}
+	function Password_hash($input)	
+	{
+		list($iteration_count_log2, $portable_hashes) = $input;
+		self::__construct($iteration_count_log2, $portable_hashes);
 	}
 
 	function get_random_bytes($count)
