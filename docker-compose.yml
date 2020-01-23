@@ -1,14 +1,29 @@
-version: ‘3’
+version: '3.1'
 
 services:
 
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: senha
+      POSTGRES_DB: judge
+      POSTGRES_USER: admin
+      
   judge:
-    build:
-      context: .
-      dockerfile: .docker/Dockerfile
-    image: 
-
-    ports:
-      - 80:80
+    container_name: judge
+    build: './.docker'
+    image: judge-pcs3616
+    restart: always
+    depends_on:
+      - db
     volumes:
       - .:/app 
+      - .docker/vhost.conf:/etc/apache2/sites-available/000-default.conf
+    ports:
+      - 80:80
+    environment:
+      BASE_URL_APP: ${BASE_URL_APP}
+      APP_TIMEZONE: ${APP_TIMEZONE}
+      APP_TESTER_PATH: ${APP_TESTER_PATH}
+      
