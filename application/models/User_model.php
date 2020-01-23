@@ -240,24 +240,24 @@ class User_model extends CI_Model
 
 		if ($send_mail)
 		{
-			// sending usernames and passwords by email
-			$this->load->library('email');
-			$config = array(
-				'mailtype'  => 'html',
-				'charset'   => 'iso-8859-1'
-			);
-			/*
-			// You can use gmail's smtp server
-			$config = Array(
-				'protocol' => 'smtp',
-				'smtp_host' => 'ssl://smtp.googlemail.com',
-				'smtp_port' => 465,
-				'smtp_user' => 'example@gmail.com',
-				'smtp_pass' => 'your-gmail-password',
-				'mailtype'  => 'html',
-				'charset'   => 'iso-8859-1'
-			);
-			*/
+				// sending usernames and passwords by email
+				$this->load->library('email');
+				$config = array(
+						'mailtype'  => 'html',
+						'charset'   => 'utf-8'
+				);
+
+				// You can use gmail's smtp server
+				$config = Array(
+						'smtp_crypto' => 'ssl',
+						'protocol' => 'smtp',
+						'smtp_host' => $_ENV["APP_SMTP_HOST"],
+						'smtp_port' => $_ENV["APP_SMTP_PORT"],
+						'smtp_user' => $_ENV["APP_SMTP_USER"],
+						'smtp_pass' => $_ENV["APP_SMPT_PASS"],
+						'mailtype'  => 'html',
+						'charset'   => 'utf-8'
+				);
 			$this->email->initialize($config);
 			$this->email->set_newline("\r\n");
 			$count_users = count($users_ok);
@@ -511,24 +511,24 @@ class User_model extends CI_Model
 		$now = shj_now();
 		$this->db->where('email', $email)->update('users', array('passchange_key'=>$passchange_key, 'passchange_time'=>date('Y-m-d H:i:s', $now)));
 
-		// send the email:
+		// send the email:				
 		$this->load->library('email');
 		$config = array(
-			'mailtype'  => 'html',
-			'charset'   => 'iso-8859-1'
+				'mailtype'  => 'html',
+				'charset'   => 'utf-8'
 		);
-		/*
+
 		// You can use gmail's smtp server
 		$config = Array(
-			'protocol' => 'smtp',
-			'smtp_host' => 'ssl://smtp.googlemail.com',
-			'smtp_port' => 465,
-			'smtp_user' => 'example@gmail.com',
-			'smtp_pass' => 'your-gmail-password',
-			'mailtype'  => 'html',
-			'charset'   => 'iso-8859-1'
+				'smtp_crypto' => 'ssl',
+				'protocol' => 'smtp',
+				'smtp_host' => $_ENV["APP_SMTP_HOST"],
+				'smtp_port' => $_ENV["APP_SMTP_PORT"],
+				'smtp_user' => $_ENV["APP_SMTP_USER"],
+				'smtp_pass' => $_ENV["APP_SMPT_PASS"],
+				'mailtype'  => 'html',
+				'charset'   => 'utf-8'
 		);
-		*/
 		$this->email->initialize($config);
 		$this->email->set_newline("\r\n");
 		$this->email->from($this->settings_model->get_setting('mail_from'), $this->settings_model->get_setting('mail_from_name'));

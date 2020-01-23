@@ -39,7 +39,7 @@
 | path to your installation.
 |
 */
-$config['base_url'] = 'http://localhost/';
+$config['base_url'] = $_ENV["APP_BASE_URL"]; 
 
 /*
 |--------------------------------------------------------------------------
@@ -272,7 +272,7 @@ $config['cache_path'] = '';
 | http://codeigniter.com/user_guide/libraries/sessions.html
 |
 */
-$config['encryption_key'] = 'XwmqtnHLQfa9SFvsI6dehKbVopxZPD4N';
+$config['encryption_key'] = 'HFY7n3XiRAql6CvGdJBVDIyPZM508QOT';
 
 /*
 |--------------------------------------------------------------------------
