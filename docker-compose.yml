@@ -6,9 +6,11 @@ services:
     image: postgres
     restart: always
     environment:
-      POSTGRES_PASSWORD: senha
-      POSTGRES_DB: judge
-      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: ${APP_DB_PASSWORD}
+      POSTGRES_DB: ${APP_DB_DATABASE}
+      POSTGRES_USER: ${APP_DB_USERNAME}
+    volumes:
+      - ./pcs3616_s1_2020.sql:/docker-entrypoint-initdb.d/pcs3616_s1_2020.sql
       
   judge:
     container_name: judge    
@@ -32,3 +34,8 @@ services:
       APP_SMPT_PASS: ${APP_SMPT_PASS}
       APP_SMTP_HOST: ${APP_SMTP_HOST}
       APP_SMTP_PORT: ${APP_SMTP_PORT}
+      APP_DB_DRIVER: ${APP_DB_DRIVER}
+      APP_DB_HOSTNAME: ${APP_DB_HOSTNAME} 
+      APP_DB_USERNAME: ${APP_DB_USERNAME}
+      APP_DB_PASSWORD: ${APP_DB_PASSWORD}
+      APP_DB_DATABASE: ${APP_DB_DATABASE}
