@@ -62,14 +62,12 @@ class Problems extends CI_Controller
     if ($assignment_id === NULL)
       $assignment_id = $this->user->selected_assignment['id'];
     if ($assignment_id == 0){
-			//show_error('No assignment selected.');
-      $data['problem'] = array(
-        'id' => NULL,
-        'description' => '<p>Please select an assignment first.</p>',
-        'allowed_languages' => NULL,
-        'has_pdf' => FALSE
-      );
+	  //show_error('No assignment selected.');
+	  $data['error'] = 'Please select an assignment first.';
     } else {
+      if ($assignment_id <> $this->user->selected_assignment['id']) {
+		$this->user->select_assignment($assignment_id);
+	  }
       $assignment = $this->assignment_model->assignment_info($assignment_id);
 
       $data = array(
@@ -122,9 +120,9 @@ class Problems extends CI_Controller
     foreach ($data['all_assignments'] as $possible_assignment) {
     	array_push($possible_assignments_ids, $possible_assignment['id']);    
     }
-    if(!in_array($assignment_id, $possible_assignments_ids) && ($this->user->level == 0)){
+    /*if(!in_array($assignment_id, $possible_assignments_ids) && ($this->user->level == 0)){
     	show_404();
-    }
+    }*/
 	  $this->twig->display('pages/problems.twig', $data);
 	}
 

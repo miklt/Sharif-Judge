@@ -52,7 +52,7 @@
 	<th>Start Time</th>
 	<th>Finish Time</th>
 	<th>Status</th>
-	<th>PDF</th>
+	<!--<th>PDF</th>-->
 	{% if user.level > 0 %}
 	<th>Actions</th>
 	{% endif %}
@@ -80,9 +80,9 @@
 			<span style="color: red;">Close</span>
 		{% endif %}
 	</td>
-	<td>
+	<!--<td>
 		<a href="{{ site_url('assignments/pdf/'~item.id) }}"><img src="{{ base_url('assets/images/pdf.svg') }}" /></a>
-	</td>
+	</td>-->
 	{% if user.level > 0 %}
 	<td>
 		{% if user.level >= 2 %}

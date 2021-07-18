@@ -631,10 +631,18 @@ class Submissions extends CI_Controller
 			else
 				$file_path = '/nowhere'; // This line is never reached!
 
-			$result = array(
-				'file_name' => $submission['main_file_name'].'.'.filetype_to_extension($submission['file_type']),
-				'text' => file_exists($file_path)?file_get_contents($file_path):'File Not Found'
-			);
+			if (file_exists($file_path)) {
+				$file_content = file_get_contents($file_path);
+				$result = array(
+					'file_name' => $submission['main_file_name'].'.'.filetype_to_extension($submission['file_type']),
+					'text' => mb_convert_encoding($file_content, 'UTF-8', mb_detect_encoding($file_content, 'UTF-8, ISO-8859-1', true))
+				);
+			} else {
+				$result = array(
+					'file_name' => $submission['main_file_name'].'.'.filetype_to_extension($submission['file_type']),
+					'text' => 'File Not Found'
+				);
+			}
 
 			if ($type === 'code') {
 				$result['lang'] = $submission['file_type'];

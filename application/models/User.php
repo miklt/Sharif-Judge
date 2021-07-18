@@ -65,6 +65,18 @@ class User extends CI_Model
 	public function select_assignment($assignment_id)
 	{
 		$this->db->where('username', $this->username)->update('users', array('selected_assignment'=>$assignment_id));
+		$query = $this->db->get_where('assignments', array('id' => $assignment_id));
+		// Atualizando os dados do assignment selecionado
+		if ($query->num_rows() != 1)
+			$this->selected_assignment = array(
+				'id' => 0,
+				'name' => 'Not Selected',
+				'finish_time' => 0,
+				'extra_time' => 0,
+				'problems' => 0
+			);
+		else
+			$this->selected_assignment = $query->row_array();
 	}
 
 

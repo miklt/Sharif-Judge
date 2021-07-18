@@ -54,8 +54,9 @@ $(document).ready(function(){
 
 
 {% block main_content %}
-{% if error != 'none' and form_validation %}
-{<p>{{ error }}</p>
+
+{% if (error != 'none' and form_validation) or (not form_validation and error is defined) %}
+<p>{{ error }}</p>
 {% else %}
 	<div class="problem_description">
 		{{ problem.description|raw }}
