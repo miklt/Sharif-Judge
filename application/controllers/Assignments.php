@@ -480,17 +480,17 @@ class Assignments extends CI_Controller
 				$start_of_test_case = strpos($line , $this->config->item('test_case_name'));
 				if ($start_of_test_case !== FALSE)
 				{
-					$start_of_test_case += strlen($this->config->item('test_case_name')); 
+					$start_of_test_case = strpos($line , "(", $start_of_test_case) + 1;
 					$end_of_test_case = strpos($line, ")", $start_of_test_case);
 					if($end_of_test_case !== FALSE)
 					{
 						$number_of_test_cases++;
 						$test_case_lenght = $end_of_test_case - $start_of_test_case;
 						$input_file = fopen("$assignment_dir/p$a/in/input".$number_of_test_cases.'.txt', "w");
-						$test_case_name = substr($line,$start_of_test_case ,$test_case_lenght);
+						$test_case_name = trim(substr($line, $start_of_test_case, $test_case_lenght));
 						fwrite($input_file,$test_case_name);
 						$desc_file = fopen("$assignment_dir/p$a/desc/desc".$number_of_test_cases.'.txt', "w");
-						fwrite($desc_file, preg_replace("/_/", " ", preg_replace("/\$/",":",$test_case_name))); 
+						fwrite($desc_file, str_replace("_", " ", str_replace("$", ":", $test_case_name))); 
 					}
 				}
 			}
@@ -602,16 +602,8 @@ class Assignments extends CI_Controller
 				'type' => 'error',
 				'text' => "Error: Error uploading tests zip file: ".$this->upload->display_errors('', '')
 			);
-		else
-			$this->messages[] = array(
-				'type' => 'success',
-				'text' => "Tests (zip file) uploaded successfully."
-			);
-
-
 
 		// Upload PDF File of Assignment
-
 		$config = array(
 			'upload_path' => $assignment_dir,
 			'allowed_types' => 'pdf',
@@ -639,10 +631,7 @@ class Assignments extends CI_Controller
 			);
 		}
 
-
-
 		// Extract Tests (zip file)
-
 		if ($zip_uploaded) // if zip file is uploaded
 		{
 			// Create a temp directory
@@ -668,10 +657,6 @@ class Assignments extends CI_Controller
 					shell_exec("cd $assignment_dir; rm -f *.pdf");
 				// Copy new test cases from temp dir
 				shell_exec("cd $assignments_root; cp -R $tmp_dir_name/* assignment_{$the_id};");
-				$this->messages[] = array(
-					'type' => 'success',
-					'text' => 'Tests (zip file) extracted successfully.'
-				);
 			}
 			else
 			{
@@ -695,7 +680,6 @@ class Assignments extends CI_Controller
 			if ( ! file_exists("$assignment_dir/p$i"))
 			{
 				mkdir("$assignment_dir/p$i", 0700);
-			
 			}
 			elseif( ! file_exists("$assignment_dir/p$i/in") and ! file_exists("$assignment_dir/p$i/inject") and ! file_exists("$assignment_dir/p$i/desc")) 
 			{
@@ -713,13 +697,17 @@ class Assignments extends CI_Controller
 					{
 						rename("$assignment_dir/p$i/$doc" , "$assignment_dir/p$i/inject/$doc");	
 					}
-					
 				}
 				$this->unittest_add($assignments_root, $assignment_dir, $i);				
 				if($number_of_test_cases == 0) 
 				{
 					die("No test cases were uploaded");
 				}
+
+				$this->messages[] = array(
+					'type' => 'success',
+					'text' => 'Problem ' . $i . ': ' . $number_of_test_cases . ' test case(s) identified'
+				);
 			}
 			if (file_exists("$assignment_dir/p$i/desc.md"))
 			{

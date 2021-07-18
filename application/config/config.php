@@ -39,8 +39,7 @@
 | path to your installation.
 |
 */
-$config['base_url'] = 'http://localhost/Sharif-Judge/';
-
+$config['base_url'] = "http://". $_SERVER['HTTP_HOST'] . preg_replace('@/+$@','', dirname($_SERVER['SCRIPT_NAME']));
 
 /*
 |--------------------------------------------------------------------------
@@ -273,7 +272,7 @@ $config['cache_path'] = '';
 | http://codeigniter.com/user_guide/libraries/sessions.html
 |
 */
-$config['encryption_key'] = 'ml9EWcLv4ZfDFzN35g6MVhb2jQSyXtAB';
+$config['encryption_key'] = 'GRcqAmzQIu8U2iF6pCWawM19o5rZftTv';
 
 /*
 |--------------------------------------------------------------------------
@@ -462,7 +461,7 @@ $config['composer_autoload'] = TRUE;
 
 $config['unit_test_folder'] = 'unittest';
 
-$config['test_case_name'] = 'TEST_CASE (';
+$config['test_case_name'] = 'TEST_CASE';
 
 
 /* End of file config.php */
