@@ -199,6 +199,18 @@ COMPILE_BEGIN_TIME=$(($(date +%s%N)/1000000));
 if [ "$EXT" = "java" ]; then
 	cp ../java.policy java.policy
 	cp $PROBLEMPATH/$UN/$FILENAME.java $MAINFILENAME.java
+
+	if [ -d "$PROBLEMPATH/inject" ]; then
+		# inject files into folder (overwrite files with same name)
+		shj_log "Inject found"
+		cp "$PROBLEMPATH/inject/"* .
+	fi
+
+	if [ -f "Tester.java" ]; then
+		shj_log "Java Tester file found."
+		MAINFILENAME="Tester"
+	fi
+	
 	shj_log "Compiling as Java"
 	javac $MAINFILENAME.java >/dev/null 2>cerr
 	EXITCODE=$?
