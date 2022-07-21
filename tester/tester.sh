@@ -300,7 +300,7 @@ fi
 ########################################################################################################
 
 if [ "$EXT" = "c" ] || [ "$EXT" = "cpp" ]; then
-	COMPILER="gcc"
+	COMPILER="g++"
 	if [ "$EXT" = "cpp" ]; then
 		COMPILER="g++"
 	fi
@@ -404,8 +404,8 @@ if [ "$EXT" = "c" ] || [ "$EXT" = "cpp" ]; then
 			EXITCODE=$?
 		fi
 	else
-		mv code.c code.$EXT
-		$COMPILER *.$EXT $C_OPTIONS $C_WARNING_OPTION -o $EXEFILE >/dev/null 2>cerr
+		mv code.c code.cpp # $EXT
+		$COMPILER *.cpp $C_OPTIONS $C_WARNING_OPTION -o $EXEFILE >/dev/null 2>cerr
 		EXITCODE=$?
 	fi
 	COMPILE_END_TIME=$(($(date +%s%N)/1000000));
