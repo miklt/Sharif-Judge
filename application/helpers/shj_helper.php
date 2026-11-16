@@ -114,6 +114,8 @@ if ( ! function_exists('process_the_queue'))
 {
 	function process_the_queue()
 	{
+		// LABOO: fila atendida somente pelo worker isolado.
+		return;
 		shell_exec(
 			'export SHJ_BASE_URL='.escapeshellarg(base_url()).'; '.
 			'php '.escapeshellarg(FCPATH.'index.php')." queueprocess run >/dev/null 2>/dev/null &"

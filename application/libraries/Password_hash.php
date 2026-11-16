@@ -33,7 +33,7 @@ class Password_hash
 	var $portable_hashes;
 	var $random_state;
 
-	function Password_hash($input)
+	function __construct($input = [8, false])
 	{
 		list($iteration_count_log2, $portable_hashes) = $input;
 
@@ -182,7 +182,7 @@ class Password_hash
 		$itoa64 = './ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
 		$output = '$2a$';
-		$output .= chr(ord('0') + $this->iteration_count_log2 / 10);
+		$output .= chr(ord('0') + intdiv($this->iteration_count_log2, 10));
 		$output .= chr(ord('0') + $this->iteration_count_log2 % 10);
 		$output .= '$';
 
@@ -251,6 +251,6 @@ class Password_hash
 		if ($hash[0] == '*')
 			$hash = crypt($password, $stored_hash);
 
-		return $hash == $stored_hash;
+		return hash_equals($stored_hash, $hash);
 	}
 }

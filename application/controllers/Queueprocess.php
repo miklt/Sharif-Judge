@@ -33,6 +33,7 @@ class Queueprocess extends CI_Controller
 	 */
 	public function run()
 	{
+		throw new RuntimeException('Worker legado desativado; use o worker isolado LABOO.');
 
 		// Set correct base_url
 		// Because we are in cli mode, base_url is not available, and we get

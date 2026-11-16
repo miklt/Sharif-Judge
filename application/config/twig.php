@@ -8,4 +8,4 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 
 $config['template_dir'] = VIEWPATH;
-$config['cache_dir'] = APPPATH.'cache/Twig';
+$config['cache_dir'] = getenv('LABOO_STATE_DIR').'/Twig';

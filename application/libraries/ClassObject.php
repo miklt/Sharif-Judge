@@ -2,6 +2,7 @@
 
 //Classe para criação de objetos classe
 class ClassObject{
+ public $class_id, $class_name, $day, $time_start, $time_end, $classroom, $teachers, $assistants, $new_students;
 
 	// Class with their users: 
     public function __construct($params)

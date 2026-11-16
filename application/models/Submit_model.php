@@ -39,7 +39,7 @@ class Submit_model extends CI_Model {
 	// ------------------------------------------------------------------------
 
 
-	public function get_final_submissions($assignment_id, $user_level, $username, $page_number = NULL, $filter_user = NULL, $filter_problem = NULL, $classes_usernames)
+	public function get_final_submissions($assignment_id, $user_level, $username, $page_number = NULL, $filter_user = NULL, $filter_problem = NULL, $classes_usernames = NULL)
 	{
 		$arr['assignment'] = $assignment_id;
 		$arr['is_final'] = 1;
@@ -78,7 +78,7 @@ class Submit_model extends CI_Model {
 	// ------------------------------------------------------------------------
 
 
-	public function get_all_submissions($assignment_id, $user_level, $username, $page_number = NULL, $filter_user = NULL, $filter_problem = NULL, $classes_usernames)
+	public function get_all_submissions($assignment_id, $user_level, $username, $page_number = NULL, $filter_user = NULL, $filter_problem = NULL, $classes_usernames = NULL)
 	{
 		$arr['assignment']=$assignment_id;
 		if ($user_level === 0)

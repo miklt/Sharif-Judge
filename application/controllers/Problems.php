@@ -117,7 +117,7 @@ class Problems extends CI_Controller
       $data['can_submit'] = FALSE;
 
     $possible_assignments_ids = array();
-    foreach ($data['all_assignments'] as $possible_assignment) {
+    foreach (($data['all_assignments'] ?? []) as $possible_assignment) {
     	array_push($possible_assignments_ids, $possible_assignment['id']);    
     }
     /*if(!in_array($assignment_id, $possible_assignments_ids) && ($this->user->level == 0)){

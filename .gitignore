@@ -17,3 +17,7 @@ tester/easysandbox/t/*
 
 # Ignore MOSS File
 tester/moss
+
+vendor/
+**/.composer-auth.json
+deploy/ansible/inventory.yml

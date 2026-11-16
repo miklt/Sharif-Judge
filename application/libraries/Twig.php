@@ -57,16 +57,16 @@ class Twig
 		$this->_ci->config->load(self::TWIG_CONFIG_FILE); // load config file
 		// set include path for twig
 		//ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . ');
-		require_once APPPATH.'third_party/Twig/lib/Twig/Autoloader.php';
+		require_once LABOO_VENDOR_AUTOLOAD;
 		// register autoloader
-		Twig_Autoloader::register();
+		
 		log_message('debug', 'twig autoloader loaded');
 		// init paths
 		$this->template_dir = $this->_ci->config->item('template_dir');
 		$this->cache_dir = $this->_ci->config->item('cache_dir');
 		// load environment
-		$loader = new Twig_Loader_Filesystem($this->template_dir);
-		$this->twig = new Twig_Environment($loader, array(
+		$loader = new \Twig\Loader\FilesystemLoader($this->template_dir);
+		$this->twig = new \Twig\Environment($loader, array(
 			'cache' => $this->cache_dir,
 			'auto_reload' => TRUE
 		));
@@ -85,7 +85,7 @@ class Twig
 	 */
 	public function render($template, $data = array(), $render = TRUE)
 	{
-		$template = $this->twig->loadTemplate($template);
+		$template = $this->twig->load($template);
 		return ($render) ? $template->render($data) : $template;
 	}
 
@@ -115,7 +115,7 @@ class Twig
 			// merging param data and displayData
 			$data = array_merge($data, $this->displayData());
 		}
-		$template = $this->twig->loadTemplate($template);
+		$template = $this->twig->load($template);
 		$this->_ci->output->append_output($template->render($data));
 	}
 
@@ -124,14 +124,14 @@ class Twig
 	 * callback functions to be used from Twig templates
 	 *
 	 * @param string $name name of function
-	 * @param Twig_FunctionInterface $function Function pointer
+	 * @param \Twig\TwigFunction $function Function pointer
 	 *
 	 * @return void
 	 *
 	 */
-	public function register_function($name, Twig_FunctionInterface $function)
+	public function register_function($name, \Twig\TwigFunction $function)
 	{
-		$this->twig->addFunction($name, $function);
+		$this->twig->addFunction($function);
 	}
 
 	/**
@@ -143,46 +143,46 @@ class Twig
 	{
 
 		/* Functions */
-		$this->twig->addFunction('base_url', new Twig_Function_Function('base_url', array('is_safe' => array('html'))));
-		$this->twig->addFunction('site_url', new Twig_Function_Function('site_url', array('is_safe' => array('html'))));
-		$this->twig->addFunction('anchor', new Twig_Function_Function('anchor'));
-		$this->twig->addFunction('shj_now_str', new Twig_Function_Function('shj_now_str', array('is_safe' => array('html'))));
-		$this->twig->addFunction('rtrim', new Twig_Function_Function('rtrim'));
-		$this->twig->addFunction('floor', new Twig_Function_Function('floor'));
-		$this->twig->addFunction('ceil', new Twig_Function_Function('ceil'));
-		$this->twig->addFunction('isset', new Twig_Function_Function('isset'));
-		$this->twig->addFunction('time_hhmm', new Twig_Function_Function('time_hhmm', array('is_safe' => array('html'))));
-		$this->twig->addFunction('md5', new Twig_Function_Function('md5', array('is_safe' => array('html'))));
+		$this->twig->addFunction(new \Twig\TwigFunction('base_url', 'base_url', array('is_safe' => array('html'))));
+		$this->twig->addFunction(new \Twig\TwigFunction('site_url', 'site_url', array('is_safe' => array('html'))));
+		$this->twig->addFunction(new \Twig\TwigFunction('anchor', 'anchor'));
+		$this->twig->addFunction(new \Twig\TwigFunction('shj_now_str', 'shj_now_str', array('is_safe' => array('html'))));
+		$this->twig->addFunction(new \Twig\TwigFunction('rtrim', 'rtrim'));
+		$this->twig->addFunction(new \Twig\TwigFunction('floor', 'floor'));
+		$this->twig->addFunction(new \Twig\TwigFunction('ceil', 'ceil'));
+		$this->twig->addFunction(new \Twig\TwigFunction('isset', static fn($value) => isset($value)));
+		$this->twig->addFunction(new \Twig\TwigFunction('time_hhmm', 'time_hhmm', array('is_safe' => array('html'))));
+		$this->twig->addFunction(new \Twig\TwigFunction('md5', 'md5', array('is_safe' => array('html'))));
 		// form functions
-		$this->twig->addFunction('form_open', new Twig_Function_Function('form_open', array('is_safe' => array('html'))));
-		$this->twig->addFunction('form_open_multipart', new Twig_Function_Function('form_open_multipart', array('is_safe' => array('html'))));
-		$this->twig->addFunction('form_error', new Twig_Function_Function('form_error', array('is_safe' => array('html'))));
-		$this->twig->addFunction('set_value', new Twig_Function_Function('set_value'));
-		$this->twig->addFunction('set_checkbox', new Twig_Function_Function('set_checkbox'));
-		/*$this->twig->addFunction('form_hidden', new Twig_Function_Function('form_hidden'));
-		$this->twig->addFunction('form_input', new Twig_Function_Function('form_input'));
-		$this->twig->addFunction('form_password', new Twig_Function_Function('form_password'));
-		$this->twig->addFunction('form_upload', new Twig_Function_Function('form_upload'));
-		$this->twig->addFunction('form_textarea', new Twig_Function_Function('form_textarea'));
-		$this->twig->addFunction('form_dropdown', new Twig_Function_Function('form_dropdown'));
-		$this->twig->addFunction('form_multiselect', new Twig_Function_Function('form_multiselect'));
-		$this->twig->addFunction('form_fieldset', new Twig_Function_Function('form_fieldset'));
-		$this->twig->addFunction('form_fieldset_close', new Twig_Function_Function('form_fieldset_close'));
-		$this->twig->addFunction('form_checkbox', new Twig_Function_Function('form_checkbox'));
-		$this->twig->addFunction('form_radio', new Twig_Function_Function('form_radio'));
-		$this->twig->addFunction('form_submit', new Twig_Function_Function('form_submit'));
-		$this->twig->addFunction('form_label', new Twig_Function_Function('form_label'));
-		$this->twig->addFunction('form_reset', new Twig_Function_Function('form_reset'));
-		$this->twig->addFunction('form_button', new Twig_Function_Function('form_button'));
-		$this->twig->addFunction('form_close', new Twig_Function_Function('form_close'));
-		$this->twig->addFunction('form_prep', new Twig_Function_Function('form_prep'));
-		$this->twig->addFunction('set_select', new Twig_Function_Function('set_select'));
-		$this->twig->addFunction('set_checkbox', new Twig_Function_Function('set_checkbox'));
-		$this->twig->addFunction('set_radio', new Twig_Function_Function('set_radio'));*/
+		$this->twig->addFunction(new \Twig\TwigFunction('form_open', 'form_open', array('is_safe' => array('html'))));
+		$this->twig->addFunction(new \Twig\TwigFunction('form_open_multipart', 'form_open_multipart', array('is_safe' => array('html'))));
+		$this->twig->addFunction(new \Twig\TwigFunction('form_error', 'form_error', array('is_safe' => array('html'))));
+		$this->twig->addFunction(new \Twig\TwigFunction('set_value', 'set_value'));
+		$this->twig->addFunction(new \Twig\TwigFunction('set_checkbox', 'set_checkbox'));
+		/*$this->twig->addFunction(new \Twig\TwigFunction('form_hidden', 'form_hidden'));
+		$this->twig->addFunction(new \Twig\TwigFunction('form_input', 'form_input'));
+		$this->twig->addFunction(new \Twig\TwigFunction('form_password', 'form_password'));
+		$this->twig->addFunction(new \Twig\TwigFunction('form_upload', 'form_upload'));
+		$this->twig->addFunction(new \Twig\TwigFunction('form_textarea', 'form_textarea'));
+		$this->twig->addFunction(new \Twig\TwigFunction('form_dropdown', 'form_dropdown'));
+		$this->twig->addFunction(new \Twig\TwigFunction('form_multiselect', 'form_multiselect'));
+		$this->twig->addFunction(new \Twig\TwigFunction('form_fieldset', 'form_fieldset'));
+		$this->twig->addFunction(new \Twig\TwigFunction('form_fieldset_close', 'form_fieldset_close'));
+		$this->twig->addFunction(new \Twig\TwigFunction('form_checkbox', 'form_checkbox'));
+		$this->twig->addFunction(new \Twig\TwigFunction('form_radio', 'form_radio'));
+		$this->twig->addFunction(new \Twig\TwigFunction('form_submit', 'form_submit'));
+		$this->twig->addFunction(new \Twig\TwigFunction('form_label', 'form_label'));
+		$this->twig->addFunction(new \Twig\TwigFunction('form_reset', 'form_reset'));
+		$this->twig->addFunction(new \Twig\TwigFunction('form_button', 'form_button'));
+		$this->twig->addFunction(new \Twig\TwigFunction('form_close', 'form_close'));
+		$this->twig->addFunction(new \Twig\TwigFunction('form_prep', 'form_prep'));
+		$this->twig->addFunction(new \Twig\TwigFunction('set_select', 'set_select'));
+		$this->twig->addFunction(new \Twig\TwigFunction('set_checkbox', 'set_checkbox'));
+		$this->twig->addFunction(new \Twig\TwigFunction('set_radio', 'set_radio'));*/
 
 		// This filter is used in add_assignment.twig
 		$this->twig->addFilter(
-			new Twig_SimpleFilter(
+			new \Twig\TwigFilter(
 				'extra_time_formatter',
 				function ($extra_time) {
 					// convert to minutes

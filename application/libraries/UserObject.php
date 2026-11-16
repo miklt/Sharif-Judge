@@ -2,6 +2,7 @@
 
 //Classe para criação de objetos classe
 class UserObject{
+ public $id, $username, $display_name, $email, $role, $first_login_time, $last_login_time;
 
     public function __construct($params)
     {

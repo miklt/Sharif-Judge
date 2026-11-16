@@ -39,7 +39,7 @@
 | path to your installation.
 |
 */
-$config['base_url'] = "http://". $_SERVER['HTTP_HOST'] . preg_replace('@/+$@','', dirname($_SERVER['SCRIPT_NAME']));
+$config['base_url'] = "http://". ($_SERVER['HTTP_HOST'] ?? 'localhost') . preg_replace('@/+$@','', dirname($_SERVER['SCRIPT_NAME']));
 
 /*
 |--------------------------------------------------------------------------
@@ -211,7 +211,7 @@ $config['directory_trigger']	= 'd'; // experimental not currently in use
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = 0;
+$config['log_threshold'] = 1;
 
 /*
 |--------------------------------------------------------------------------
@@ -272,7 +272,7 @@ $config['cache_path'] = '';
 | http://codeigniter.com/user_guide/libraries/sessions.html
 |
 */
-$config['encryption_key'] = 'GRcqAmzQIu8U2iF6pCWawM19o5rZftTv';
+$config['encryption_key'] = require (getenv('LABOO_PRIVATE_DIR') ?: '/run/laboo-private').'/encryption-key.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -466,3 +466,16 @@ $config['test_case_name'] = 'TEST_CASE';
 
 /* End of file config.php */
 /* Location: ./application/config/config.php */
+
+// LABOO runtime configurado pelo serviço, fora da árvore de código.
+$config['base_url'] = getenv('LABOO_BASE_URL');
+$config['index_page'] = '';
+$config['log_path'] = getenv('LABOO_STATE_DIR').'/logs/';
+$config['sess_driver'] = 'files';
+$config['sess_save_path'] = getenv('LABOO_STATE_DIR').'/sessions';
+$config['sess_cookie_name'] = 'laboo_'.getenv('LABOO_INSTANCE');
+$config['cookie_path'] = '/'.getenv('LABOO_INSTANCE').'/';
+$config['cookie_secure'] = getenv('LABOO_HTTPS') === '1';
+$config['cookie_httponly'] = true;
+$config['cookie_samesite'] = 'Lax';
+$config['csrf_cookie_name'] = 'laboo_csrf_'.getenv('LABOO_INSTANCE');

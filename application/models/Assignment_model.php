@@ -421,34 +421,11 @@ class Assignment_model extends CI_Model
 	 * @return mixed
 	 */
 	public function increase_total_submits($assignment_id)
-	{
-		// Get total submits
-		$total = $this->db->select('total_submits')->get_where('assignments', array('id'=>$assignment_id))->row()->total_submits;
-		// Save total+1 in DB
-		$this->db->where('id', $assignment_id)->update('assignments', array('total_submits'=>($total+1)));
-
-		// Return new total
-		return ($total+1);
-	}
-
-
-
-	// ------------------------------------------------------------------------
-
-
-
-	/**
-	 * Set Moss Time
-	 *
-	 * Updates "Moss Update Time" for given assignment
-	 *
-	 * @param $assignment_id
-	 */
-	public function set_moss_time($assignment_id)
-	{
-		$now = shj_now_str();
-		$this->db->where('id', $assignment_id)->update('assignments', array('moss_update'=>$now));
-	}
+    {
+        // UPDATE atômico evita IDs repetidos quando alunos enviam simultaneamente.
+        $query = $this->db->query('UPDATE '.$this->db->dbprefix('assignments').' SET total_submits=total_submits+1 WHERE id=? RETURNING total_submits', [$assignment_id]);
+        return (int)$query->row()->total_submits;
+    }
 
 
 

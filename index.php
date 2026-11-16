@@ -1,4 +1,7 @@
 <?php
+define('LABOO_VENDOR_AUTOLOAD', getenv('LABOO_VENDOR_AUTOLOAD') ?: __DIR__.'/vendor/autoload.php');
+require_once LABOO_VENDOR_AUTOLOAD;
+
 /**
  * Sharif Judge
  *
@@ -53,7 +56,7 @@ define('SHJ_VERSION','1.5');
  *
  * NOTE: If you change these, also change the error_reporting() code below
  */
-	define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
+	define('ENVIRONMENT', getenv('CI_ENV') ?: 'production');
 
 /*
  *---------------------------------------------------------------
@@ -72,7 +75,7 @@ switch (ENVIRONMENT)
 
 	case 'testing':
 	case 'production':
-		error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT);
+		error_reporting(E_ALL);
 		ini_set('display_errors', 0);
 	break;
 
@@ -91,7 +94,7 @@ switch (ENVIRONMENT)
  * Include the path if the folder is not in the same directory
  * as this file.
  */
-	$system_path = 'system';
+	$system_path = dirname(LABOO_VENDOR_AUTOLOAD).'/codeigniter/framework/system';
 
 /*
  *---------------------------------------------------------------

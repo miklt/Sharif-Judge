@@ -44,9 +44,10 @@ class Queue extends CI_Controller
 
 	public function pause()
 	{
+		if ($this->user->level <= 1) { show_404(); }
 		if ( ! $this->input->is_ajax_request() )
 			show_404();
-		$this->settings_model->set_setting('queue_is_working','0');
+		$this->settings_model->set_setting('laboo_queue_paused','1');
 		echo 'success';
 	}
 
@@ -56,8 +57,10 @@ class Queue extends CI_Controller
 
 	public function resume()
 	{
+		if ($this->user->level <= 1) { show_404(); }
 		if ( ! $this->input->is_ajax_request() )
 			show_404();
+		$this->settings_model->set_setting('laboo_queue_paused','0');
 		process_the_queue();
 		echo 'success';
 	}
@@ -68,6 +71,7 @@ class Queue extends CI_Controller
 
 	public function empty_queue()
 	{
+		if ($this->user->level <= 1) { show_404(); }
 		if ( ! $this->input->is_ajax_request() )
 			show_404();
 		$this->queue_model->empty_queue();

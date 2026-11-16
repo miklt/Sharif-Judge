@@ -1,0 +1,14 @@
+.git
+.git/**
+**/.composer-auth.json
+**/auth.json
+**/.env*
+application/config/database.php
+application/config/config.php
+application/cache/**
+application/logs/**
+assignments/**
+**/*.sql
+**/*.dump
+**/*.key
+**/*.pem

@@ -192,7 +192,7 @@ class Users extends CI_Controller
 		$sheet->getStyle('A3:'.$highest_column.'3')->applyFromArray(
 			array(
 				'fill' => array(
-					'type' => PHPExcel_Style_Fill::FILL_SOLID,
+					'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
 					'color' => array('rgb' => '173C45')
 				),
 				'font'  => array(
@@ -227,7 +227,7 @@ class Users extends CI_Controller
 			$sheet->getStyle('A'.$i.':'.$highest_column.$i)->applyFromArray(
 				array(
 					'fill' => array(
-						'type' => PHPExcel_Style_Fill::FILL_SOLID,
+						'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
 						'color' => array('rgb' => (($i%2)?'F0F0F0':'FAFAFA'))
 					)
 				)
@@ -237,7 +237,7 @@ class Users extends CI_Controller
 		// Set text align to center
 		$sheet->getStyle( $sheet->calculateWorksheetDimension() )
 			->getAlignment()
-			->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+			->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
 		// Making columns autosize
 		for ($i=2;$i<count($header);$i++)
@@ -248,7 +248,7 @@ class Users extends CI_Controller
 			array(
 				'borders' => array(
 					'outline' => array(
-						'style' => PHPExcel_Style_Border::BORDER_THIN,
+						'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
 						'color' => array('rgb' => '444444'),
 					),
 				)
@@ -266,7 +266,7 @@ class Users extends CI_Controller
 		header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 		header('Content-Disposition: attachment;filename="'.$output_filename.'.'.$ext.'"');
 		header('Cache-Control: max-age=0');
-		$objWriter = PHPExcel_IOFactory::createWriter($this->phpexcel, ($ext==='xlsx'?'Excel2007':'Excel5'));
+		$objWriter = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($this->phpexcel, ($ext==='xlsx'?'Xlsx':'Xls'));
 		$objWriter->save('php://output');
 	}
 

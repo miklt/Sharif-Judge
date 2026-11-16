@@ -35,7 +35,11 @@ class User extends CI_Model
 			$this->selected_assignment = array(
 				'id' => 0,
 				'name' => 'Not Selected',
-				'finish_time' => 0,
+				'finish_time' => '1970-01-01 00:00:00',
+                'late_rule' => '$coefficient = 1;',
+                'start_time' => '1970-01-01 00:00:00',
+                'participants' => '',
+                'open' => 0,
 				'extra_time' => 0,
 				'problems' => 0
 			);
@@ -71,7 +75,11 @@ class User extends CI_Model
 			$this->selected_assignment = array(
 				'id' => 0,
 				'name' => 'Not Selected',
-				'finish_time' => 0,
+				'finish_time' => '1970-01-01 00:00:00',
+                'late_rule' => '$coefficient = 1;',
+                'start_time' => '1970-01-01 00:00:00',
+                'participants' => '',
+                'open' => 0,
 				'extra_time' => 0,
 				'problems' => 0
 			);
