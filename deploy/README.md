@@ -96,6 +96,27 @@ Para atualizar contas novas, gere outra cópia e rode com
 `-e laboo_reimport=true` **antes** de criar a prova (a reimportação recria o
 banco da instância).
 
+## Teste de carga
+
+`deploy/scripts/load-exam.py` simula uma turma inteira: logins em rajada,
+alunos atualizando a página de envios e vários envios por aluno, concentrados
+no fim (mistura de corretos, pesados, errados, erro de compilação e estouro
+de tempo). Usa alunos e exercício temporários (`laboocarga*`, id 32701).
+
+```sh
+# no servidor (root)
+sudo python3 /srv/laboo/current/deploy/scripts/load-exam.py setup --students 60 > cred.json
+sudo python3 /srv/laboo/current/deploy/scripts/load-exam.py monitor --duration 440 > monitor.json &
+# no controlador (ou outra máquina da rede dos alunos)
+python3 deploy/scripts/load-exam.py run --base-url http://IP:PORTA/aula --credentials cred.json > run.json
+# no servidor, ao final
+sudo python3 /srv/laboo/current/deploy/scripts/load-exam.py teardown
+```
+
+Regra herdada do judge: enquanto o envio anterior do aluno está na fila, um
+novo envio para o mesmo problema é recusado ("still in queue"). Fila rápida
+evita essas recusas.
+
 ## 5. Depois da prova
 
 Exporte as notas/envios pela interface (Submissions → Excel) e, se precisar

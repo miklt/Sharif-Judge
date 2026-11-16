@@ -173,7 +173,7 @@
     cd {{ laboo_repo | quote }}
     work=$(mktemp -d)
     git ls-files -z -co --exclude-standard -- application assets index.php composer.json composer.lock \
-        deploy/queue deploy/scripts/patch-ci3-php85.py deploy/scripts/smoke-exam.py |
+        deploy/queue deploy/scripts/patch-ci3-php85.py deploy/scripts/smoke-exam.py deploy/scripts/load-exam.py |
       while IFS= read -r -d '' f; do
         case "$f" in application/cache/*|application/logs/*) continue ;; esac
         [ -e "$f" ] && printf '%s\0' "$f"

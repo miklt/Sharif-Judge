@@ -21,3 +21,4 @@ tester/moss
 vendor/
 **/.composer-auth.json
 deploy/ansible/inventory.yml
+__pycache__/

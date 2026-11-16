@@ -479,3 +479,4 @@ $config['cookie_secure'] = getenv('LABOO_HTTPS') === '1';
 $config['cookie_httponly'] = true;
 $config['cookie_samesite'] = 'Lax';
 $config['csrf_cookie_name'] = 'laboo_csrf_'.getenv('LABOO_INSTANCE');
+$config['composer_autoload'] = getenv('LABOO_VENDOR_AUTOLOAD') ?: FALSE;

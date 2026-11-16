@@ -51,12 +51,13 @@ def stop(signum,frame):
 signal.signal(signal.SIGTERM,stop);signal.signal(signal.SIGINT,stop)
 try:
     while running:
-        failed=False
+        failed=False;worked=False
         for instance in DATABASES:
             if not running:break
             try:
                 result=worker.run(instance)
                 if result['state']=='saved':
+                    worked=True
                     print(json.dumps({'time':datetime.datetime.now(datetime.timezone.utc).isoformat(),
                                       'instance':instance,**result}),flush=True)
             except Exception as error:
@@ -64,7 +65,9 @@ try:
                 print(json.dumps({'instance':instance,'error_type':type(error).__name__,
                                   'queue_preserved':True}),flush=True)
                 failed=True
-        for i in range(50 if failed else 20):
+        # Com trabalho na fila, emendar a próxima correção; dormir só ocioso/falha.
+        if worked and not failed:continue
+        for i in range(50 if failed else 10):
             if not running:break
             time.sleep(0.1)
 finally:
