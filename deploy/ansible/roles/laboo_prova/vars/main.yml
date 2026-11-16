@@ -1,0 +1,6 @@
+# Derivados (não sobrescrever no inventário).
+---
+laboo_repo: '{{ (playbook_dir ~ ''/../..'') | realpath }}'
+laboo_php: php{{ laboo_php_version }}
+laboo_import_dir: '{{ laboo_admin_dir }}/import'
+laboo_data: '{{ laboo_root }}/live-data/{{ laboo_instance }}'

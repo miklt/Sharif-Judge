@@ -1,0 +1,11 @@
+<?php
+// Gerenciado pelo Ansible (deploy/ansible). Configuração fora da árvore de código.
+putenv("LABOO_INSTANCE={{ laboo_instance }}");
+putenv("LABOO_BASE_URL={{ laboo_public_url | regex_replace('/+$', '') }}/{{ laboo_instance }}/");
+putenv("LABOO_PRIVATE_DIR={{ laboo_private_dir }}");
+putenv("LABOO_STATE_DIR={{ laboo_root }}/state/web/{{ laboo_instance }}");
+putenv("LABOO_VENDOR_AUTOLOAD={{ laboo_root }}/current/vendor/autoload.php");
+putenv("CI_ENV=production");
+putenv("LABOO_OFFLINE=1");
+chdir("{{ laboo_root }}/current");
+require "{{ laboo_root }}/current/index.php";

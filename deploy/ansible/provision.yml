@@ -1,0 +1,14 @@
+# Servidor de prova LABOO a partir de um Ubuntu 24.04 (ou 26.04) limpo.
+#
+#   cd deploy/ansible
+#   ansible-playbook provision.yml                       # instalação/atualização
+#   ansible-playbook provision.yml -e laboo_reimport=true  # recopiar o snapshot
+#
+# Veja deploy/README.md. Nada de segredo ou dado pessoal entra no Git: a senha
+# do banco e a chave de criptografia são geradas no próprio servidor.
+---
+- name: Servidor de prova do Sharif-Judge (LABOO)
+  hosts: judge_prova
+  become: true
+  roles:
+  - laboo_prova

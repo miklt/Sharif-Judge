@@ -1,0 +1,45 @@
+# Valores padrão do servidor de prova. Sobrescreva no inventário por host.
+---
+# Instância única com as contas/turmas do judge de aula (URL http://IP:PORTA/aula/).
+# Não copia exercícios nem envios: o único exercício será a prova.
+laboo_instance: aula
+laboo_db_name: "judge_{{ laboo_instance }}"
+laboo_db_user: judge
+laboo_pg_port: 5432
+
+# Porta interna do Apache; a URL pública pode usar NAT para outra porta.
+laboo_http_port: 80
+laboo_public_url: "http://{{ ansible_host }}:{{ laboo_http_port }}"
+
+# Snapshot exportado no LABOO por deploy/scripts/export-instance-snapshot.sh.
+# Diretório no CONTROLADOR com database.dump, files.tar.gz, manifest.json,
+# SHA256SUMS e (opcional) htpasswd. Contém dados pessoais: fora do Git.
+laboo_snapshot_dir: ""
+# true: apaga banco/arquivos da instância e importa o snapshot de novo.
+laboo_reimport: false
+# true: ao final, cria aluno/exercício temporários, envia pela interface,
+# espera a nota pela fila e remove tudo (deploy/scripts/smoke-exam.py).
+laboo_run_smoke: false
+
+# HTTP Basic como no aula do LABOO (usa o htpasswd do snapshot).
+laboo_basic_auth: true
+# IPs/redes liberados sem a senha Basic (equivale ao "Require ip" do LABOO).
+laboo_basic_auth_bypass_ips: []
+
+# PHP-FPM: cada aluno ativo usa um worker por requisição; 1 turma ~30 alunos.
+laboo_fpm_max_children: 16
+laboo_fpm_memory_limit: 256M
+
+# Runtimes. Ubuntu 24.04: PHP 8.5 do PPA ondrej e PostgreSQL 18 do PGDG
+# (mesmas origens validadas no LABOO em 24.04). Ubuntu 26.04: arquivo Ubuntu.
+laboo_php_version: "8.5"
+laboo_pg_version: 18
+laboo_ondrej_fingerprint: B8DC7E53946656EFBCE4C1DD71DAEAAB4AD4CAB6
+laboo_pgdg_fingerprint: B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
+laboo_composer_channel: latest-2.x
+
+# Caminhos (iguais ao LABOO, para os caminhos gravados no banco seguirem válidos).
+laboo_root: /srv/laboo
+laboo_private_dir: /etc/laboo/private
+laboo_queue_dir: /opt/laboo/queue
+laboo_admin_dir: /var/lib/laboo-admin

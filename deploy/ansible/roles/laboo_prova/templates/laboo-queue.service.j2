@@ -1,0 +1,35 @@
+# Gerenciado pelo Ansible (deploy/ansible).
+[Unit]
+Description=Fila LABOO (C++ nativo isolado por bubblewrap)
+After=postgresql.service php{{ laboo_php_version }}-fpm.service
+
+[Service]
+Type=simple
+User=root
+AmbientCapabilities=CAP_SETUID
+UMask=0077
+WorkingDirectory={{ laboo_queue_dir }}/scripts
+Environment=LABOO_RUNTIME_ROOT={{ laboo_root }}/runtime
+Environment=LABOO_PRIVATE_DIR={{ laboo_private_dir }}
+Environment=LABOO_NATIVE_BRIDGE=1
+Environment=LABOO_PUBLIC_URL={{ laboo_public_url | regex_replace('/+$', '') }}
+Environment=LABOO_ENTRYPOINT={{ laboo_root }}/current/index.php
+Environment=LABOO_VENDOR_AUTOLOAD={{ laboo_root }}/current/vendor/autoload.php
+Environment=LABOO_RUNNER_BACKEND=native
+Environment='LABOO_INSTANCES={{ {laboo_instance: laboo_db_name} | to_json }}'
+Environment=LABOO_OFFLINE=1
+Environment=CI_ENV=production
+ExecStart=/usr/bin/python3 {{ laboo_queue_dir }}/scripts/supervise-local.py
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=900
+KillMode=mixed
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths={{ laboo_root }}/runtime {{ laboo_root }}/live-data
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+
+[Install]
+WantedBy=multi-user.target

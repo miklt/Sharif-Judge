@@ -1,0 +1,22 @@
+# Copie para inventory.yml (ignorado pelo Git) e ajuste por servidor.
+# Os alunos recebem laboo_public_url; com NAT, a porta pública pode diferir
+# de laboo_http_port (porta interna do Apache).
+all:
+  children:
+    judge_prova:
+      vars:
+        ansible_user: ubuntu
+        ansible_become: true
+        laboo_snapshot_dir: /caminho/privado/prova-snapshots/aula-AAAAMMDDTHHMMSSZ
+        laboo_basic_auth: true
+      hosts:
+        prova1:
+          ansible_host: 10.0.0.11
+          ansible_port: 22
+          laboo_public_url: http://200.144.0.1:61080
+        prova2:
+          ansible_host: 10.0.0.12
+          laboo_public_url: http://200.144.0.1:62080
+        prova3:
+          ansible_host: 10.0.0.13
+          laboo_public_url: http://200.144.0.1:63080

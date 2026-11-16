@@ -1,0 +1,628 @@
+---
+- name: Exigir Ubuntu LTS suportado
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.distribution == 'Ubuntu'
+      - ansible_facts.distribution_release in ['noble', 'resolute']
+    fail_msg: Use Ubuntu 24.04 (noble) ou 26.04 (resolute) limpo.
+- name: Exigir snapshot e instância válidos
+  ansible.builtin.assert:
+    that:
+      - laboo_snapshot_dir | length > 0
+      - laboo_instance is match('^[a-z0-9]{2,20}$')
+      - laboo_public_url is match('^https?://')
+- name: Conferir SHA-256 do snapshot no controlador
+  ansible.builtin.command:
+    cmd: sha256sum -c SHA256SUMS
+    chdir: '{{ laboo_snapshot_dir }}'
+  delegate_to: localhost
+  become: false
+  run_once: true
+  changed_when: false
+- name: Ler manifesto do snapshot
+  ansible.builtin.set_fact:
+    laboo_manifest: '{{ lookup(''ansible.builtin.file'', laboo_snapshot_dir ~ ''/manifest.json'') | from_json }}'
+- name: Snapshot precisa ser da mesma instância
+  ansible.builtin.assert:
+    that:
+      - laboo_manifest.format == 2
+      - laboo_manifest.profile == 'login-only'
+      - laboo_manifest.instance == laboo_instance
+      - not laboo_basic_auth or 'htpasswd' in laboo_manifest.files
+- name: Diretório administrativo privado
+  ansible.builtin.file:
+    path: '{{ laboo_admin_dir }}'
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+- name: Fuso horário de São Paulo
+  ansible.builtin.file:
+    src: /usr/share/zoneinfo/America/Sao_Paulo
+    dest: /etc/localtime
+    state: link
+    force: true
+- name: Registrar fuso em /etc/timezone
+  ansible.builtin.copy:
+    dest: /etc/timezone
+    content: |
+      America/Sao_Paulo
+    mode: '0644'
+- name: Pré-requisitos de repositórios
+  ansible.builtin.apt:
+    name:
+      - ca-certificates
+      - curl
+      - gnupg
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+- name: Chave do PPA ondrej/php (Ubuntu 24.04)
+  when: ansible_facts.distribution_release == 'noble'
+  block:
+    - name: Keyring do PPA já instalado?
+      ansible.builtin.stat:
+        path: /usr/share/keyrings/laboo-php.gpg
+      register: laboo_ondrej_keyring
+    - name: Baixar chave pública do PPA
+      ansible.builtin.get_url:
+        url: https://keyserver.ubuntu.com/pks/lookup?op=get&options=mr&search=0x{{ laboo_ondrej_fingerprint }}
+        dest: '{{ laboo_admin_dir }}/ondrej-php.asc'
+        mode: '0644'
+      when: not laboo_ondrej_keyring.stat.exists
+      register: laboo_ondrej_key
+    - name: Conferir fingerprint da chave do PPA
+      ansible.builtin.command: gpg --show-keys --with-colons {{ laboo_admin_dir }}/ondrej-php.asc
+      register: laboo_ondrej_fpr
+      changed_when: false
+      failed_when: laboo_ondrej_fingerprint not in laboo_ondrej_fpr.stdout
+    - name: Instalar keyring do PPA
+      ansible.builtin.command: gpg --batch --yes --dearmor -o /usr/share/keyrings/laboo-php.gpg {{ laboo_admin_dir
+        }}/ondrej-php.asc
+      when: not laboo_ondrej_keyring.stat.exists
+    - name: Fonte do PPA (deb822)
+      ansible.builtin.copy:
+        dest: /etc/apt/sources.list.d/laboo-php.sources
+        mode: '0644'
+        content: |
+          Types: deb
+          URIs: https://ppa.launchpadcontent.net/ondrej/php/ubuntu
+          Suites: {{ ansible_facts.distribution_release }}
+          Components: main
+          Signed-By: /usr/share/keyrings/laboo-php.gpg
+- name: Repositório PGDG (PostgreSQL {{ laboo_pg_version }})
+  block:
+    - name: Diretório da chave PGDG
+      ansible.builtin.file:
+        path: /usr/share/postgresql-common/pgdg
+        state: directory
+        mode: '0755'
+    - name: Baixar chave PGDG
+      ansible.builtin.get_url:
+        url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+        dest: /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc
+        mode: '0644'
+    - name: Conferir fingerprint PGDG
+      ansible.builtin.command: gpg --show-keys --with-colons /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc
+      register: laboo_pgdg_fpr
+      changed_when: false
+      failed_when: laboo_pgdg_fingerprint not in laboo_pgdg_fpr.stdout
+    - name: Fonte PGDG (deb822)
+      ansible.builtin.copy:
+        dest: /etc/apt/sources.list.d/pgdg.sources
+        mode: '0644'
+        content: |
+          Types: deb
+          URIs: https://apt.postgresql.org/pub/repos/apt
+          Suites: {{ ansible_facts.distribution_release }}-pgdg
+          Components: main
+          Architectures: amd64
+          Signed-By: /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc
+- name: Pacotes do judge
+  ansible.builtin.apt:
+    update_cache: true
+    install_recommends: false
+    state: present
+    name:
+      - apache2
+      - '{{ laboo_php }}-fpm'
+      - '{{ laboo_php }}-cli'
+      - '{{ laboo_php }}-pgsql'
+      - '{{ laboo_php }}-mbstring'
+      - '{{ laboo_php }}-xml'
+      - '{{ laboo_php }}-zip'
+      - '{{ laboo_php }}-curl'
+      - '{{ laboo_php }}-intl'
+      - '{{ laboo_php }}-gd'
+      - '{{ laboo_php }}-bcmath'
+      - '{{ laboo_php }}-readline'
+      - postgresql-{{ laboo_pg_version }}
+      - postgresql-client-{{ laboo_pg_version }}
+      - g++-11
+      - bubblewrap
+      - 7zip
+      - python3
+      - diffutils
+      - unzip
+      - util-linux
+      - tzdata
+  environment:
+    NEEDRESTART_MODE: l
+- name: Garantir comando 7z
+  ansible.builtin.stat:
+    path: /usr/bin/7z
+  register: laboo_7z
+- name: Compatibilidade 7z (p7zip)
+  ansible.builtin.apt:
+    name: p7zip-full
+    state: present
+  when: not laboo_7z.stat.exists
+- name: Contas de sistema sem login
+  ansible.builtin.user:
+    name: '{{ item }}'
+    system: true
+    create_home: false
+    home: /nonexistent
+    shell: /usr/sbin/nologin
+  loop:
+    - laboo-web
+    - laboo-runner
+- name: Empacotar código versionado (sem vendor, cache ou dados)
+  ansible.builtin.shell: |
+    set -euo pipefail
+    cd {{ laboo_repo | quote }}
+    work=$(mktemp -d)
+    git ls-files -z -co --exclude-standard -- application assets index.php composer.json composer.lock \
+        deploy/queue deploy/scripts/patch-ci3-php85.py deploy/scripts/smoke-exam.py |
+      while IFS= read -r -d '' f; do
+        case "$f" in application/cache/*|application/logs/*) continue ;; esac
+        [ -e "$f" ] && printf '%s\0' "$f"
+      done | sort -z > "$work/files"
+    tar --null --sort=name --mtime='2000-01-01 00:00Z' --owner=0 --group=0 --numeric-owner \
+        -czf "$work/release.tar.gz" -T "$work/files"
+    id="$(git describe --always --dirty --abbrev=10)-$(sha256sum "$work/release.tar.gz" | cut -c1-8)"
+    mv "$work/release.tar.gz" "/tmp/laboo-release-$id.tar.gz"; rm -rf "$work"
+    echo "$id"
+  args:
+    executable: /bin/bash
+  delegate_to: localhost
+  become: false
+  run_once: true
+  register: laboo_build
+  changed_when: false
+- name: Definir release
+  ansible.builtin.set_fact:
+    laboo_release_id: '{{ laboo_build.stdout | trim }}'
+    laboo_release: '{{ laboo_root }}/releases/{{ laboo_build.stdout | trim }}'
+    laboo_release_archive: /tmp/laboo-release-{{ laboo_build.stdout | trim }}.tar.gz
+- name: Diretórios base
+  ansible.builtin.file:
+    path: '{{ item.path }}'
+    state: directory
+    owner: root
+    group: root
+    mode: '{{ item.mode }}'
+  loop:
+    - path: '{{ laboo_root }}'
+      mode: '0755'
+    - path: '{{ laboo_root }}/releases'
+      mode: '0755'
+    - path: '{{ laboo_release }}'
+      mode: '0755'
+    - path: '{{ laboo_admin_dir }}'
+      mode: '0700'
+    - path: '{{ laboo_import_dir }}'
+      mode: '0700'
+- name: Extrair código da release
+  ansible.builtin.unarchive:
+    src: '{{ laboo_release_archive }}'
+    dest: '{{ laboo_release }}'
+    owner: root
+    group: root
+    creates: '{{ laboo_release }}/index.php'
+- name: Baixar Composer conferindo SHA-256
+  ansible.builtin.get_url:
+    url: https://getcomposer.org/download/{{ laboo_composer_channel }}/composer.phar
+    checksum: sha256:https://getcomposer.org/download/{{ laboo_composer_channel }}/composer.phar.sha256sum
+    dest: '{{ laboo_admin_dir }}/composer.phar'
+    mode: '0644'
+- name: Instalar dependências PHP do composer.lock
+  ansible.builtin.command:
+    cmd: '{{ laboo_php }} {{ laboo_admin_dir }}/composer.phar install --no-dev --no-interaction --no-progress --classmap-authoritative'
+    chdir: '{{ laboo_release }}'
+    creates: '{{ laboo_release }}/vendor/autoload.php'
+  environment:
+    COMPOSER_ALLOW_SUPERUSER: '1'
+    COMPOSER_HOME: '{{ laboo_admin_dir }}/composer'
+  register: laboo_composer
+- name: Compatibilidade do CodeIgniter 3 com PHP 8.5
+  ansible.builtin.command: python3 {{ laboo_release }}/deploy/scripts/patch-ci3-php85.py {{ laboo_release }}/vendor
+  when: laboo_composer.changed
+- name: Ativar release
+  ansible.builtin.file:
+    src: '{{ laboo_release }}'
+    dest: '{{ laboo_root }}/current'
+    state: link
+    force: true
+  register: laboo_current
+  notify:
+    - Reiniciar PHP-FPM
+    - Reiniciar fila
+- name: Diretórios de estado e runtime
+  ansible.builtin.file:
+    path: '{{ item.path }}'
+    state: directory
+    owner: '{{ item.owner | default(''root'') }}'
+    group: '{{ item.owner | default(''root'') }}'
+    mode: '{{ item.mode }}'
+  loop:
+    - path: '{{ laboo_root }}/web'
+      mode: '0755'
+    - path: '{{ laboo_root }}/web/{{ laboo_instance }}'
+      mode: '0755'
+    - path: '{{ laboo_root }}/state'
+      mode: '0711'
+    - path: '{{ laboo_root }}/state/web'
+      mode: '0711'
+    - path: '{{ laboo_root }}/state/web/{{ laboo_instance }}'
+      mode: '0700'
+      owner: laboo-web
+    - path: '{{ laboo_root }}/runtime'
+      mode: '0711'
+    - path: '{{ laboo_root }}/runtime/cli-state'
+      mode: '0711'
+    - path: '{{ laboo_root }}/runtime/cli-state/{{ laboo_instance }}'
+      mode: '0700'
+      owner: laboo-web
+    - path: '{{ laboo_root }}/runtime/jobs'
+      mode: '0711'
+    - path: '{{ laboo_root }}/runtime/reports'
+      mode: '0700'
+    - path: '{{ laboo_root }}/live-data'
+      mode: '0711'
+- name: Subdiretórios de sessão, log e cache Twig
+  ansible.builtin.file:
+    path: '{{ item[0] }}/{{ item[1] }}'
+    state: directory
+    owner: laboo-web
+    group: laboo-web
+    mode: '0700'
+  loop: '{{ [laboo_root ~ ''/state/web/'' ~ laboo_instance, laboo_root ~ ''/runtime/cli-state/'' ~ laboo_instance]
+    | product([''logs'', ''sessions'', ''Twig'']) | list }}'
+- name: Limpar cache Twig ao trocar de release
+  ansible.builtin.shell: find {{ laboo_root }}/state/web/*/Twig {{ laboo_root }}/runtime/cli-state/*/Twig -mindepth
+    1 -delete
+  when: laboo_current.changed
+- name: Ligação runtime/data para os dados
+  ansible.builtin.file:
+    src: '{{ laboo_root }}/live-data'
+    dest: '{{ laboo_root }}/runtime/data'
+    state: link
+- name: Diretórios privados
+  ansible.builtin.file:
+    path: '{{ item }}'
+    state: directory
+    owner: root
+    group: laboo-web
+    mode: '0750'
+  loop:
+    - /etc/laboo
+    - '{{ laboo_private_dir }}'
+    - '{{ laboo_private_dir }}/instances'
+    - '{{ laboo_private_dir }}/instances/{{ laboo_instance }}'
+- name: Gerar chave de criptografia do servidor (uma vez)
+  ansible.builtin.shell: |
+    umask 027
+    printf "<?php return '%s';\n" "$(openssl rand -hex 32)" > {{ laboo_private_dir }}/encryption-key.php
+    chgrp laboo-web {{ laboo_private_dir }}/encryption-key.php
+  args:
+    creates: '{{ laboo_private_dir }}/encryption-key.php'
+- name: Gerar senha do banco (uma vez, só no servidor)
+  ansible.builtin.shell: |
+    umask 077
+    openssl rand -hex 24 > {{ laboo_private_dir }}/db-password
+  args:
+    creates: '{{ laboo_private_dir }}/db-password'
+- name: Ler senha do banco
+  ansible.builtin.slurp:
+    src: '{{ laboo_private_dir }}/db-password'
+  register: laboo_db_password_raw
+  no_log: true
+- name: Configuração do banco da instância
+  ansible.builtin.template:
+    src: database.php.j2
+    dest: '{{ laboo_private_dir }}/instances/{{ laboo_instance }}/database.php'
+    owner: root
+    group: laboo-web
+    mode: '0640'
+  vars:
+    laboo_db_password: '{{ laboo_db_password_raw.content | b64decode | trim }}'
+  no_log: true
+- name: PostgreSQL ativo
+  ansible.builtin.service:
+    name: postgresql
+    state: started
+    enabled: true
+- name: Cluster {{ laboo_pg_version }} na porta configurada
+  ansible.builtin.command: pg_lsclusters --no-header
+  register: laboo_clusters
+  changed_when: false
+  failed_when: (laboo_pg_version ~ ' ') not in laboo_clusters.stdout or (' ' ~ laboo_pg_port ~ ' ') not in laboo_clusters.stdout
+- name: Papel do banco com a senha local
+  ansible.builtin.command:
+    cmd: runuser -u postgres -- psql -X -q -p {{ laboo_pg_port }} -v ON_ERROR_STOP=1
+    stdin: |
+      SELECT 'CREATE ROLE {{ laboo_db_user }} LOGIN' WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = '{{ laboo_db_user }}')\gexec
+      ALTER ROLE {{ laboo_db_user }} WITH LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE PASSWORD '{{ laboo_db_password_raw.content | b64decode | trim }}';
+  changed_when: false
+  no_log: true
+- name: Verificar banco da instância
+  ansible.builtin.command: runuser -u postgres -- psql -X -Atq -p {{ laboo_pg_port }} -c "SELECT count(*) FROM pg_database
+    WHERE datname = '{{ laboo_db_name }}'"
+  register: laboo_db_exists
+  changed_when: false
+- name: Verificar dados da instância
+  ansible.builtin.stat:
+    path: '{{ laboo_data }}/assignments'
+  register: laboo_data_dir
+- name: Decidir importação do snapshot
+  ansible.builtin.set_fact:
+    laboo_do_import: '{{ laboo_reimport | bool or laboo_db_exists.stdout == ''0'' or not laboo_data_dir.stat.exists
+      }}'
+- name: Importar snapshot do judge de aula
+  when: laboo_do_import | bool
+  block:
+    - name: Parar web e fila durante a importação
+      ansible.builtin.service:
+        name: '{{ item }}'
+        state: stopped
+      loop:
+        - apache2
+        - laboo-queue
+      failed_when: false
+    - name: Copiar snapshot (privado)
+      ansible.builtin.copy:
+        src: '{{ laboo_snapshot_dir }}/{{ item }}'
+        dest: '{{ laboo_import_dir }}/{{ item }}'
+        owner: root
+        group: root
+        mode: '0600'
+      loop: '{{ [''database.dump'', ''files.tar.gz''] + ([''htpasswd''] if laboo_basic_auth else []) }}'
+    - name: Recriar banco vazio
+      ansible.builtin.command:
+        cmd: runuser -u postgres -- psql -X -q -p {{ laboo_pg_port }} -v ON_ERROR_STOP=1
+        stdin: |
+          DROP DATABASE IF EXISTS {{ laboo_db_name }} WITH (FORCE);
+          CREATE DATABASE {{ laboo_db_name }} OWNER {{ laboo_db_user }} TEMPLATE template0 ENCODING 'UTF8';
+    - name: Restaurar dump com o papel da aplicação
+      ansible.builtin.shell: runuser -u postgres -- pg_restore -p {{ laboo_pg_port }} --no-owner --no-acl --role={{
+        laboo_db_user }} --exit-on-error -d {{ laboo_db_name }} < {{ laboo_import_dir }}/database.dump
+    - name: Ajustar caminhos e fila nas configurações
+      ansible.builtin.command:
+        cmd: runuser -u postgres -- psql -X -q -p {{ laboo_pg_port }} -d {{ laboo_db_name }} -v ON_ERROR_STOP=1
+        stdin: |
+          UPDATE shj_settings SET shj_value = '{{ laboo_data }}/assignments' WHERE shj_key = 'assignments_root';
+          UPDATE shj_settings SET shj_value = '{{ laboo_data }}/tester' WHERE shj_key = 'tester_path';
+          UPDATE shj_settings SET shj_value = '0' WHERE shj_key = 'queue_is_working';
+          INSERT INTO shj_settings (shj_key, shj_value) SELECT 'laboo_queue_paused', '0'
+            WHERE NOT EXISTS (SELECT 1 FROM shj_settings WHERE shj_key = 'laboo_queue_paused');
+          UPDATE shj_settings SET shj_value = '0' WHERE shj_key = 'laboo_queue_paused';
+          DELETE FROM shj_queue;
+          UPDATE shj_users SET selected_assignment = 0, passchange_key = '', passchange_time = NULL;
+    - name: Remover arquivos antigos da instância
+      ansible.builtin.file:
+        path: '{{ laboo_data }}'
+        state: absent
+    - name: Diretório de dados da instância
+      ansible.builtin.file:
+        path: '{{ laboo_data }}'
+        state: directory
+        owner: laboo-web
+        group: laboo-web
+        mode: '0700'
+    - name: Extrair tester da instância (sem exercícios nem envios)
+      ansible.builtin.command: tar --no-same-owner -xzf {{ laboo_import_dir }}/files.tar.gz -C {{ laboo_data }}
+    - name: Diretório de exercícios vazio (a prova é criada depois)
+      ansible.builtin.file:
+        path: '{{ laboo_data }}/assignments'
+        state: directory
+        owner: laboo-web
+        group: laboo-web
+        mode: '0755'
+    - name: Dono dos dados é a conta web
+      ansible.builtin.file:
+        path: '{{ laboo_data }}'
+        owner: laboo-web
+        group: laboo-web
+        recurse: true
+    - name: Remover cópias de importação
+      ansible.builtin.file:
+        path: '{{ laboo_import_dir }}/{{ item }}'
+        state: absent
+      loop:
+        - database.dump
+        - files.tar.gz
+- name: Banco no fuso de São Paulo (como no LABOO; now() coerente com o PHP)
+  ansible.builtin.command:
+    cmd: runuser -u postgres -- psql -X -q -p {{ laboo_pg_port }} -v ON_ERROR_STOP=1
+    stdin: |
+      ALTER DATABASE {{ laboo_db_name }} SET timezone TO 'America/Sao_Paulo';
+  changed_when: false
+- name: Conferir contagens contra o manifesto
+  ansible.builtin.command:
+    cmd: runuser -u postgres -- psql -X -Atq -p {{ laboo_pg_port }} -d {{ laboo_db_name }}
+    stdin: |
+      SELECT json_build_object(
+        'users', (SELECT count(*) FROM shj_users),
+        'classes', (SELECT count(*) FROM shj_classes),
+        'users_classes', (SELECT count(*) FROM shj_users_classes),
+        'assignments', (SELECT count(*) FROM shj_assignments),
+        'submissions', (SELECT count(*) FROM shj_submissions));
+  register: laboo_counts
+  changed_when: false
+- name: Importação trouxe só os dados de login
+  ansible.builtin.assert:
+    that:
+      - (laboo_counts.stdout | from_json).users == laboo_manifest.counts.users | int
+      - (laboo_counts.stdout | from_json).classes == laboo_manifest.counts.classes | int
+      - (laboo_counts.stdout | from_json).users_classes == laboo_manifest.counts.users_classes | int
+      - (laboo_counts.stdout | from_json).assignments == 0
+      - (laboo_counts.stdout | from_json).submissions == 0
+    quiet: true
+  when: laboo_do_import | bool
+- name: Wrapper da instância
+  ansible.builtin.template:
+    src: wrapper-index.php.j2
+    dest: '{{ laboo_root }}/web/{{ laboo_instance }}/index.php'
+    mode: '0644'
+- name: Assets da release
+  ansible.builtin.file:
+    src: '{{ laboo_root }}/current/assets'
+    dest: '{{ laboo_root }}/web/{{ laboo_instance }}/assets'
+    state: link
+    force: true
+- name: Página inicial leva à instância
+  ansible.builtin.template:
+    src: root-index.html.j2
+    dest: '{{ laboo_root }}/web/index.html'
+    mode: '0644'
+- name: PHP - mitigações (FPM e CLI)
+  ansible.builtin.template:
+    src: php-security.ini.j2
+    dest: /etc/php/{{ laboo_php_version }}/{{ item }}/conf.d/20-laboo-security.ini
+    mode: '0644'
+  loop:
+    - fpm
+    - cli
+  notify: Reiniciar PHP-FPM
+- name: Pool PHP-FPM da instância
+  ansible.builtin.template:
+    src: fpm-pool.conf.j2
+    dest: /etc/php/{{ laboo_php_version }}/fpm/pool.d/laboo-live.conf
+    mode: '0644'
+  notify: Reiniciar PHP-FPM
+- name: Desativar pool www padrão
+  ansible.builtin.command: mv /etc/php/{{ laboo_php_version }}/fpm/pool.d/www.conf /etc/php/{{ laboo_php_version
+    }}/fpm/pool.d/www.conf.disabled
+  args:
+    removes: /etc/php/{{ laboo_php_version }}/fpm/pool.d/www.conf
+  notify: Reiniciar PHP-FPM
+- name: CLI php aponta para {{ laboo_php }}
+  ansible.builtin.command: update-alternatives --set php /usr/bin/{{ laboo_php }}
+  register: laboo_alt
+  changed_when: false
+  failed_when: false
+- name: PHP-FPM ativo
+  ansible.builtin.service:
+    name: '{{ laboo_php }}-fpm'
+    state: started
+    enabled: true
+- name: Senhas HTTP Basic do snapshot
+  ansible.builtin.copy:
+    src: '{{ laboo_snapshot_dir }}/htpasswd'
+    dest: /etc/apache2/laboo-{{ laboo_instance }}.htpasswd
+    owner: root
+    group: www-data
+    mode: '0640'
+  when: laboo_basic_auth
+  notify: Recarregar Apache
+- name: Módulos do Apache
+  ansible.builtin.command: a2enmod -q {{ item }}
+  args:
+    creates: /etc/apache2/mods-enabled/{{ item }}.load
+  loop:
+    - mpm_event
+    - proxy_fcgi
+    - setenvif
+    - rewrite
+    - headers
+    - auth_basic
+    - authn_file
+    - authz_host
+  notify: Recarregar Apache
+- name: Portas do Apache
+  ansible.builtin.template:
+    src: ports.conf.j2
+    dest: /etc/apache2/ports.conf
+    mode: '0644'
+  notify: Recarregar Apache
+- name: Site do judge
+  ansible.builtin.template:
+    src: apache-laboo.conf.j2
+    dest: /etc/apache2/sites-available/laboo.conf
+    mode: '0644'
+  notify: Recarregar Apache
+- name: Habilitar site do judge
+  ansible.builtin.command: a2ensite -q laboo
+  args:
+    creates: /etc/apache2/sites-enabled/laboo.conf
+  notify: Recarregar Apache
+- name: Desabilitar site padrão
+  ansible.builtin.command: a2dissite -q 000-default
+  args:
+    removes: /etc/apache2/sites-enabled/000-default.conf
+  notify: Recarregar Apache
+- name: Validar configuração do Apache
+  ansible.builtin.command: apache2ctl configtest
+  changed_when: false
+- name: Apache ativo
+  ansible.builtin.service:
+    name: apache2
+    state: started
+    enabled: true
+- name: Scripts da fila e do sandbox
+  ansible.builtin.copy:
+    src: '{{ laboo_release }}/deploy/queue/'
+    dest: '{{ laboo_queue_dir }}/'
+    remote_src: true
+    owner: root
+    group: root
+    mode: u=rwX,go=rX
+  notify: Reiniciar fila
+- name: Unidade systemd da fila
+  ansible.builtin.template:
+    src: laboo-queue.service.j2
+    dest: /etc/systemd/system/laboo-queue.service
+    mode: '0644'
+  notify:
+    - Recarregar systemd
+    - Reiniciar fila
+- name: Aplicar alterações pendentes antes de verificar
+  ansible.builtin.meta: flush_handlers
+- name: Fila ativa e habilitada
+  ansible.builtin.service:
+    name: laboo-queue
+    state: started
+    enabled: true
+- name: Autoteste do C++ nativo (sandbox, correção e rede bloqueada)
+  ansible.builtin.command:
+    cmd: python3 selftest-cpp.py
+    chdir: '{{ laboo_queue_dir }}/scripts'
+  environment:
+    LABOO_RUNTIME_ROOT: '{{ laboo_root }}/runtime'
+    LABOO_RUNNER_BACKEND: native
+  register: laboo_selftest
+  changed_when: false
+- name: Página de login responde
+  ansible.builtin.uri:
+    url: http://127.0.0.1:{{ laboo_http_port }}/{{ laboo_instance }}/login
+    status_code: '{{ [401] if laboo_basic_auth and ''127.0.0.1'' not in laboo_basic_auth_bypass_ips else [200] }}'
+    return_content: true
+  register: laboo_login
+- name: Teste de fumaça (login, envio pela interface e nota pela fila)
+  ansible.builtin.command:
+    cmd: >-
+      python3 {{ laboo_root }}/current/deploy/scripts/smoke-exam.py --instance {{ laboo_instance }}
+      --database {{ laboo_db_name }} --pg-port {{ laboo_pg_port }} --http-port {{ laboo_http_port }}
+  register: laboo_smoke
+  changed_when: false
+  when: laboo_run_smoke | bool
+- name: Resumo
+  ansible.builtin.debug:
+    msg:
+      - 'Release: {{ laboo_release_id }} | PHP {{ laboo_php_version }} | PostgreSQL {{ laboo_pg_version }}'
+      - 'URL para os alunos: {{ laboo_public_url | regex_replace(''/+$'', '''') }}/{{ laboo_instance }}/'
+      - 'Snapshot: {{ laboo_manifest.created_utc }} | importado agora: {{ laboo_do_import }} | contagens: {{ laboo_counts.stdout
+        }}'
+      - 'Autoteste C++: {{ laboo_selftest.stdout }}'
+      - 'Teste de fumaça: {{ laboo_smoke.stdout | default(''não executado (use -e laboo_run_smoke=true)'') }}'

@@ -1,0 +1,38 @@
+# Gerenciado pelo Ansible (deploy/ansible). Servidor de prova LABOO.
+<VirtualHost *:{{ laboo_http_port }}>
+    DocumentRoot {{ laboo_root }}/web
+    ErrorLog ${APACHE_LOG_DIR}/laboo_error.log
+    CustomLog ${APACHE_LOG_DIR}/laboo_access.log common
+</VirtualHost>
+
+<Directory {{ laboo_root }}/web>
+    Options -Indexes +FollowSymLinks
+    AllowOverride None
+    Require all granted
+    DirectoryIndex index.php index.html
+    <FilesMatch "\.php$">
+        SetHandler "proxy:unix:/run/php/laboo-live.sock|fcgi://localhost"
+    </FilesMatch>
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^({{ laboo_instance }})(/.*)?$ /$1/index.php [END]
+</Directory>
+
+{% if laboo_basic_auth %}
+<Directory {{ laboo_root }}/web/{{ laboo_instance }}>
+    AuthType Basic
+    AuthName "Digite seu login e senha:"
+    AuthUserFile /etc/apache2/laboo-{{ laboo_instance }}.htpasswd
+    <RequireAny>
+{% for ip in laboo_basic_auth_bypass_ips %}
+        Require ip {{ ip }}
+{% endfor %}
+        Require valid-user
+    </RequireAny>
+</Directory>
+{% endif %}
+
+<Directory {{ laboo_root }}/releases>
+    Require all granted
+</Directory>

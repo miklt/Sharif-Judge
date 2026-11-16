@@ -1,0 +1,16 @@
+---
+- name: Recarregar systemd
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+- name: Reiniciar PHP-FPM
+  ansible.builtin.service:
+    name: '{{ laboo_php }}-fpm'
+    state: restarted
+- name: Recarregar Apache
+  ansible.builtin.service:
+    name: apache2
+    state: reloaded
+- name: Reiniciar fila
+  ansible.builtin.service:
+    name: laboo-queue
+    state: restarted
