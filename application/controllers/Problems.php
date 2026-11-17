@@ -217,7 +217,7 @@ class Problems extends CI_Controller
 
 	public function _match($type, $extension)
 	{
-		$compressedformats = array('zip', 'rar', '7z');
+		$compressedformats = array('zip', '7z'); // .rar não é suportado pelo corretor nativo
 		switch ($type) {
 			case 'c': return (($extension==='c' or in_array($extension, $compressedformats))?TRUE:FALSE);
 			case 'cpp': return (($extension==='cpp' or in_array($extension, $compressedformats))?TRUE:FALSE);

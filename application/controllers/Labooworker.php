@@ -51,7 +51,8 @@ class Labooworker extends CI_Controller
                 throw new RuntimeException('Resultado inválido; fila preservada.');
             }
             if (!preg_match('/^[a-zA-Z0-9]+$/D', $item['username'])) { throw new RuntimeException('Identificador inválido.'); }
-            $directory = rtrim($this->settings_model->get_setting('assignments_root'), '/').'/assignment_'.(int)$item['assignment'].'/p'.(int)$item['problem'].'/'.$item['username'];
+            $directory_problem = rtrim($this->settings_model->get_setting('assignments_root'), '/').'/assignment_'.(int)$item['assignment'].'/p'.(int)$item['problem'];
+            $directory = $directory_problem.'/'.$item['username'];
             $html = '';
             foreach ($result['tests'] ?? [] as $test) {
                 $html .= '<div>Test '.(int)$test['case'].': '.htmlspecialchars($test['status'], ENT_QUOTES|ENT_SUBSTITUTE, 'UTF-8').'</div>';
@@ -63,6 +64,20 @@ class Labooworker extends CI_Controller
             if (file_put_contents($path.'.tmp', $html, LOCK_EX) === false || !rename($path.'.tmp', $path)) {
                 throw new RuntimeException('Não foi possível gravar relatório; fila preservada.');
             }
+            // Log para professores/admins (botão "Log") no formato do tester.sh
+            // legado; o corpo vem do runner. Melhor esforço: não prende a fila.
+            $tl = round((int)$problem['c_time_limit']/1000, 3);
+            $log = "cd ".rtrim((string)$this->settings_model->get_setting('tester_path'), '/').";\n"
+                ."./cpp_runner.py ".$directory_problem." ".escapeshellarg($item['username'])." "
+                .escapeshellarg((string)$submission['main_file_name'])." ".escapeshellarg((string)$submission['file_name'])
+                ." cpp ".$tl." ".((int)floor($tl)+1)." ".(int)$problem['memory_limit']." "
+                .((int)$this->settings_model->get_setting('output_size_limit')*1024)." "
+                .$problem['diff_cmd']." ".$problem['diff_arg']
+                ." 1 0 ".($this->settings_model->get_setting('enable_cpp_shield') === '1' ? 1 : 0)." 0 0 0\n"
+                .(is_string($result['log'] ?? null) ? $result['log']
+                    : "Resultado: ".$result['status'].", nota ".(int)$result['pre_score']." de 10000\n");
+            $logpath = $directory.'/log-'.(int)$item['submit_id'];
+            if (@file_put_contents($logpath.'.tmp', $log, LOCK_EX) !== false) { @rename($logpath.'.tmp', $logpath); }
             $submission['status'] = $result['status'];
             $submission['pre_score'] = $result['pre_score'];
             $this->db->trans_start();

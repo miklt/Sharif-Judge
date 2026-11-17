@@ -42,12 +42,17 @@ def run(instance):
             assert directory.resolve().is_relative_to(problem.resolve()) and directory.is_dir()
             candidates=[directory/(submission['file_name']+ext) for ext in ['.zip','.7z','.cpp']]
             source=next((p for p in candidates if p.is_file()),None)
-            assert source and source.resolve().is_relative_to(directory.resolve())
             assert problem_info['diff_cmd']=='diff', 'Modo de comparação ainda não validado.'
-            result=judge(source,problem,seconds=int(problem_info['c_time_limit'])/1000,
-                         memory_kb=int(problem_info['memory_limit']),output_bytes=int(job['output_bytes']),
-                         diff_arg=problem_info['diff_arg'],
-                         shield=ROOT/'data'/instance/'tester/shield' if job['cpp_shield'] else None)
+            if source is None:
+                # Ex.: .rar (aceito pelo formulário antigo). Nota ao aluno, sem prender a fila.
+                result={'status':'Compilation Error','pre_score':0,'tests':[],
+                        'compiler':'Formato não suportado: envie .cpp, .zip ou .7z.'}
+            else:
+                assert source.resolve().is_relative_to(directory.resolve())
+                result=judge(source,problem,seconds=int(problem_info['c_time_limit'])/1000,
+                             memory_kb=int(problem_info['memory_limit']),output_bytes=int(job['output_bytes']),
+                             diff_arg=problem_info['diff_arg'],
+                             shield=ROOT/'data'/instance/'tester/shield' if job['cpp_shield'] else None)
             bridge.stdin.write(json.dumps(result)+'\n');bridge.stdin.flush();bridge.stdin.close()
             saved=json.loads(bridge.stdout.readline())
             assert bridge.wait(timeout=20)==0 and saved['state']=='saved'

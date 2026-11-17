@@ -33,6 +33,21 @@ for name, (code, expected) in cases.items():
     result = judge(source, problem, seconds=1, output_bytes=8192)
     report['cases'][name] = {'passed': result.get('pre_score') == expected,
                              'status': result['status'], 'seconds': round(time.monotonic()-started, 3)}
+# Professor injeta main.cpp + teste; aluno envia só a função (exercícios da aula).
+injected = base/'problem_inject'
+for child in ['in', 'out', 'inject']:
+    (injected/child).mkdir(mode=0o700, parents=True)
+(injected/'in/input1.txt').write_text('\n')
+(injected/'out/output1.txt').write_text('8\n')
+(injected/'inject/potencia.h').write_text('int potencia(int base, int exp);\n')
+(injected/'inject/main.cpp').write_text('#include <iostream>\n#include "potencia.h"\nvoid teste();\nint main(){teste();}\n')
+(injected/'inject/Teste.cpp').write_text('#include <iostream>\n#include "potencia.h"\nvoid teste(){std::cout<<potencia(2,3)<<"\\n";}\n')
+source = base/'Aluno.cpp'
+source.write_text('#include "potencia.h"\nint potencia(int b,int e){int r=1;while(e-->0)r*=b;return r;}\n')
+started = time.monotonic()
+result = judge(source, injected, seconds=1, output_bytes=8192)
+report['cases']['inject_main'] = {'passed': result.get('pre_score') == 10000, 'status': result['status'],
+                                  'seconds': round(time.monotonic()-started, 3)}
 shutil.rmtree(base, ignore_errors=True)
 print(json.dumps(report))
 assert BACKEND == 'native' and all(c['passed'] for c in report['cases'].values()), report
