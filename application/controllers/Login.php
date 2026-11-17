@@ -46,6 +46,7 @@ class Login extends CI_Controller
 		$this->form_validation->set_rules('password', 'Password', 'required|min_length[6]|max_length[200]');
 		$data = array(
 			'error' => FALSE,
+			'csrf_retry' => $this->input->get('csrf_retry') !== NULL && $this->input->method() === 'get',
 			'registration_enabled' => $this->settings_model->get_setting('enable_registration'),
 		);
 

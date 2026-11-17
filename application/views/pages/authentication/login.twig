@@ -25,6 +25,9 @@
 					<input id="form_password" type="password" name="password" required="required" pattern=".{6,200}" title="The Password field must be at least 6 characters in length" class="sharif_input"/>
 					{{ form_error('password', '<div class="shj_error">', '</div>') }}
 				</p>
+				{% if csrf_retry %}
+					<div class="shj_error">A página de login expirou. Digite usuário e senha novamente.</div>
+				{% endif %}
 				{% if error %}
 					<div class="shj_error">Incorrect username or password.</div>
 				{% endif %}

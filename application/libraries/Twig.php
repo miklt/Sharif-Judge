@@ -144,6 +144,8 @@ class Twig
 
 		/* Functions */
 		$this->twig->addFunction(new \Twig\TwigFunction('base_url', 'base_url', array('is_safe' => array('html'))));
+		// Token CSRF para chamadas AJAX (o cookie é HttpOnly e não pode ser lido pelo JS).
+		$this->twig->addFunction(new \Twig\TwigFunction('csrf_hash', fn() => $this->_ci->security->get_csrf_hash()));
 		$this->twig->addFunction(new \Twig\TwigFunction('site_url', 'site_url', array('is_safe' => array('html'))));
 		$this->twig->addFunction(new \Twig\TwigFunction('anchor', 'anchor'));
 		$this->twig->addFunction(new \Twig\TwigFunction('shj_now_str', 'shj_now_str', array('is_safe' => array('html'))));
