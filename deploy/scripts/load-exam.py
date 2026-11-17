@@ -166,11 +166,22 @@ def monitor(args):
 
 # ---------------------------------------------------------------- cliente
 class Student:
-    def __init__(self, base, basic):
+    def __init__(self, base, basic, retry_503=0, on_503=None):
         self.url = urllib.parse.urlsplit(base.rstrip('/'))
         self.cookies, self.basic = {}, basic
+        self.retry_503, self.on_503 = retry_503, on_503
 
     def request(self, path, body=None, ctype='application/x-www-form-urlencoded'):
+        # 503 de um proxy de borda (limite de taxa): o aluno espera e recarrega.
+        for attempt in range(self.retry_503 + 1):
+            status, data, sec = self._request(path, body, ctype)
+            if status != 503 or attempt == self.retry_503:
+                return status, data, sec
+            if self.on_503:
+                self.on_503(sec)
+            time.sleep(random.uniform(2, 5))
+
+    def _request(self, path, body=None, ctype='application/x-www-form-urlencoded'):
         cls = http.client.HTTPSConnection if self.url.scheme == 'https' else http.client.HTTPConnection
         c = cls(self.url.netloc, timeout=60)
         headers = {'Cookie': '; '.join(k + '=' + v for k, v in self.cookies.items()), 'User-Agent': 'laboo-load-test'}
@@ -226,7 +237,8 @@ def run(args):
         return data
 
     def student(username, rnd):
-        st = Student(args.base_url, cred.get('basic'))
+        st = Student(args.base_url, cred.get('basic'), args.retry_503,
+                     lambda sec: record('retried_503', 503, sec, True))
         try:
             time.sleep(rnd.uniform(0, args.login_ramp))
             data = call(st, 'login_get', 'login', [200])
@@ -316,6 +328,8 @@ def main():
     p.add_argument('--tail', type=float, default=60)
     p.add_argument('--submissions', type=int, default=3)
     p.add_argument('--poll', type=float, default=10)
+    p.add_argument('--retry-503', type=int, default=0,
+                   help='recarregar após 503 (proxy de borda) até N vezes; recusas contadas em retried_503')
     p.add_argument('--mix', default='ok=0.55,heavy=0.15,wrong=0.15,ce=0.10,tle=0.05')
     args = parser.parse_args()
     {'setup': setup, 'teardown': teardown, 'monitor': monitor, 'run': run}[args.cmd](args)

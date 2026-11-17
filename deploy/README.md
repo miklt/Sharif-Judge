@@ -113,6 +113,10 @@ python3 deploy/scripts/load-exam.py run --base-url http://IP:PORTA/aula --creden
 sudo python3 /srv/laboo/current/deploy/scripts/load-exam.py teardown
 ```
 
+Atrás de um proxy com limite de taxa, use `--retry-503 10` (o aluno recarrega
+após 503; as recusas aparecem em `retried_503`). Meça logo após criar cada VM:
+no LABOO (Xeon de 2011) cada correção custa ~3,8 s, e a fila é serial.
+
 Regra herdada do judge: enquanto o envio anterior do aluno está na fila, um
 novo envio para o mesmo problema é recusado ("still in queue"). Fila rápida
 evita essas recusas.
