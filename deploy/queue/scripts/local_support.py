@@ -7,7 +7,7 @@ import socket
 import subprocess
 
 ROOT = Path(os.environ.get('LABOO_RUNTIME_ROOT','/home/michelet/laboo-local'))
-DATABASES = {'aula':'judgedb_aula_s2_2026','ep':'judgedb_ep_s1_2026',
+DATABASES = {'aula':'judgedb_aula_s2_2026','ep':'judgedb_ep_s2_2026',
              'monitoria':'judgedb_monitoria_2023','piloto':'piloto_s2_2026','teste':'judgedb_teste_s1_2023'}
 # Servidores novos (ex.: prova) declaram suas instâncias: {"aula": "judge_aula"}.
 if os.environ.get('LABOO_INSTANCES'):
