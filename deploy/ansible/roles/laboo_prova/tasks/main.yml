@@ -407,6 +407,7 @@
           INSERT INTO shj_settings (shj_key, shj_value) SELECT 'laboo_queue_paused', '0'
             WHERE NOT EXISTS (SELECT 1 FROM shj_settings WHERE shj_key = 'laboo_queue_paused');
           UPDATE shj_settings SET shj_value = '0' WHERE shj_key = 'laboo_queue_paused';
+          UPDATE shj_settings SET shj_value = '{{ '1' if laboo_cpp_shield | bool else '0' }}' WHERE shj_key = 'enable_cpp_shield';
           DELETE FROM shj_queue;
           UPDATE shj_users SET selected_assignment = 0, passchange_key = '', passchange_time = NULL;
     - name: Remover arquivos antigos da instância

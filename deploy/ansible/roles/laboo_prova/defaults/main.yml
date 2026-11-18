@@ -20,6 +20,11 @@ laboo_reimport: false
 # true: ao final, cria aluno/exercício temporários, envia pela interface,
 # espera a nota pela fila e remove tudo (deploy/scripts/smoke-exam.py).
 laboo_run_smoke: false
+# C++ Shield do judge (aplicado na importação; depois pode ser mudado em Settings).
+# Desligado como no aula: com Shield só o shield.cpp é compilado e os arquivos
+# de inject/ (main.cpp dos testes unitários) ficam de fora, o que dá
+# "undefined reference to themainmainfunction()". O isolamento é o bubblewrap.
+laboo_cpp_shield: false
 
 # HTTP Basic como no aula do LABOO (usa o htpasswd do snapshot).
 laboo_basic_auth: true
