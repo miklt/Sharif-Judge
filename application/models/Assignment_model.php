@@ -434,6 +434,25 @@ class Assignment_model extends CI_Model
 
 
 	/**
+	 * Set Moss Time
+	 *
+	 * Updates "Moss Update Time" for given assignment
+	 *
+	 * @param $assignment_id
+	 */
+	public function set_moss_time($assignment_id)
+	{
+		$now = shj_now_str();
+		$this->db->where('id', $assignment_id)->update('assignments', array('moss_update'=>$now));
+	}
+
+
+
+	// ------------------------------------------------------------------------
+
+
+
+	/**
 	 * Get Moss Time
 	 *
 	 * Returns "Moss Update Time" for given assignment
