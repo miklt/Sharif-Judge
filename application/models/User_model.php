@@ -244,7 +244,7 @@ class User_model extends CI_Model
 			$this->load->library('email');
 			$config = array(
 				'mailtype'  => 'html',
-				'charset'   => 'iso-8859-1'
+				'charset'   => 'utf-8'
 			);
 			/*
 			// You can use gmail's smtp server
@@ -255,7 +255,7 @@ class User_model extends CI_Model
 				'smtp_user' => 'example@gmail.com',
 				'smtp_pass' => 'your-gmail-password',
 				'mailtype'  => 'html',
-				'charset'   => 'iso-8859-1'
+				'charset'   => 'utf-8'
 			);
 			*/
 			$this->email->initialize($config);
@@ -515,7 +515,7 @@ class User_model extends CI_Model
 		$this->load->library('email');
 		$config = array(
 			'mailtype'  => 'html',
-			'charset'   => 'iso-8859-1'
+			'charset'   => 'utf-8'
 		);
 		/*
 		// You can use gmail's smtp server
@@ -526,7 +526,7 @@ class User_model extends CI_Model
 			'smtp_user' => 'example@gmail.com',
 			'smtp_pass' => 'your-gmail-password',
 			'mailtype'  => 'html',
-			'charset'   => 'iso-8859-1'
+			'charset'   => 'utf-8'
 		);
 		*/
 		$this->email->initialize($config);
