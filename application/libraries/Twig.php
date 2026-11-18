@@ -159,7 +159,9 @@ class Twig
 		$this->twig->addFunction(new \Twig\TwigFunction('form_open', 'form_open', array('is_safe' => array('html'))));
 		$this->twig->addFunction(new \Twig\TwigFunction('form_open_multipart', 'form_open_multipart', array('is_safe' => array('html'))));
 		$this->twig->addFunction(new \Twig\TwigFunction('form_error', 'form_error', array('is_safe' => array('html'))));
-		$this->twig->addFunction(new \Twig\TwigFunction('set_value', 'set_value'));
+		// O CI 3.1 escapa por padrão em set_value(); o autoescape do Twig já
+		// escapa a saída. Escapar duas vezes gravava "&lt;" na late_rule.
+		$this->twig->addFunction(new \Twig\TwigFunction('set_value', static fn($field, $default = '') => set_value($field, $default, FALSE)));
 		$this->twig->addFunction(new \Twig\TwigFunction('set_checkbox', 'set_checkbox'));
 		/*$this->twig->addFunction(new \Twig\TwigFunction('form_hidden', 'form_hidden'));
 		$this->twig->addFunction(new \Twig\TwigFunction('form_input', 'form_input'));
