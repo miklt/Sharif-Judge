@@ -13,6 +13,32 @@ class Labooworker extends CI_Controller
         $this->load->model('queue_model')->model('submit_model');
     }
 
+    /**
+     * Relatório no formato do tester.sh legado: "Test N - <desc/descN.txt>"
+     * seguido do status (verde ACCEPT, vermelho WRONG, laranja os demais).
+     */
+    private static function result_html(string $directory_problem, array $result): string
+    {
+        $e = static fn($text) => htmlspecialchars((string)$text, ENT_QUOTES|ENT_SUBSTITUTE, 'UTF-8');
+        if ($result['status'] === 'Compilation Error') {
+            return "<span class=\"shj_b\">Compile Error</span>\n<span class=\"shj_r\">\n"
+                .$e($result['compiler'] ?? '')."\n</span>\n";
+        }
+        $html = "\n";
+        foreach ($result['tests'] ?? [] as $test) {
+            $i = (int)$test['case'];
+            $desc = @file_get_contents($directory_problem.'/desc/desc'.$i.'.txt');
+            $desc = $desc === false ? '' : trim($desc);
+            if ($desc !== '' && !mb_check_encoding($desc, 'UTF-8')) {
+                $desc = mb_convert_encoding($desc, 'UTF-8', 'ISO-8859-1');
+            }
+            $class = $test['status'] === 'ACCEPT' ? 'shj_g' : ($test['status'] === 'WRONG' ? 'shj_r' : 'shj_o');
+            $html .= '<span class="shj_b">Test '.$i.($desc === '' ? '' : ' - '.$e($desc))."</span>\n"
+                .'<span class="'.$class.'">'.$e($test['status'])."</span>\n";
+        }
+        return $html;
+    }
+
     private function emit(array $message): void
     {
         echo json_encode($message, JSON_THROW_ON_ERROR)."\n";
@@ -53,16 +79,20 @@ class Labooworker extends CI_Controller
             if (!preg_match('/^[a-zA-Z0-9]+$/D', $item['username'])) { throw new RuntimeException('Identificador inválido.'); }
             $directory_problem = rtrim($this->settings_model->get_setting('assignments_root'), '/').'/assignment_'.(int)$item['assignment'].'/p'.(int)$item['problem'];
             $directory = $directory_problem.'/'.$item['username'];
-            $html = '';
-            foreach ($result['tests'] ?? [] as $test) {
-                $html .= '<div>Test '.(int)$test['case'].': '.htmlspecialchars($test['status'], ENT_QUOTES|ENT_SUBSTITUTE, 'UTF-8').'</div>';
-            }
-            if ($result['status'] === 'Compilation Error') {
-                $html .= '<pre>'.htmlspecialchars($result['compiler'] ?? '', ENT_QUOTES|ENT_SUBSTITUTE, 'UTF-8').'</pre>';
-            }
+            $html = self::result_html($directory_problem, $result);
             $path = $directory.'/result-'.(int)$item['submit_id'].'.html';
             if (file_put_contents($path.'.tmp', $html, LOCK_EX) === false || !rename($path.'.tmp', $path)) {
                 throw new RuntimeException('Não foi possível gravar relatório; fila preservada.');
+            }
+            // .zip/.7z: fontes concatenados em <arquivo>.cpp, como o tester.sh
+            // legado (botão "Code"). Melhor esforço: não prende a fila.
+            if (is_string($result['source_listing'] ?? null)
+                && preg_match('/^[A-Za-z0-9_-]+$/D', (string)$submission['file_name'])) {
+                $code_path = $directory.'/'.$submission['file_name'].'.cpp';
+                if (@file_put_contents($code_path.'.tmp', $result['source_listing'], LOCK_EX) === false
+                    || !@rename($code_path.'.tmp', $code_path)) {
+                    @unlink($code_path.'.tmp');
+                }
             }
             // Log para professores/admins (botão "Log") no formato do tester.sh
             // legado; o corpo vem do runner. Melhor esforço: não prende a fila.

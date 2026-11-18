@@ -157,6 +157,32 @@ def run_case(binary, data, seconds, memory_kb, output_bytes):
     result['stdout']=base64.b64decode(result['stdout']);result['stderr']=base64.b64decode(result['stderr'])
     return result
 
+LISTING_LIMIT=256*1024  # cabe na linha JSON lida pelo Labooworker (1 MB)
+
+def _ls_order(path):
+    # Ordem do "ls" (locale en_US) usada pelo tester.sh: sem caixa e sem pontuação.
+    return (re.sub(r'[^0-9a-z]','',path.name.lower()),path.name)
+
+def source_listing(code, problem):
+    """Fontes de um .zip/.7z concatenados como o tester.sh legado gravava em
+    <arquivo>.cpp ao lado do envio (é o que o botão "Code" mostra)."""
+    sep='='*79
+    def text(p):
+        data=p.read_bytes()
+        try:return data.decode('utf-8')
+        except UnicodeDecodeError:return data.decode('latin-1')
+    parts=[]
+    if (problem/'inject').is_dir():
+        parts.append(sep+'\n===== Arquivos injetados pelo sistema de correção:\n')
+        parts+=[f'===== * {f.name}\n' for f in sorted((problem/'inject').iterdir(),key=_ls_order)]
+        parts.append(sep+'\n\n\n')
+    for f in sorted(code.iterdir(),key=_ls_order):
+        parts.append(f'{sep}\n===== {f.name}\n{sep}\n\n{text(f)}\n\n')
+    listing=''.join(parts)
+    if len(listing.encode())>LISTING_LIMIT:
+        listing=listing.encode()[:LISTING_LIMIT].decode(errors='ignore')+'\n\n[... listagem truncada ...]\n'
+    return listing
+
 def judge(source, problem, seconds=1, memory_kb=65536, output_bytes=1024*1024, diff_arg='-bB', shield=None):
     """Só devolve escore após todos os casos. Falhas de infraestrutura deixam fila intacta."""
     assert source.is_file() and problem.is_dir()
@@ -168,9 +194,10 @@ def judge(source, problem, seconds=1, memory_kb=65536, output_bytes=1024*1024, d
         work=Path(temp);work.chmod(traverse)
         code=work/'compile';code.mkdir(mode=0o700)
         # Log no formato do tester.sh legado (botão "Log" da interface).
-        started=time.monotonic();log=[]
+        started=time.monotonic();log=[];listing=None
         ms=lambda t0:int((time.monotonic()-t0)*1000)
         def done(r):
+            if listing is not None:r['source_listing']=listing
             if r['status']=='SCORE':log.append(f"\nScore from 10000: {r['pre_score']}")
             log.append(f'\nTotal Execution Time: {ms(started)} ms')
             r['log']='\n'.join(log)+'\n';return r
@@ -223,6 +250,9 @@ def judge(source, problem, seconds=1, memory_kb=65536, output_bytes=1024*1024, d
             shutil.copyfile(source,code/'code.cpp')
         else:
             return invalid('Formato não suportado: envie .cpp, .zip ou .7z.')
+        if source.suffix.lower() in ('.zip','.7z'):
+            # Antes da injeção: só os arquivos do aluno, como no tester original.
+            listing=source_listing(code,problem)
         # Injeção do professor substitui homônimos, como no tester original.
         if (problem/'inject').is_dir():
             for f in (problem/'inject').iterdir():
